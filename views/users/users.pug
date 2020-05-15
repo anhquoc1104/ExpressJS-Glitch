@@ -1,0 +1,20 @@
+form(action="", method="POST")
+  input(type="text", name="name")
+  span &nbsp
+  button(type="submit") Search
+
+a(href="/users/add") NEW USER
+
+h4 List User :
+ul
+  each val in user
+    li= val.name
+      span &nbsp
+      span &nbsp
+      a(href="/users/view/" + val.id) view
+      span &nbsp
+      a(href="/users/edit/" + val.id) edit
+      span &nbsp
+      a(href="/users/remove/" + val.id) remove
+
+a(href="/") Home

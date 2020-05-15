@@ -1,0 +1,7 @@
+h3 Edit title
+span old title: 
+b= book.title
+br
+form(action="/books/edit/title/" + book.id, method="POST")
+  input(type="text" name="title", placeholder="edit here...")
+  button(type="submit") Submit
