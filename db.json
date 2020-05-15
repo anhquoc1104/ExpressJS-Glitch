@@ -1,0 +1,66 @@
+{
+  "books": [
+    {
+      "id": "HtZ-2OGd6",
+      "title": "Tam Quốc Diễn Nghĩa",
+      "description": "Loạn binh đao cuối đời Hán.\r\n"
+    },
+    {
+      "id": "MTG5Hj1N8",
+      "title": "Tiếng Gọi Nơi Hoang Dã",
+      "description": "Thiên nhiên kỳ thú là cội nguồn của tất cả"
+    },
+    {
+      "id": "Q8m2mMLe-",
+      "title": "NodeJS",
+      "description": "lorem lorem lorem lorem "
+    }
+  ],
+  "users": [
+    {
+      "id": "ZeNiGEkqe",
+      "name": "Hữu Loan"
+    },
+    {
+      "id": "ap-Ze965x",
+      "name": "Văn Cao"
+    },
+    {
+      "id": "_cVwb1SuH",
+      "name": "Khái Hưng"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "DjFOBK4N5",
+      "userID": "_cVwb1SuH",
+      "bookID": "MTG5Hj1N8",
+      "isComplete": true
+    },
+    {
+      "id": "4biRBBf9E",
+      "userID": "ap-Ze965x",
+      "bookID": "Q8m2mMLe-",
+      "isComplete": true
+    },
+    {
+      "id": "plBgLCDPm",
+      "userID": "_cVwb1SuH",
+      "bookID": "HtZ-2OGd6",
+      "isComplete": false
+    },
+    {
+      "id": "Uk3BxFPQV",
+      "userID": "ap-Ze965x",
+      "bookID": "HtZ-2OGd6",
+      "isComplete": true
+    },
+    {
+      "id": "CaZqoEdUx",
+      "userID": "_cVwb1SuH",
+      "bookID": "MTG5Hj1N8",
+      "isComplete": false
+    }
+  ],
+  "user": []
+}

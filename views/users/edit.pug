@@ -1,0 +1,7 @@
+h3 Edit Username
+span old Name: 
+b= user.name
+br
+form(action="" + user.id, method="POST")
+  input(type="text" name="name", placeholder="edit here...")
+  button(type="submit") Submit

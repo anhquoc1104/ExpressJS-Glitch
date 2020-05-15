@@ -1,0 +1,19 @@
+h4 Transactions
+a(href="/transactions/create") NEW TRANSACTIONS
+br
+table
+  tr
+    th UserID
+    th BookID
+    th Status
+  each val in trans
+    tr
+      td= val.userID
+      td= val.bookID
+      if val.isComplete === true
+        td Ok
+      else
+        td
+          a(href="/transactions/isComplete/" + val.id) Unpaid
+br
+a(href="/") Home
