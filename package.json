@@ -10,8 +10,15 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.1.1",
+    "bcrypt": "^4.0.1",
+    "cloudinary": "^1.21.0",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "lowdb": "^1.0.0",
+    "md5": "^2.2.1",
+    "multer": "^1.4.2",
     "pug": "^2.0.4",
     "save": "^2.4.0",
     "shortid": "^2.2.15"

@@ -1,0 +1,16 @@
+extends ../layouts/common.pug
+
+block content
+  .container.mr-5.mt-3
+    if !cart
+      h4 Empty Cart
+    else
+      ul
+        each val in cart
+          li
+            img(src=val.avatarUrl)
+            span &nbsp
+            span= val.title + ': ' + val.quantity
+              span &nbsp
+              a(href="/carts/transaction/" + val.id) transaction
+block footer

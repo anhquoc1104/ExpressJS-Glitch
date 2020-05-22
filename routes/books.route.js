@@ -1,7 +1,8 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
-let controller = require('../controller/books.controller.js');
+let controller = require("../controller/books.controller.js");
+let multerUpload = require("../controller/multer.controller.js");
 
 //BOOK /
 router.get("/create", controller.create);
@@ -13,9 +14,10 @@ router.get("/search", controller.search);
 router.get("/view/:id", controller.view);
 //edit
 router.get("/edit/:id", controller.edit);
-router.post("/edit/title/:id", controller.editPost);
+router.post("/edit/title/:id", multerUpload, controller.editPost);
 //remove
 router.get("/remove/:id", controller.remove);
-
+//
+router.get("/addToCart/:id", controller.addToCart);
 
 module.exports = router;

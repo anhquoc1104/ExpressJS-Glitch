@@ -1,20 +1,23 @@
-form(action="", method="POST")
-  input(type="text", name="name")
-  span &nbsp
-  button(type="submit") Search
+extends ../layouts/common.pug
 
-a(href="/users/add") NEW USER
-
-h4 List User :
-ul
-  each val in user
-    li= val.name
+block content
+  .container.mr-5.mt-3
+    form(action="", method="POST")
+      input(type="text", name="name")
       span &nbsp
-      span &nbsp
-      a(href="/users/view/" + val.id) view
-      span &nbsp
-      a(href="/users/edit/" + val.id) edit
-      span &nbsp
-      a(href="/users/remove/" + val.id) remove
-
-a(href="/") Home
+      button(type="submit") Search
+      h4 Detail User
+      .contailner
+        .row
+          .col
+            h6= isUser.name
+            h6= isUser.email
+          .col
+            if isUser.avatarUrl
+              img(src=isUser.avatarUrl)
+            else
+              img(src="https://res.cloudinary.com/anhquoc1104/image/upload/c_scale,h_50,w_50,r_20/v1589899817/test_CodersX/d8b07ffa86196b473208_h5baxw.jpg")
+      a(href="/users/edit/" + isUser.id) edit
+      br
+    a(href="/logout") Logout
+block footer
