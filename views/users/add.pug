@@ -1,4 +1,10 @@
-h3 New User
-form(action="" method="POST")
-  input(type="text" name="name", placeholder="Username...")
-  button(type="submit") Add
+extends ../layouts/common.pug
+
+block content
+  .container.mr-5.mt-3
+    h3 New User
+      form(method="POST")
+        .form-group
+          input.form-control.mb-3(type="text" name="name", placeholder="Username...")
+          input.form-control(type="text" name="email", placeholder="email...")
+        button.btn.btn-primary(type="submit") Add

@@ -1,27 +1,51 @@
 extends ./layouts/common.pug
 
 block content
-  nav.nav
-    a.nav-link.active(href='#') BOOK
-    a.nav-link(href='/users') USERS
-    a.nav-link(href='/transactions') TRANSACTIONS
   .container.mr-5.mt-3
     form(action="/books/search", method="GET")
       input(type="text", name="name")
       span &nbsp
       button(type="submit") Search
 
-    a(href="/books/create") NEW BOOK
-
-    h4 List book :
-    ul
-      each val in book
-        li= val.title
-          span &nbsp
-          span &nbsp
-          a(href="/books/view/" + val.id) view
-          span &nbsp
-          a(href="/books/edit/" + val.id) edit
-          span &nbsp
-          a(href="/books/remove/" + val.id) remove
-
+    h4 Book list :
+    if userAdmin
+      if userAdmin.isAdmin == true
+        a(href="/books/create") NEW BOOK
+        ul
+          each val in book
+            li
+              img(src=val.avatarUrl)
+              span &nbsp
+              span= val.title
+                span &nbsp
+                span &nbsp
+                a(href="/books/view/" + val.id) view
+                span &nbsp
+                a(href="/books/edit/" + val.id) edit
+                span &nbsp
+                a(href="/books/remove/" + val.id) remove
+      else
+        ul
+          each val in book
+            li
+              img(src=val.avatarUrl)
+              span &nbsp
+              span= val.title
+                span &nbsp
+                span &nbsp
+                a(href="/books/view/" + val.id) view
+                span &nbsp
+                a(href="/books/addToCart/" + val.id) Add to Cart
+    else
+      ul
+        each val in book
+          li
+            img(src=val.avatarUrl)
+            span &nbsp
+            span= val.title
+              span &nbsp
+              span &nbsp
+              a(href="/books/view/" + val.id) view
+              span &nbsp
+              a(href="/books/addToCart/" + val.id) Add to Cart
+block footer

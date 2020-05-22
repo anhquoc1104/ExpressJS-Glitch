@@ -1,19 +1,63 @@
-h4 Transactions
-a(href="/transactions/create") NEW TRANSACTIONS
-br
-table
-  tr
-    th UserID
-    th BookID
-    th Status
-  each val in trans
-    tr
-      td= val.userID
-      td= val.bookID
-      if val.isComplete === true
-        td Ok
+extends ../layouts/common.pug
+
+block content
+  .container.mr-5.mt-3
+    h4 Transactions
+    a(href="/transactions/create") NEW TRANSACTIONS
+    table
+      tr
+        th UserID
+        th BookID
+        th Status
+      each val in item
+        tr
+          td= val.userID
+          td= val.bookID
+          if val.isComplete === true
+            td Ok
+          else
+            td
+              a(href="/transactions/isComplete/" + val.id) Unpaid
+block footer
+  nav(aria-label='Page navigation example')
+    ul.pagination.justify-content-center
+      if startPage == 1
+        li.page-item.disabled
+          a.page-link(href='#')
+            span &laquo;
       else
-        td
-          a(href="/transactions/isComplete/" + val.id) Unpaid
-br
-a(href="/") Home
+        li.page-item
+          a.page-link(href='/transactions/' + pagePre)
+            span &laquo;
+      if page == 1
+        each val in [1, 2, 3]
+          if val == 1
+            li.page-item.active
+              a.page-link(href='/transactions/' + val)= val
+          else
+            li.page-item
+              a.page-link(href='/transactions/' + val)= val
+      else if page == endPage
+        each val in [page5Num[0],page5Num[1],page5Num[2]]
+          if val == endPage
+            li.page-item.active
+              a.page-link(href='/transactions/' + val)= val
+          else
+            li.page-item
+              a.page-link(href='/transactions/' + val)= val
+      else
+        each val in [page5Num[1], page5Num[2], page5Num[3]]
+          if val == page
+            li.page-item.active
+              a.page-link(href='/transactions/' + val)= val
+          else
+            li.page-item
+              a.page-link(href='/transactions/' + val)= val
+      if page == endPage
+        li.page-item.disabled
+          a.page-link(href='#')
+            span &raquo;
+      else
+        li.page-item
+          a.page-link(href='/transactions/' + pageNext)
+            span &raquo;

@@ -1,0 +1,17 @@
+html
+  head
+    link(href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk", crossorigin="anonymous")
+    title Login
+  body
+    .container
+      h3.text-center.m-5 LOGIN IN HERE
+      if error
+        .alert.alert-danger= error
+      form(method="POST")
+        .form-group
+          label(for="email") Email adress
+          input.form-control.pl-1#email(type="email" name="email", placeholder="email", value= value? value.email : "")
+        .form-group
+          label(for="password") Password
+          input.form-control.pl-1#password(type="password" name="password" placeholder="password", value= value? value.password : "") 
+        button(class="btn btn-success", type="submit") Login

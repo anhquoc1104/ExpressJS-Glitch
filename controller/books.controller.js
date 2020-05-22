@@ -2,6 +2,7 @@ const shortid = require("shortid");
 
 let db = require('../db');
 const change_alias = require('../changeAlias');
+let cloudinary = require('./avatar.controller.js');
 
 module.exports.create = (req, res) => {
   res.render("./books/create.pug");
@@ -59,11 +60,22 @@ module.exports.editPost = (req, res) => {
   let title = req.body.title;
   let id = req.params.id;
   //console.log(title);
-  db.get("books")
-    .find({ id: id })
-    .assign({ title: title })
-    .write();
-  res.redirect("/");
+  // db.get("books")
+  //   .find({ id: id })
+  //   .assign({ title: title })
+  //   .write();
+  // let avatarUrl;
+  cloudinary.uploadCloudinary(req.file.path, 50, 50, 20)
+    .then( result => {
+      // console.log(result);
+      let id = req.params.id;
+      db.get('books')
+        .find({id: id})
+        .assign({title: title, avatarUrl: result.url})
+        .write();
+      res.redirect('/');
+  })
+  // res.redirect("/");
 };
 
 module.exports.remove = (req, res) => {
@@ -74,3 +86,23 @@ module.exports.remove = (req, res) => {
   // db.get('books').unset('item').write();
   res.redirect("/");
 };
+
+module.exports.addToCart = (req, res) => {
+  let productId = req.params.id
+  let sessionId = req.signedCookies.sessionId;
+  if(!sessionId){
+    res.redirect("/");  
+    return;
+  }
+  let count = db.get('session')
+    .find({id: sessionId})
+    .get('cart.' + productId, 0)
+    .value();
+  db.get('session')
+    .find({id: sessionId})
+    .set('cart.' + productId, count + 1)
+    .write();
+  //console.log(productId);
+  //console.log(db.get('session').value());
+  res.redirect("/");
+}
