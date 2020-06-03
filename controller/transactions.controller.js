@@ -1,24 +1,41 @@
-const shortid = require("shortid");
+let Transaction = require("../models/transactions.models.js");
+let User = require("../models/users.models.js");
+let Book = require("../models/books.models.js");
 
-let db = require('../db');
-const change_alias = require('../changeAlias');
+module.exports.home = async (req, res) => {
+  try {
+    let user = User.findById(req.signedCookies.userID);
+    let page = req.params.page || 1;
+    let page5Num = [
+      parseInt(page) - 2,
+      parseInt(page) - 1,
+      page,
+      parseInt(page) + 1,
+      parseInt(page) + 2
+    ];
+    let perPage = 5;
+    let dropIx = (page - 1) * perPage;
+    let limitIx = page * perPage;
 
-module.exports.home = (req, res) => {
-  let user = db.get('users').find({id: req.signedCookies.userID}).value();
-  let page = req.params.page || 1;
-  let page5Num = [parseInt(page) - 2, parseInt(page) - 1, page, parseInt(page) + 1, parseInt(page) + 2];
-  //console.log(page);
-  let perPage = 5;
-  let startIx = (page - 1) * perPage;
-  let endIx = page * perPage;
-  
-  if(user.isAdmin){
-    let totalPage = Math.ceil((db.get('transactions').value().length)/perPage);
-    //console.log(elm);
-    res.render('./transactions/transactions.pug', {
+    if (user.isAdmin) {
+      let objTran = await Transaction.find();
+      let totalPage = Math.ceil(objTran.length / perPage);
+      res.render("./transactions/transactions.pug", {
+        item: objTran.slice(dropIx, limitIx),
+        startPage: page,
+        page: page,
+        endPage: totalPage,
+        pagePre: page5Num[1],
+        pageNext: page5Num[3],
+        page5Num: page5Num
+      });
+      return;
+    }
+    let objTran = await Transaction.find({ userID: user.id });
+    let totalPage = Math.ceil(objTran.length / perPage);
+    res.render("./transactions/transactions.pug", {
       //trans: db.get('transactions').value(),
-      //user: user,
-      item: db.get('transactions').drop(startIx).take(perPage).value(),
+      item: objTran.slice(dropIx, limitIx),
       startPage: page,
       page: page,
       endPage: totalPage,
@@ -26,54 +43,41 @@ module.exports.home = (req, res) => {
       pageNext: page5Num[3],
       page5Num: page5Num
     });
-    return;
+  } catch (err) {
+    console.log(err)
+    res.render("./statusCode/status500.pug");
   }
-  let totalPage = Math.ceil((db.get('transactions').filter({userID: user.id}).value().length)/perPage);
-  //console.log(elm);
-  res.render('./transactions/transactions.pug', {
-    //trans: db.get('transactions').value(),
-    item: db.get('transactions')
-            .filter({userID: user.id})
-            .drop(startIx).take(perPage)
-            .value(),
-    startPage: page,
-    page: page,
-    endPage: totalPage,
-    pagePre: page5Num[1],
-    pageNext: page5Num[3],
-    page5Num: page5Num
-  });
 };
 
 module.exports.create = (req, res) => {
-  res.render('./transactions/create.pug', {
-    book: db.get('books').value(),
-    user: db.get('users').value()
-  });
+  res.render("./users/users.pug");
 };
+// module.exports.create = async (req, res) => {
+//   console.log("transaction Create");
+//   let books = await Book.find();
+//   let users = await User.find();
+//   let transactions = await Transaction.find();
+//   res.render("./transactions/create.pug", {
+//     book: books,
+//     user: users,
+//     item: transactions
+//   });
+// };
 
-module.exports.createPost = (req, res) => {
+module.exports.createPost = async (req, res) => {
   let userId = req.body.userId;
   let bookId = req.body.bookId;
-  //console.log(userId);
-  db.get('transactions')
-    .push({
-      id: shortid.generate(), 
-      userID: userId, 
-      bookID: bookId, 
-      isComplete: false
-    })
-    .write();
-  res.redirect('/transactions');
+  let newTrans = new Transaction({
+    userID: userId,
+    bookID: bookId,
+    isComplete: false
+  });
+  await newTrans.save();
+  res.redirect("/transactions" + 1);
 };
 
 module.exports.isComplete = (req, res) => {
   let id = req.params.id;
-  let isTrue = db.get('transactions')
-    .find({id: id});
-  if(isTrue.value()){
-    isTrue.assign({isComplete: true})
-    .write();
-  }
-  res.redirect('/transactions');
+  let isTrue = Transaction.findOneAndUpdate({ id: id }, { isComplete: true });
+  res.redirect("/transactions" + 1);
 };

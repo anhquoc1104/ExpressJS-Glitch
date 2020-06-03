@@ -9,7 +9,7 @@ block content
 
     h4 Book list :
     if userAdmin
-      if userAdmin.isAdmin == true
+      if userAdmin.isAdmin == "true"
         a(href="/books/create") NEW BOOK
         ul
           each val in book
@@ -19,11 +19,11 @@ block content
               span= val.title
                 span &nbsp
                 span &nbsp
-                a(href="/books/view/" + val.id) view
+                a(href="/books/view/" + val._id) view
                 span &nbsp
-                a(href="/books/edit/" + val.id) edit
+                a(href="/books/edit/" + val._id) edit
                 span &nbsp
-                a(href="/books/remove/" + val.id) remove
+                a(href="/books/remove/" + val._id) remove
       else
         ul
           each val in book
@@ -33,9 +33,9 @@ block content
               span= val.title
                 span &nbsp
                 span &nbsp
-                a(href="/books/view/" + val.id) view
+                a(href="/books/view/" + val._id) view
                 span &nbsp
-                a(href="/books/addToCart/" + val.id) Add to Cart
+                a(href="/books/addToCart/" + val._id) Add to Cart
     else
       ul
         each val in book
@@ -45,7 +45,8 @@ block content
             span= val.title
               span &nbsp
               span &nbsp
-              a(href="/books/view/" + val.id) view
+              a(href="/books/view/" + val._id) view
               span &nbsp
-              a(href="/books/addToCart/" + val.id) Add to Cart
+              a(href="/books/addToCart/" + val._id) Add to Cart
+    a(href="/logout") Logout
 block footer

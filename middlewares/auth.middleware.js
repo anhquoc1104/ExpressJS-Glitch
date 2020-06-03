@@ -1,19 +1,16 @@
-let db = require("../db");
+//let db = require("../db");
+let User = require('../models/users.models.js');
 
-module.exports.authMiddlewares = (req, res, next) => {
-  //console.log(req.cookies.userID);
-  if (!req.signedCookies.userID) {
+module.exports.authMiddlewares = async (req, res, next) => {
+  let cookieUser = req.signedCookies.userID
+  if (!cookieUser) {
     res.redirect("/login");
     return;
   }
-  let id = db
-    .get("users")
-    .find({ id: req.signedCookies.userID })
-    .value();
+  let id = await User.findById(cookieUser);
   if (!id) {
     res.redirect("/login");
     return;
   }
-  //console.log(req.signedCookies.userID);
   next();
 };

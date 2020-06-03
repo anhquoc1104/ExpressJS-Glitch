@@ -1,6 +1,5 @@
-const shortid = require("shortid");
-
-let db = require('../db');
+let Book = require('../models/books.models.js');
+let Session = require('../models/sessions.models.js');
 const change_alias = require('../changeAlias');
 let cloudinary = require('./avatar.controller.js');
 
@@ -11,19 +10,19 @@ module.exports.create = (req, res) => {
 module.exports.createPost = (req, res) => {
   let title = req.body.title;
   let description = req.body.description;
-  db.get("books")
-    .push({ id: shortid.generate(), title: title, description: description })
-    .write();
+  let newBook = new Book({
+    title: title,
+    description: description
+  });
+  newBook.save();
   res.redirect("/");
 };
 
-module.exports.search = (req, res) => {
+module.exports.search = async (req, res) => {
   let name = req.query.name;
   name = change_alias(name);
-  let matchQuery = db
-    .get("books")
-    .value()
-    .filter(elm => {
+  let findBook = await Book.find();
+  let matchQuery = findBook.filter(elm => {
       let title = elm.title;
       title = change_alias(title);
       return title.indexOf(name) !== -1;
@@ -33,76 +32,50 @@ module.exports.search = (req, res) => {
   });
 };
 
-module.exports.view = (req, res) => {
-  let id = req.params.id;
-  let detailBook = db
-    .get("books")
-    .find({ id: id })
-    .value();
-  //console.log(detailBook);
+module.exports.view = async (req, res) => {
+  let detailBook = await Book.findById(req.params.id);
   res.render("./books/view.pug", {
-    book: detailBook
+   book: detailBook
   });
 };
 
-module.exports.edit = (req, res) => {
+module.exports.edit = async (req, res) => {
   let id = req.params.id;
-  let book = db
-    .get("books")
-    .find({ id: id })
-    .value();
+  let book = await Book.findById(id);
   res.render("./books/edit.pug", {
-    book: book
+   book: book
   });
 };
 
-module.exports.editPost = (req, res) => {
+module.exports.editPost = async (req, res) => {
   let title = req.body.title;
   let id = req.params.id;
-  //console.log(title);
-  // db.get("books")
-  //   .find({ id: id })
-  //   .assign({ title: title })
-  //   .write();
-  // let avatarUrl;
   cloudinary.uploadCloudinary(req.file.path, 50, 50, 20)
-    .then( result => {
-      // console.log(result);
-      let id = req.params.id;
-      db.get('books')
-        .find({id: id})
-        .assign({title: title, avatarUrl: result.url})
-        .write();
-      res.redirect('/');
-  })
-  // res.redirect("/");
+    .then( async (result) => {
+        await Book.findOneAndUpdate({_id: id}, {title: title, avatarUrl: result.url})
+        res.redirect('/');
+    })
 };
 
-module.exports.remove = (req, res) => {
+module.exports.remove = async (req, res) => {
   let id = req.params.id;
-  db.get("books")
-    .remove({ id: id })
-    .write();
-  // db.get('books').unset('item').write();
+  await Book.findOneAndDelete({_id: id});
   res.redirect("/");
 };
 
-module.exports.addToCart = (req, res) => {
+module.exports.addToCart = async (req, res) => {
   let productId = req.params.id
   let sessionId = req.signedCookies.sessionId;
   if(!sessionId){
     res.redirect("/");  
     return;
   }
-  let count = db.get('session')
-    .find({id: sessionId})
-    .get('cart.' + productId, 0)
-    .value();
-  db.get('session')
-    .find({id: sessionId})
-    .set('cart.' + productId, count + 1)
-    .write();
-  //console.log(productId);
-  //console.log(db.get('session').value());
+  let cart = await Session.findById(sessionId);
+  if(cart.cart[productId]){
+     cart.cart[productId] += 1;
+  }else{
+     cart.cart[productId] = 1;
+  }
+  await cart.save();
   res.redirect("/");
 }
