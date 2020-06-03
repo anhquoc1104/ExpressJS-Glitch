@@ -1,43 +1,48 @@
-const shortid = require("shortid");
 const bcrypt = require('bcrypt');
 
-let db = require('../db');
+let Transaction = require('../models/transactions.models.js');
+let User = require('../models/users.models.js');
+let Book = require('../models/books.models.js');
+
 const change_alias = require('../changeAlias');
 let cloudinary = require('./avatar.controller.js');
 
-module.exports.home = (req, res) => {
-  let userID = req.signedCookies.userID;
-  let isUser = db.get('users').find({id: userID}).value();
+module.exports.home = async(req, res) => {
+  let isUser = await User.findById(req.signedCookies.userID)
+  let users = await User.find();
   res.render("./users/users.pug", {
-    user: db.get("users").value(),
+    user: users,
     isUser: isUser
   });
 };
 
-module.exports.searchPost = (req, res) => {
+module.exports.searchPost = async (req, res) => {
   let username = req.body.name;
   username = change_alias(username);
-  let matchQuery = db.get('users').value().filter( elm => {
+  let userQuery = await User.find();
+  let matchQuery = userQuery.filter( elm => {
     let name = elm.name;
     name = change_alias(name)
     return name.indexOf(username) !== -1;
   });
+  let isUser = await User.findById(req.signedCookies.userID)
   res.render('./users/users.pug', {
+    isUser: isUser,
     user: matchQuery
   });
 };
 
-module.exports.createPost = (req, res) => {
+module.exports.createPost = async (req, res) => {
   let name = req.body.name;
   let email = req.body.email;
   let password = bcrypt.hashSync("123123", 10);
-  db.get("users")
-    .push({ 
-        id: shortid.generate(), 
-        name: name, email: email, 
-        password: password, 
-        isAdmin: false })
-    .write();
+  let newUser = new User({
+    name: name, 
+    email: email, 
+    password: password, 
+    isAdmin: false
+  });
+  await newUser.save();
   res.redirect("/users"); 
 };
 
@@ -47,7 +52,7 @@ module.exports.create = (req, res) => {
 
 module.exports.view = (req, res) => {
   let id = req.params.id;
-  let detailuser = db.get('users').find({id: id}).value();
+  let detailuser = User.findById(id);
   res.render('./users/view.pug', {
     user: detailuser
   });
@@ -55,35 +60,29 @@ module.exports.view = (req, res) => {
 
 module.exports.edit = (req, res) => {
   let id = req.params.id;
-  let user = db.get('users').find({id: id}).value();
+  let user = User.findById(id);
   res.render('./users/edit.pug', {
     user: user
-  })
+  });
 };
 
 module.exports.editPost = (req, res) => {
   let name = req.body.name;
   let email = req.body.email;
-  //console.log(name, email);
   let avatarUrl;
   cloudinary.uploadCloudinary(req.file.path, 50, 50, 20)
-    .then( result => {
-      //console.log(result);
+    .then( async result => {
       let id = req.params.id;
-      db.get('users')
-        .find({id: id})
-        .assign({name: name, email: email, avatarUrl: result.url})
-        .write();
+      await User.findOneAndUpdate({_id: id}, 
+                                  {name: name, 
+                                   email: email,
+                                   avatarUrl: result.url})
       res.redirect('/users');
   })
-  //console.log(avatarUrl);
-
 };
 
-module.exports.remove = (req, res) => {
+module.exports.remove = async (req, res) => {
   let id = req.params.id;
-  db.get('users')
-    .remove({id: id})
-    .write();
+  await User.findOneAndDelete({_id: id});
   res.redirect('/users');
 };
