@@ -3,9 +3,10 @@ const express = require("express");
 const router = express.Router();
 let controller = require("../controller/books.controller.js");
 let multerUpload = require("../controller/multer.controller.js");
+let requireAuth = require("../middlewares/auth.middleware");
 
 //BOOK /
-router.get("/create", controller.create);
+router.get("/create", requireAuth.authMiddlewares, controller.create);
 // Add book
 router.post("/create/add", controller.createPost);
 //search

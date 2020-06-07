@@ -3,6 +3,7 @@ const mongoose = require('../mongoose.js');
 let bookSchema = mongoose.Schema({
   title: String,
   description: String,
+  userID: mongoose.Schema.Types.ObjectId,
   avatarUrl: {
     type: String,
     default: ""

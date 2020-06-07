@@ -6,7 +6,9 @@ let userSchema = mongoose.Schema({
   password: String,
   isAdmin: String,
   avatarUrl: String,
-  wrongLoginCount: Number
+  wrongLoginCount: Number,
+  shopID: mongoose.Schema.Types.ObjectId,
+  cart: {}
 })
 
 let User = mongoose.model('User', userSchema, 'users');

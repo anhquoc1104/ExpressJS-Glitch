@@ -1,0 +1,11 @@
+extends ../layouts/common.pug
+
+block content
+  .container
+    ul 
+      each elm in books
+        li
+          span= elm.title
+          span &nbsp
+          a(href="") add to cart
+block footer

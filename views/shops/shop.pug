@@ -2,10 +2,12 @@ extends ../layouts/common.pug
 
 block content
   .container
-    h2 SHOP
-    
-   
-   
-   
-   
+    .d-flex.justify-content-between
+      h3 SHOP
+      a(href="/shops/myshop") My Shop
+    ul
+      each elm in userShop
+        if elm.shopID
+          li
+            a(href="/shops/" + elm._id + "/shop")= elm.name
 block footer

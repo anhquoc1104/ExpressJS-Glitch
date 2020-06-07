@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
 
-let Transaction = require('../models/transactions.models.js');
-let User = require('../models/users.models.js');
-let Book = require('../models/books.models.js');
+let User = require("../models/users.models.js");
+let Session = require("../models/sessions.models.js");
 
 module.exports.login = (req, res) => {
   res.render("./auth/login.pug");
@@ -11,6 +10,8 @@ module.exports.login = (req, res) => {
 module.exports.loginPost = async (req, res) => {
   let email = req.body.email;
   let info = await User.findOne({email: email});
+  let sessionId = req.signedCookies.sessionId
+  //check email
   if (!info) {
     res.render("./auth/login.pug", {
       error: "Email Not Found!",
@@ -18,13 +19,14 @@ module.exports.loginPost = async (req, res) => {
     });
     return;
   }
+  //check wrong password
   if (info.wrongLoginCount > 4) {
     res.render("./auth/login.pug", {
       error: "Account Blocked!"
     });
     return;
   }
-  
+  //check password
   if (!bcrypt.compareSync(req.body.password, info.password)) {
     info.wrongLoginCount++;
     res.render("./auth/login.pug", {
@@ -33,20 +35,13 @@ module.exports.loginPost = async (req, res) => {
     });
     return;
   }
+  //set cookie UserID
   res.cookie("userID", info._id, { signed: true });
-  
-//   let dbCart = db
-//     .get("session")
-//     .find({ id: req.signedCookies.sessionId })
-//     .get("cart")
-//     .value();
-//   db
-//     .get("session")
-//     .find({ id: req.signedCookies.sessionId }).unset("cart").write();
-//   if (dbCart) {
-//     db.get("users")
-//       .find({ id: info.id })
-//       .set("cart", dbCart)
-//       .write();
+  //move cart to account
+  let carts = await Session.findById(sessionId);
+  if(carts.cart){
+    await User.findByIdAndUpdate(info._id, {cart: carts.cart});
+    await Session.findByIdAndDelete(sessionId);
+  }
   res.redirect('/');
 };

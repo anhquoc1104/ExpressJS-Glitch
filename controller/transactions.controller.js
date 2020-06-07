@@ -4,7 +4,7 @@ let Book = require("../models/books.models.js");
 
 module.exports.home = async (req, res) => {
   try {
-    let user = User.findById(req.signedCookies.userID);
+    let user = await User.findById(req.signedCookies.userID);
     let page = req.params.page || 1;
     let page5Num = [
       parseInt(page) - 2,
@@ -16,9 +16,11 @@ module.exports.home = async (req, res) => {
     let perPage = 5;
     let dropIx = (page - 1) * perPage;
     let limitIx = page * perPage;
-
+    // console.log(user);
     if (user.isAdmin) {
       let objTran = await Transaction.find();
+      // console.log(objTran);
+      // console.log("objTran");
       let totalPage = Math.ceil(objTran.length / perPage);
       res.render("./transactions/transactions.pug", {
         item: objTran.slice(dropIx, limitIx),
@@ -32,6 +34,8 @@ module.exports.home = async (req, res) => {
       return;
     }
     let objTran = await Transaction.find({ userID: user.id });
+    // console.log(objTran);
+    // console.log("objTran2");
     let totalPage = Math.ceil(objTran.length / perPage);
     res.render("./transactions/transactions.pug", {
       //trans: db.get('transactions').value(),
@@ -44,25 +48,22 @@ module.exports.home = async (req, res) => {
       page5Num: page5Num
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.render("./statusCode/status500.pug");
   }
 };
 
-module.exports.create = (req, res) => {
-  res.render("./users/users.pug");
+module.exports.create = async (req, res) => {
+  console.log("transaction Create");
+  let books = await Book.find();
+  let users = await User.find();
+  let transactions = await Transaction.find();
+  res.render("./transactions/create.pug", {
+    book: books,
+    user: users,
+    item: transactions
+  });
 };
-// module.exports.create = async (req, res) => {
-//   console.log("transaction Create");
-//   let books = await Book.find();
-//   let users = await User.find();
-//   let transactions = await Transaction.find();
-//   res.render("./transactions/create.pug", {
-//     book: books,
-//     user: users,
-//     item: transactions
-//   });
-// };
 
 module.exports.createPost = async (req, res) => {
   let userId = req.body.userId;
@@ -73,11 +74,12 @@ module.exports.createPost = async (req, res) => {
     isComplete: false
   });
   await newTrans.save();
-  res.redirect("/transactions" + 1);
+  res.redirect("/transactions/page/" + 1);
 };
 
 module.exports.isComplete = (req, res) => {
+  let page = req.params.page || 1;
   let id = req.params.id;
   let isTrue = Transaction.findOneAndUpdate({ id: id }, { isComplete: true });
-  res.redirect("/transactions" + 1);
+  res.redirect("/transactions/page/" + page);
 };

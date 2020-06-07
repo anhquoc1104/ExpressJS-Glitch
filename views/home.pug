@@ -8,9 +8,9 @@ block content
       button(type="submit") Search
 
     h4 Book list :
+    a(href="/books/create") NEW BOOK
     if userAdmin
       if userAdmin.isAdmin == "true"
-        a(href="/books/create") NEW BOOK
         ul
           each val in book
             li
@@ -49,4 +49,6 @@ block content
               span &nbsp
               a(href="/books/addToCart/" + val._id) Add to Cart
     a(href="/logout") Logout
+    br
+    a(href="/clearSession") clear
 block footer

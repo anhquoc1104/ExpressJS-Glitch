@@ -16,7 +16,6 @@ let requireAuth = require("./middlewares/auth.middleware");
 let sessionMiddleware = require("./middlewares/session.middleware");
 let cartRoute = require("./routes/carts.route");
 let shopRoute = require("./routes/shops.route");
-let cartMiddleware = require("./middlewares/cartToAccount.middleware");
 
 app.use(express.static("public"));
 
@@ -57,7 +56,9 @@ app.get("/logout", (req, res) => {
   res.clearCookie("userID");
   res.redirect("/login");
 });
-  
+// app.get("/clearSession", async (req, res) => {
+//   let session = await
+// })
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {

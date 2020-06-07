@@ -1,4 +1,3 @@
-//let db = require("../db");
 let User = require('../models/users.models.js');
 
 module.exports.authMiddlewares = async (req, res, next) => {
