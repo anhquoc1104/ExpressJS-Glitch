@@ -1,19 +1,20 @@
-const shortid = require("shortid");
+let Transaction = require("../models/transactions.models.js");
+let User = require("../models/users.models.js");
+let Book = require("../models/books.models.js");
 
-let db = require('../db');
-
-module.exports.home = (req, res) => {
-  let cart = db.get('users')
-    .find({id: req.signedCookies.userID})
-    .get('cart')
-    .value();
+module.exports.home = async (req, res) => {
+  let carts = await User.findById(req.signedCookies.userID);
   let cartName = [];
-  if(cart){
-    for (let elm in cart){
-      let info = db.get('books')
-                    .find({id: elm})
-                    .value();
-      cartName.push({id: info.id, title: info.title, quantity: cart[elm], avatarUrl: info.avatarUrl});
+  if (carts.cart) {
+    for (let elm in carts.cart) {
+      console.log(elm);
+      let info = await Book.findById(elm);
+      cartName.push({
+        id: info._id,
+        title: info.title,
+        quantity: carts.cart[elm],
+        avatarUrl: info.avatarUrl
+      });
     }
   }
   res.render("./carts/cart.pug", {
@@ -21,20 +22,16 @@ module.exports.home = (req, res) => {
   });
 };
 
-module.exports.create = (req, res) => {
+module.exports.create = async (req, res) => {
   let bookId = req.params.id;
   let userId = req.signedCookies.userID;
-  
-  db.get('transactions')
-    .push({
-      id: shortid.generate(), 
-      userID: userId, 
-      bookID: bookId, 
-      isComplete: false
-    })
-    .write();
-  db.get('users').find({id: userId})
-    .get('cart')
-    .unset(bookId).write();
-  res.redirect('/carts');
-}
+ 
+  let transaction = new Transaction({
+    userID: userId,
+    bookID: bookId,
+    isComplete: false
+  });
+  await transaction.save();
+  await User.findByIdAndUpdate(userId, {cart: undefined});
+  res.redirect("/carts");
+};

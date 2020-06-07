@@ -17,7 +17,7 @@ block content
             td Ok
           else
             td
-              a(href="/transactions/isComplete/" + val.id) Unpaid
+              a(href="/transactions/isComplete/" + page + "/" + val.id) Unpaid
 block footer
   nav(aria-label='Page navigation example')
     ul.pagination.justify-content-center
@@ -27,37 +27,37 @@ block footer
             span &laquo;
       else
         li.page-item
-          a.page-link(href='/transactions/' + pagePre)
+          a.page-link(href='/transactions/page/' + pagePre)
             span &laquo;
       if page == 1
         each val in [1, 2, 3]
           if val == 1
             li.page-item.active
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
           else
             li.page-item
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
       else if page == endPage
         each val in [page5Num[0],page5Num[1],page5Num[2]]
           if val == endPage
             li.page-item.active
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
           else
             li.page-item
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
       else
         each val in [page5Num[1], page5Num[2], page5Num[3]]
           if val == page
             li.page-item.active
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
           else
             li.page-item
-              a.page-link(href='/transactions/' + val)= val
+              a.page-link(href='/transactions/page/' + val)= val
       if page == endPage
         li.page-item.disabled
           a.page-link(href='#')
             span &raquo;
       else
         li.page-item
-          a.page-link(href='/transactions/' + pageNext)
+          a.page-link(href='/transactions/page/' + pageNext)
             span &raquo;

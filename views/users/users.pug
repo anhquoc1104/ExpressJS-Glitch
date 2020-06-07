@@ -22,16 +22,16 @@ block content
         if isUser.isAdmin == "true"
           a(href="/users/add") add new user
           br
+          h4 User List
+          .container
+            .row
+              each users in user
+                ul
+                  li
+                    span= users.name
+                    br
+                    span= users.email
+                    span &nbsp
+                    a(href="/users/remove/" + users._id) Remove
         a(href="/logout") Logout
-      h4 User List
-      .container
-        .row
-          each users in user
-            ul
-              li
-                span= users.name
-                br
-                span= users.email
-                span &nbsp
-                a(href="/users/remove/" + users._id) Remove
 block footer
