@@ -17,6 +17,8 @@ let sessionMiddleware = require("./middlewares/session.middleware");
 let cartRoute = require("./routes/carts.route");
 let shopRoute = require("./routes/shops.route");
 
+let port = process.env.PORT || 8080;
+
 app.use(express.static("public"));
 
 //body-parser
@@ -61,6 +63,6 @@ app.get("/logout", (req, res) => {
 // })
 
 // listen for requests :)
-const listener = app.listen(process.env.PORT, () => {
+const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
