@@ -1,6 +1,7 @@
-let db = require('../db');
+// let db = require('../db');
+let User = require("../models/users.models.js");
 
-module.exports.addName = (req, res, next) => {
+module.exports.addName = async (req, res, next) => {
   let name = req.body.name;
   let err =[];
   if(name.length > 30){
@@ -10,8 +11,9 @@ module.exports.addName = (req, res, next) => {
      err.push('Name not null!!!')
      };
   if(err.length){
+    let users = await User.find();
     res.render("./users/users.pug", {
-      user: db.get("users").value(),
+      user: users,
       err: err
     });
     return;
