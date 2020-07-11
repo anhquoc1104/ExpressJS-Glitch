@@ -10,8 +10,8 @@ html
       form(method="POST")
         .form-group
           label(for="email") Email adress
-          input.form-control.pl-1#email(type="email" name="email", placeholder="nhatlinh123@gmail.com", value= value? value.email : "")
+          input.form-control.pl-1#email(type="email" name="email", placeholder="nhatlinh123@gmail.com", value= value? value.email : "nhatlinh123@gmail.com")
         .form-group
           label(for="password") Password
-          input.form-control.pl-1#password(type="password" name="password" placeholder="123123", value= value? value.password : "") 
+          input.form-control.pl-1#password(type="password" name="password", value= value? value.password : "123123") 
         button(class="btn btn-success", type="submit") Login

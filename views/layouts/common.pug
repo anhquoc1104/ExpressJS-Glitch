@@ -6,12 +6,13 @@ html
     link(rel="stylesheet", href='/css/style.css')
     title Management Ebook
   body
-    nav.nav
-      a.nav-link.active(href='/') BOOKS
-      a.nav-link(href='/users') USERS
-      a.nav-link(href='/transactions/page/' + 1) TRANSACTIONS
-      a.nav-link(href='/carts') CART
-      a.nav-link(href='/shops') SHOP
+    .container
+      nav.nav.ml-5
+        a.nav-link.active(href='/') BOOKS
+        a.nav-link(href='/users') USERS
+        a.nav-link(href='/transactions/page/' + 1) TRANSACTIONS
+        a.nav-link(href='/carts') CART
+        a.nav-link(href='/shops') SHOP
     block content
     
     block footer
