@@ -1,52 +1,45 @@
 extends ./layouts/common.pug
 
 block content
-  .container.mr-5.mt-3
-    form(action="/books/search", method="GET")
-      input(type="text", name="name")
-      span &nbsp
-      button(type="submit") Search
-
+  .container.mt-3
+    form.form-inline.my-2.my-lg-0(action="/books/search", method="GET")
+      input.form-control.mr-sm-2(type='search', name="name", placeholder='Search', aria-label='Search')
+      button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
     h4 Book list :
-    a(href="/books/create") NEW BOOK
-    if userAdmin
-      if userAdmin.isAdmin == "true"
-        ul
+    .row
+      if userAdmin
+        a(href="/books/create") NEW BOOK
+        if userAdmin.isAdmin == "true"
           each val in book
-            li
-              img(src=val.avatarUrl)
-              span &nbsp
-              span= val.title
+            .card(style='width: 18rem;')
+              img.card-img-top(src=val.avatarUrl, alt=val.title)
+              .card-body
+                h5.card-title= val.title
+                p.card-text= val.description
+                a.btn.btn-primary(href="/books/view/" + val._id) view
                 span &nbsp
+                a.btn.btn-success(href="/books/edit/" + val._id) edit
                 span &nbsp
-                a(href="/books/view/" + val._id) view
+                a.btn.btn-danger(href="/books/remove/" + val._id) remove
+        else
+          each val in book
+            .card(style='width: 18rem;')
+              img.card-img-top(src=val.avatarUrl, alt=val.title)
+              .card-body
+                h5.card-title= val.title
+                p.card-text= val.description
+                a.btn.btn-primary(href="/books/view/" + val._id) view
                 span &nbsp
-                a(href="/books/edit/" + val._id) edit
-                span &nbsp
-                a(href="/books/remove/" + val._id) remove
+                a.btn.btn-success(href="/books/addToCart/" + val._id) Add to Cart
       else
-        ul
-          each val in book
-            li
-              img(src=val.avatarUrl)
-              span &nbsp
-              span= val.title
-                span &nbsp
-                span &nbsp
-                a(href="/books/view/" + val._id) view
-                span &nbsp
-                a(href="/books/addToCart/" + val._id) Add to Cart
-    else
-      ul
         each val in book
-          li
-            img(src=val.avatarUrl)
-            span &nbsp
-            span= val.title
+          .col-12.col-sm-6.col-md-4.col-lg-3.col-xl-3.card(style='width: 18rem;')
+            img.card-img-top(src=val.avatarUrl, alt=val.title)
+            .card-body
+              h5.card-title= val.title
+              p.card-text= val.description
+              a.btn.btn-primary(href="/books/view/" + val._id) view
               span &nbsp
-              span &nbsp
-              a(href="/books/view/" + val._id) view
-              span &nbsp
-              a(href="/books/addToCart/" + val._id) Add to Cart
+              a.btn.btn-success(href="/books/addToCart/" + val._id) Add to Cart
     a(href="/logout") Logout
 block footer
