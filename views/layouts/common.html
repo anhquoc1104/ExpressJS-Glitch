@@ -1,0 +1,88 @@
+<html>
+
+<head>
+  <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" /> -->
+  <link rel="shortcut icon"
+    href="https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802"
+    type="image/x-icon" />
+  <link rel="icon" href="https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802"
+    type="image/x-icon" />
+  <link rel="stylesheet" href="../../public/sources/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../public/sources/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="../../public/assets/css/account.css" />
+  <title>Management Ebook</title>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row form__row">
+      <div class="col-lg-4 form__col">
+        <div class="form__title">
+          <div class="form__title--text d-flex text-primary justify-content-around">
+            <span onclick="onLogin()">Login</span>
+            <span onclick="onRegister()">Register</span>
+          </div>
+          <p id="indicator"></p>
+        </div>
+        <div class="form__container">
+          <div id="form__login">
+            <form method="POST">
+              <div class="form-group">
+                <input class="form-control pl-1" id="email" type="email" name="email"
+                  placeholder="nhatlinh123@gmail.com" value="nhatlinh123@gmail.com" />
+              </div>
+              <div class="form-group">
+                <input class="form-control pl-1" id="password" type="password" name="password" value="123123" />
+              </div>
+              <button class="btn btn-success w-100" type="submit">Login</button>
+              <a class="d-block text-primary mt-3" href="#">Forgot Password</a>
+            </form>
+          </div>
+          <div id="form__register">
+            <form method="POST">
+              <div class="form-group">
+                <input class="form-control pl-1" id="email" type="email" name="email"
+                  placeholder="email" value="" />
+              </div>
+              <div class="form-group">
+                <input class="form-control pl-1" id="password" type="password" name="password" placeholder="password" value="" />
+              </div>
+              <div class="form-group">
+                <input class="form-control pl-1" id="password" type="password" name="password" placeholder="retype password" value="" />
+              </div>
+              <button class="btn btn-success w-100" type="submit">Register</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../../public/sources/js/jquery-3.4.1.min.js"></script>
+  <script src="../../public/sources/js/popper.min.js"></script>
+  <script src="../../public/sources/js/bootstrap.min.js"></script>
+  <script>
+    let indicator = document.querySelector('#indicator');
+    let formLogin = document.querySelector('#form__login');
+    let formRegister = document.querySelector('#form__register');
+
+    const onLogin = () => {
+      indicator.style.left = '0%'
+      formLogin.style.display = 'block';
+      formRegister.style.display = 'none';
+      formLogin.style.transform = 'translateX(0%)';
+      formRegister.style.transform = 'translateX(100%)';
+    }
+    const onRegister = () => {
+      indicator.style.left = '50%'
+      formLogin.style.display = 'none';
+      formRegister.style.display = 'block';
+      formLogin.style.transform = 'translateX(-100%)';
+      formRegister.style.transform = 'translateX(0%)';
+    }
+  </script>
+</body>
+
+</html>

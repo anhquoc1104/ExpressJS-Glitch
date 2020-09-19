@@ -1,17 +1,52 @@
-html
-  head
-    link(href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk", crossorigin="anonymous")
-    title Login
-  body
-    .container
-      h3.text-center.m-5 LOGIN IN HERE
-      if error
-        .alert.alert-danger= error
-      form(method="POST")
-        .form-group
-          label(for="email") Email adress
-          input.form-control.pl-1#email(type="email" name="email", placeholder="nhatlinh123@gmail.com", value= value? value.email : "nhatlinh123@gmail.com")
-        .form-group
-          label(for="password") Password
-          input.form-control.pl-1#password(type="password" name="password", value= value? value.password : "123123") 
-        button(class="btn btn-success", type="submit") Login
+extends ../layouts/common.pug
+
+block style
+  link(rel='stylesheet', href='/assets/css/account.css')
+block title
+  title Account || BookStore
+
+block content
+  .container-fluid
+    .row.form__row
+      .col-lg-4.form__col
+        .form__title
+          .form__title--text.d-flex.text-primary.justify-content-around
+            span(onclick='onLogin()') Login
+            span(onclick='onRegister()') Register
+          p#indicator
+        .form__container
+          #form__login
+            form(method='POST')
+              .form-group
+                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value='nhatlinh123@gmail.com')
+              .form-group
+                input#password.form-control.pl-1(type='password', name='password', value='123123')
+              button.btn.btn-success.w-100(type='submit') Login
+              a.d-block.text-primary.mt-3(href='#') Forgot Password
+          #form__register
+            form(method='POST')
+              .form-group
+                input#email.form-control.pl-1(type='email', name='email', placeholder='email', value='')
+              .form-group
+                input#password.form-control.pl-1(type='password', name='password', placeholder='password', value='')
+              .form-group
+                input#password.form-control.pl-1(type='password', name='password', placeholder='retype password', value='')
+              button.btn.btn-success.w-100(type='submit') Register
+  script.
+    let indicator = document.querySelector('#indicator');
+    let formLogin = document.querySelector('#form__login');
+    let formRegister = document.querySelector('#form__register');
+    const onLogin = () => {
+    indicator.style.left = '0%'
+    formLogin.style.display = 'block';
+    formRegister.style.display = 'none';
+    formLogin.style.transform = 'translateX(0%)';
+    formRegister.style.transform = 'translateX(100%)';
+    }
+    const onRegister = () => {
+    indicator.style.left = '50%'
+    formLogin.style.display = 'none';
+    formRegister.style.display = 'block';
+    formLogin.style.transform = 'translateX(-100%)';
+    formRegister.style.transform = 'translateX(0%)';
+    }

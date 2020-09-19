@@ -16,6 +16,6 @@ function change_alias(alias) {
   str = str.replace(/ + /g, " ");
   str = str.trim();
   return str;
-}
+};
 
 module.exports = change_alias;

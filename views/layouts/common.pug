@@ -1,32 +1,50 @@
-html
-  head
-    link(href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk", crossorigin="anonymous")
-    link(rel="shortcut icon" href="https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802" type="image/x-icon")
-    link(rel="icon" href="https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802" type="image/x-icon")
-    link(rel="stylesheet", href='/css/style.css')
+head
+  link(rel='shortcut icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
+  link(rel='icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
+  link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
+  link(rel='stylesheet', href='/assets/css/common.css')
+  block style
+  block title
     title Management Ebook
-  body
-    .container
-      nav.nav.ml-5
-        a.nav-link.active(href='/') BOOKS
-        a.nav-link(href='/users') USERS
-        a.nav-link(href='/transactions/page/' + 1) TRANSACTIONS
-        a.nav-link(href='/carts') CART
-        a.nav-link(href='/shops') SHOP
+body
+  header
+    nav.navbar.navbar-expand-lg.navbar-light.bg-primary
+      a.navbar-brand.nav__logo(href='/')
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarNavDropdown.collapse.navbar-collapse.justify-content-end
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href='/') HOME
+          li.nav-item
+            a.nav-link(href='/users') USERS
+          li.nav-item
+            a.nav-link(href='/transactions/page/1') TRANSACTIONS
+          li.nav-item
+            a.nav-link(href='/carts') CART
+          li.nav-item
+            a.nav-link(href='/shops') SHOP
+          li.nav-item
+            a.nav-link(href='/login') ACOUNT
+  main
     block content
-    
+  footer
     block footer
-      nav
-        ul.pagination.justify-content-center
-          li.page-item.disabled
-            a.page-link(href='#')
-              span &laquo;
-          li.page-item
-            a.page-link(href='#') 1
-          li.page-item
-            a.page-link(href='#') 2
-          li.page-item
-            a.page-link(href='#') 3
-          li.page-item
-            a.page-link(href='#')
-              span &raquo;
+    nav
+      ul.pagination.justify-content-center
+        li.page-item.disabled
+          a.page-link(href='#')
+            span &laquo;
+        li.page-item
+          a.page-link(href='#') 1
+        li.page-item
+          a.page-link(href='#') 2
+        li.page-item
+          a.page-link(href='#') 3
+        li.page-item
+          a.page-link(href='#')
+            span &raquo;
+script(src='/sources/js/jquery-3.4.1.min.js')
+script(src='/sources/js/popper.min.js')
+script(src='/sources/js/bootstrap.min.js')
