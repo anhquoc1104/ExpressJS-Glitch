@@ -56,7 +56,7 @@ app.get("/", async (req, res) => {
   
 app.get("/logout", (req, res) => {
   res.clearCookie("userID");
-  res.redirect("/login");
+  res.redirect("/");
 });
 // app.get("/clearSession", async (req, res) => {
 //   let session = await

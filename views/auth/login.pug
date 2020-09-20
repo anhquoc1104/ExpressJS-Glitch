@@ -16,22 +16,25 @@ block content
           p#indicator
         .form__container
           #form__login
+            if error
+              p.m-0.pt-4.text-danger= error
             form(method='POST')
               .form-group
-                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value='nhatlinh123@gmail.com')
+                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value= value? value : 'nhatlinh123@gmail.com')
               .form-group
-                input#password.form-control.pl-1(type='password', name='password', value='123123')
+                input#password.form-control.pl-1(type='password', name='password', value= value? value :'123123')
               button.btn.btn-success.w-100(type='submit') Login
               a.d-block.text-primary.mt-3(href='#') Forgot Password
           #form__register
             form(method='POST')
               .form-group
-                input#email.form-control.pl-1(type='email', name='email', placeholder='email', value='')
+                input#emailRegister.form-control.pl-1(type='email', name='emailRegister', placeholder='email', value='')
               .form-group
-                input#password.form-control.pl-1(type='password', name='password', placeholder='password', value='')
+                input.form-control.pl-1(type='password', placeholder='password', value='')
               .form-group
-                input#password.form-control.pl-1(type='password', name='password', placeholder='retype password', value='')
+                input#passwordRegister.form-control.pl-1(type='password', name='passwordRegister', placeholder='retype password', value='')
               button.btn.btn-success.w-100(type='submit') Register
+  block pagination
   script.
     let indicator = document.querySelector('#indicator');
     let formLogin = document.querySelector('#form__login');

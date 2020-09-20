@@ -7,12 +7,14 @@ module.exports.login = (req, res) => {
   res.render("./auth/login.pug");
 };
 
+//login
 module.exports.loginPost = async (req, res) => {
   let email = req.body.email;
   let info = await User.findOne({email: email});
   let sessionId = req.signedCookies.sessionId
   //check email
   if (!info) {
+    console.log('!Email');
     res.render("./auth/login.pug", {
       error: "Email Not Found!",
       value: req.body
@@ -28,6 +30,7 @@ module.exports.loginPost = async (req, res) => {
   }
   //check password
   if (!bcrypt.compareSync(req.body.password, info.password)) {
+    console.log('!Pass');
     info.wrongLoginCount++;
     res.render("./auth/login.pug", {
       error: "Password is wrong!",
@@ -38,10 +41,12 @@ module.exports.loginPost = async (req, res) => {
   //set cookie UserID
   res.cookie("userID", info._id, { signed: true });
   //move cart to account
-  let carts = await Session.findById(sessionId);
-  if(carts.cart){
-    await User.findByIdAndUpdate(info._id, {cart: carts.cart});
-    await Session.findByIdAndDelete(sessionId);
-  }
+  // if(Session){
+  //   let carts = await Session.findById(sessionId);
+  //   if(carts.cart){
+  //     await User.findByIdAndUpdate(info._id, {cart: carts.cart});
+  //     await Session.findByIdAndDelete(sessionId);
+  //   }
+  // }
   res.redirect('/');
 };

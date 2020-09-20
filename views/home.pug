@@ -2,17 +2,18 @@ extends ./layouts/common.pug
 
 block content
   .container.mt-3
-    form.form-inline.my-2.my-lg-0(action="/books/search", method="GET")
-      input.form-control.mr-sm-2(type='search', name="name", placeholder='Search', aria-label='Search')
-      button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
-    h4 Book list :
-    .row
-      if userAdmin
-        a(href="/books/create") NEW BOOK
+    if userAdmin
+      .row.mb-3.justify-content-between
+        button.btn.btn-info.font-weight-bold(href="/books/create") NEW BOOK
+        a.btn.btn-danger.font-weight-bold(href="/logout") Logout
+      .row
         if userAdmin.isAdmin == "true"
           each val in book
-            .card(style='width: 18rem;')
-              img.card-img-top(src=val.avatarUrl, alt=val.title)
+            .card.col-12.col-sm-6.col-md-4.col-lg-3.col-xl-3(style='width: 18rem;')
+              if val.avatarUrl
+                img.card-img-top(src=val.avatarUrl, alt=val.title)
+              else
+                img.card-img-top(src='/sources/img/book-default.jpg', alt=val.title)
               .card-body
                 h5.card-title= val.title
                 p.card-text= val.description
@@ -23,23 +24,29 @@ block content
                 a.btn.btn-danger(href="/books/remove/" + val._id) remove
         else
           each val in book
-            .card(style='width: 18rem;')
-              img.card-img-top(src=val.avatarUrl, alt=val.title)
+            .card.col-12.col-sm-6.col-md-4.col-lg-3.col-xl-3(style='width: 18rem;')
+              if val.avatarUrl
+                img.card-img-top(src=val.avatarUrl, alt=val.title)
+              else
+                img.card-img-top(src='/sources/img/book-default.jpg', alt=val.title)
               .card-body
                 h5.card-title= val.title
                 p.card-text= val.description
                 a.btn.btn-primary(href="/books/view/" + val._id) view
                 span &nbsp
                 a.btn.btn-success(href="/books/addToCart/" + val._id) Add to Cart
-      else
+    else
+      .row
         each val in book
-          .col-12.col-sm-6.col-md-4.col-lg-3.col-xl-3.card(style='width: 18rem;')
-            img.card-img-top(src=val.avatarUrl, alt=val.title)
+          .card.col-12.col-sm-6.col-md-4.col-lg-3.col-xl-3(style='width: 18rem;')
+            if val.avatarUrl
+              img.card-img-top(src=val.avatarUrl, alt=val.title)
+            else
+              img.card-img-top(src='/sources/img/book-default.ipg', alt=val.title)
             .card-body
               h5.card-title= val.title
               p.card-text= val.description
               a.btn.btn-primary(href="/books/view/" + val._id) view
               span &nbsp
               a.btn.btn-success(href="/books/addToCart/" + val._id) Add to Cart
-    a(href="/logout") Logout
 block footer

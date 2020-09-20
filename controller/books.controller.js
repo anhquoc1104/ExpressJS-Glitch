@@ -52,7 +52,7 @@ module.exports.edit = async (req, res) => {
 module.exports.editPost = async (req, res) => {
   let title = req.body.title;
   let id = req.params.id;
-  cloudinary.uploadCloudinary(req.file.path, 50, 50, 20).then(async result => {
+  cloudinary.uploadCloudinary(req.file.path, 200, 300, 5).then(async result => {
     await Book.findOneAndUpdate(
       { _id: id },
       { title: title, avatarUrl: result.url }

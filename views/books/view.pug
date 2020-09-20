@@ -1,7 +1,20 @@
-h5 Detail Book
-h4= book.title
-br
-span= book.description
-br
-br
-a(href="/") Home
+extends ../layouts/common.pug
+
+block title
+  title Detail || BookStore
+
+block content
+  .container
+    .row
+      .col-12.col-sm-12.col-md-8.col-lg-8.col-xl-8
+        if book.avatarUrl
+          img(src=book.avatarUrl, alt=book.title, width="150px", height="200px")
+        else
+          img(src='/sources/img/book-default.ipg', alt=book.title, width="150px", height="200px")
+      .col-12.col-sm-12.col-md-4.col-lg-4.col-xl-4
+        h4= book.title
+        a.btn.btn-success(href="/books/addToCart/" + book._id) Add to Cart
+    .row
+      .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
+        span= book.description
+  block pagination
