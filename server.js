@@ -1,5 +1,7 @@
 // server.js
 const express = require("express");
+const reload = require('reload');
+const pug = require('pug');
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 //const sendMail = require("./config.sendGrid.js");
@@ -45,12 +47,18 @@ app.set("views", "./views");
 
 //home
 app.get("/", async (req, res) => {
-  let users = await User.findById(req.signedCookies.userID);
+  let user = await User.findById(req.signedCookies.userID);
   let books = await Book.find();
-  //console.log(users);
+  // if(user){
+  //   // console.log(user);
+  //   let compiledFunction = pug.compileFile('./views/layouts/common.pug');
+  //   compiledFunction({
+  //     user: user
+  //   })
+  // }
   res.render("home.pug", {
     book: books,
-    userAdmin: users
+    userAdmin: user
   });
 });
   
@@ -66,3 +74,5 @@ app.get("/logout", (req, res) => {
 const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+reload(app);

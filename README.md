@@ -25,3 +25,10 @@ On the back-end,
 
 ## This is demo for newbie backend nodejs project by me, so maybe have Bug, i can't see. Sorry if any trouble
 ## Best regards!
+
+
+
+### NOTE:
+- Forgot Password
+- Register Client
+- routeBook(ViewBook): add href to Name Shop

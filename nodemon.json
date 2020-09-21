@@ -1,3 +1,6 @@
 {
+  "watch": ["server.js", "./views"],
+  "ext": "js, css, pug",
+  "exc": "./server.js",
   "ignore": ["db.json"]
 }

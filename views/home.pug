@@ -1,10 +1,18 @@
 extends ./layouts/common.pug
 
+block style
+    link(rel='stylesheet', href='/assets/css/home.css')
+
 block content
   .container.mt-3
+    .row
+      .col.d-flex.justify-content-end
+        form.form-inline.my-2.my-lg-0(action="/books/search", method="GET")
+          input.form-control.mr-sm-2(type='search', name="name", placeholder='Search', aria-label='Search')
+          button.btn.btn-success.my-2.my-sm-0(type='submit') Search
     if userAdmin
       .row.mb-3.justify-content-between
-        button.btn.btn-info.font-weight-bold(href="/books/create") NEW BOOK
+        a.btn.btn-info.font-weight-bold(href="/books/create") NEW BOOK
         a.btn.btn-danger.font-weight-bold(href="/logout") Logout
       .row
         if userAdmin.isAdmin == "true"
@@ -42,7 +50,7 @@ block content
             if val.avatarUrl
               img.card-img-top(src=val.avatarUrl, alt=val.title)
             else
-              img.card-img-top(src='/sources/img/book-default.ipg', alt=val.title)
+              img.card-img-top(src='/sources/img/book-default.jpg', alt=val.title)
             .card-body
               h5.card-title= val.title
               p.card-text= val.description

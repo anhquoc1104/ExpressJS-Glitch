@@ -5,16 +5,22 @@ block title
 
 block content
   .container
-    .row
-      .col-12.col-sm-12.col-md-8.col-lg-8.col-xl-8
+    .row.mt-5
+      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-4
         if book.avatarUrl
           img(src=book.avatarUrl, alt=book.title, width="150px", height="200px")
         else
           img(src='/sources/img/book-default.ipg', alt=book.title, width="150px", height="200px")
-      .col-12.col-sm-12.col-md-4.col-lg-4.col-xl-4
+      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-8.d-flex.flex-column.align-items-start.justify-content-end
         h4= book.title
-        a.btn.btn-success(href="/books/addToCart/" + book._id) Add to Cart
-    .row
+        .my-3
+          span Shop: 
+          a(href="") abc
+        a.btn.btn-success.mb-3(href="/books/addToCart/" + book._id) Add to Cart
+    .row.mt-4
       .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
-        span= book.description
+        h5
+          u.text-dark.font-weight-bold.font Decription
+        .border.border-primary.rounded.p-3
+          span= book.description
   block pagination

@@ -9,11 +9,11 @@ head
     title Management Ebook
 body
   header
-    nav.navbar.navbar-expand-lg.navbar-light.bg-primary
+    nav.navbar.navbar-expand-lg.navbar-dark
       a.navbar-brand.nav__logo(href='/')
       button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
         span.navbar-toggler-icon
-      #navbarNavDropdown.collapse.navbar-collapse.justify-content-around
+      #navbarNavDropdown.collapse.navbar-collapse.ml-5
         ul.navbar-nav
           li.nav-item
             a.nav-link(href='/') HOME
@@ -27,9 +27,6 @@ body
             a.nav-link(href='/shops') SHOP
           li.nav-item
             a.nav-link(href='/login') ACOUNT
-        form.form-inline.my-2.my-lg-0(action="/books/search", method="GET")
-          input.form-control.mr-sm-2(type='search', name="name", placeholder='Search', aria-label='Search')
-          button.btn.btn-success.my-2.my-sm-0(type='submit') Search
   main
     block content
     block pagination
@@ -48,7 +45,13 @@ body
             a.page-link(href='#')
               span &raquo;
   footer
+    .footer__container
+      a.navbar-brand.nav__logo(href='/')
+      p
+        |BookStore - Nodejs - Expressjs - MongoDB
     block footer
-script(src='/sources/js/jquery-3.4.1.min.js')
-script(src='/sources/js/popper.min.js')
-script(src='/sources/js/bootstrap.min.js')
+  script(src='/sources/js/jquery-3.4.1.min.js')
+  script(src='/sources/js/popper.min.js')
+  script(src='/sources/js/bootstrap.min.js')
+  script(src="/reload/reload.js")
+  block script
