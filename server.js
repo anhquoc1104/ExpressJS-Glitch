@@ -1,6 +1,6 @@
 // server.js
 const express = require("express");
-const reload = require('reload');
+// const reload = require('reload');
 const pug = require('pug');
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
