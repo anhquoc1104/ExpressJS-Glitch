@@ -49,13 +49,6 @@ app.set("views", "./views");
 app.get("/", async (req, res) => {
   let user = await User.findById(req.signedCookies.userID);
   let books = await Book.find();
-  // if(user){
-  //   // console.log(user);
-  //   let compiledFunction = pug.compileFile('./views/layouts/common.pug');
-  //   compiledFunction({
-  //     user: user
-  //   })
-  // }
   res.render("home.pug", {
     book: books,
     userAdmin: user
