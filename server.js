@@ -17,7 +17,7 @@ let loginRoute = require("./routes/auth.route");
 let requireAuth = require("./middlewares/auth.middleware");
 let sessionMiddleware = require("./middlewares/session.middleware");
 let cartRoute = require("./routes/carts.route");
-// let shopRoute = require("./routes/shops.route");
+let shopRoute = require("./routes/shops.route");
 
 let port = process.env.PORT || 8080;
 
@@ -39,7 +39,7 @@ app.use("/users", requireAuth.authMiddlewares, userRoute);
 app.use("/books", bookRoute);
 app.use("/transactions", requireAuth.authMiddlewares, transRoute);
 app.use("/carts", requireAuth.authMiddlewares, cartRoute);
-// app.use("/shops", shopRoute);
+app.use("/shops", shopRoute);
 app.use("/login", loginRoute);
 
 
