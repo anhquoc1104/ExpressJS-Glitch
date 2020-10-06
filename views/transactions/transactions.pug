@@ -1,7 +1,10 @@
 extends ../layouts/common.pug
 
+block variable
+  - var title = 'Cart'
+
 block content
-  .container.mr-5.mt-3
+  .container.mt-3
     h4 Transactions
     a(href="/transactions/create") NEW TRANSACTIONS
     table
@@ -19,45 +22,10 @@ block content
             td
               a(href="/transactions/isComplete/" + page + "/" + val.id) Unpaid
 block pagination
-  nav(aria-label='Page navigation example')
-    ul.pagination.justify-content-center
-      if startPage == 1
-        li.page-item.disabled
-          a.page-link(href='#')
-            span &laquo;
-      else
-        li.page-item
-          a.page-link(href='/transactions/page/' + pagePre)
-            span &laquo;
-      if page == 1
-        each val in [1, 2, 3]
-          if val == 1
-            li.page-item.active
-              a.page-link(href='/transactions/page/' + val)= val
-          else
-            li.page-item
-              a.page-link(href='/transactions/page/' + val)= val
-      else if page == endPage
-        each val in [page5Num[0],page5Num[1],page5Num[2]]
-          if val == endPage
-            li.page-item.active
-              a.page-link(href='/transactions/page/' + val)= val
-          else
-            li.page-item
-              a.page-link(href='/transactions/page/' + val)= val
-      else
-        each val in [page5Num[1], page5Num[2], page5Num[3]]
-          if val == page
-            li.page-item.active
-              a.page-link(href='/transactions/page/' + val)= val
-          else
-            li.page-item
-              a.page-link(href='/transactions/page/' + val)= val
-      if page == endPage
-        li.page-item.disabled
-          a.page-link(href='#')
-            span &raquo;
-      else
-        li.page-item
-          a.page-link(href='/transactions/page/' + pageNext)
-            span &raquo;
+//- block variable
+//- block style
+//- block title
+//- block content
+//- block pagination
+//- block footer
+//- block script

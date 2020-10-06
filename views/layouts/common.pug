@@ -1,3 +1,6 @@
+//- - var isUserLogin = isUserLogins
+block variable
+
 head
   link(rel='shortcut icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
   link(rel='icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
@@ -6,50 +9,89 @@ head
   link(rel='stylesheet', href='/assets/css/common.css')
   block style
   block title
-    title Management Ebook
+    title= title
 body
   header
-    nav.navbar.navbar-expand-lg.navbar-dark
-      a.navbar-brand.nav__logo(href='/')
-      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
-        span.navbar-toggler-icon
-      #navbarNavDropdown.collapse.navbar-collapse.ml-5
-        ul.navbar-nav
-          li.nav-item
-            a.nav-link(href='/') HOME
-          li.nav-item
-            a.nav-link(href='/users') USERS
-          li.nav-item
-            a.nav-link(href='/transactions/page/1') TRANSACTIONS
-          li.nav-item
-            a.nav-link(href='/carts') CART
-          li.nav-item
-            a.nav-link(href='/shops') SHOP
-          li.nav-item
-            a.nav-link(href='/login') ACOUNT
+    .container
+      .row
+        nav.navbar.navbar-expand-lg.navbar-dark.px-0
+          a.navbar-brand.nav__logo(href='/')
+          button.navbar-toggler.ml-3.mr-auto(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+          #navbarNavDropdown.collapse.navbar-collapse.ml-5
+            ul.navbar-nav
+              li.nav-item
+                a.nav-link(href='/') HOME
+              li.nav-item
+                a.nav-link(href='/users') ACCOUNT
+              li.nav-item
+                a.nav-link(href='/transactions/page/1') TRANSACTIONS
+              li.nav-item
+                a.nav-link(href='/carts') CART
+              //- li.nav-item
+              //-   a.nav-link(href='/shops') SHOP
+              if !isUserLogin
+                li.nav-item
+                  a.nav-link(href='/login') LOGIN
+          form.form-inline.my-auto
+            a.btn.btn-danger.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none') Logout
   main
     block content
     block pagination
-      nav
-        ul.pagination.justify-content-center
-          li.page-item.disabled
-            a.page-link(href='#')
-              span &laquo;
-          li.page-item
-            a.page-link(href='#') 1
-          li.page-item
-            a.page-link(href='#') 2
-          li.page-item
-            a.page-link(href='#') 3
-          li.page-item
-            a.page-link(href='#')
-              span &raquo;
-  footer
-    .footer__container
-      a.navbar-brand.nav__logo(href='/')
-      p
-        |BookStore - Nodejs - Expressjs - MongoDB
-    block footer
+      .container
+        .row
+          nav.mt-4(aria-label='Page navigation example')
+            ul.pagination
+              //- pre
+              if page == 1
+                li.page-item.disabled
+                  a.page-link(href='#')
+                    span &laquo;
+              else
+                li.page-item
+                  a.page-link(href=route + page5Num[1])
+                    span &laquo;
+              //- 123
+              if page <= 2 && totalPage <= 2
+                each val in [1, 2]
+                  if val == page
+                    li.page-item.active.disabled
+                      a.page-link(href=route + val)= val
+                  else
+                    li.page-item
+                      a.page-link(href=route + val)= val
+              else if page == totalPage
+                each val in [page5Num[0],page5Num[1],page5Num[2]]
+                  if val == totalPage
+                    li.page-item.active.disabled
+                      a.page-link(href=route + val)= val
+                  else
+                    li.page-item
+                      a.page-link(href=route + val)= val
+              else
+                each val in [page5Num[1], page5Num[2], page5Num[3]]
+                  if val == page
+                    li.page-item.active.disabled
+                      a.page-link(href=route + val)= val
+                  else
+                    li.page-item
+                      a.page-link(href=route + val)= val
+              //- next
+              if page == totalPage
+                li.page-item.disabled
+                  a.page-link(href='#')
+                    span &raquo;
+              else
+                li.page-item
+                  a.page-link(href=route + page5Num[3])
+                    span &raquo;
+  block footer
+    footer.mt-5
+      .footer__container
+        a.navbar-brand.nav__logo(href='/')
+        p
+          |BookStore - Nodejs - Expressjs - MongoDB
+
   script(src='/sources/js/jquery-3.4.1.min.js')
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')

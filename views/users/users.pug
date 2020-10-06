@@ -1,37 +1,78 @@
 extends ../layouts/common.pug
 
+block variable
+  - var title = 'Info'
+block style
+  link(rel="stylesheet", href="/assets/css/users.css")
 block content
-  .container.mr-5.mt-3
-    form(action="", method="POST")
-      input(type="text", name="name")
-      span &nbsp
-      button(type="submit") Search
-      h4 Detail User
       .container
-        .row
-          .col
-            h6= isUser.name
-            h6= isUser.email
-          .col
+        .row.mt-5
+          .col.col-12.col-sm-3.user__avatar
             if isUser.avatarUrl
               img(src=isUser.avatarUrl)
             else
-              img(src="https://res.cloudinary.com/anhquoc1104/image/upload/c_scale,h_50,w_50,r_20/v1589899817/test_CodersX/d8b07ffa86196b473208_h5baxw.jpg")
-        a(href="/users/edit/" + isUser._id) edit
-        br
-        if isUser.isAdmin == "true"
-          a(href="/users/add") add new user
-          br
-          h4 User List
-          .container
-            .row
-              each users in user
-                ul
-                  li
-                    span= users.name
-                    br
-                    span= users.email
-                    span &nbsp
-                    a(href="/users/remove/" + users._id) Remove
-        a(href="/logout") Logout
-block footer
+              img(src="/sources/img/user-avatar-default.png")
+          .col.col-12.col-sm-9.d-flex.flex-column.justify-content-end
+            h5= isUser.name
+            h6= isUser.email
+            a(href="#" data-toggle='modal', data-target='#editProfileModal') Edit Profile
+            a(href="#" data-toggle='modal', data-target='#changePasswordModal') Change Password
+            //- Edit Profile Modal
+            #editProfileModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+              .modal-dialog(role='document')
+                .modal-content
+                  .modal-header
+                    h5#exampleModalLabel.modal-title Edit Profile
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') &times;
+                  form(action="/users/edit/" + isUser._id, method="POST" enctype="multipart/form-data")
+                    .modal-body
+                      .form-group
+                        input.form-control(name="name", type='text', value= isUser.name)
+                      .form-group
+                        input.form-control(name="email", type='email', value= isUser.email)
+                      .form-group
+                        label Select a avatar:
+                        input.form-control-file(name="avatar", type='file')
+                    .modal-footer
+                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-primary(type='submit') Save
+            //- Change Password Modal
+            #changePasswordModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+              .modal-dialog(role='document')
+                .modal-content
+                  .modal-header
+                    h5#exampleModalLabel.modal-title Change Password
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') &times;
+                  form(action="/users/edit/" + isUser._id, method="POST")
+                    .modal-body
+                      .form-group
+                        input.form-control(name="oldPassword", type='password', placeholder='password')
+                      .form-group
+                        input.form-control(name="newPassword", type='password', placeholder='new password')
+                      .form-group
+                        input.form-control(name="retypePassword", type='password', placeholder='retype password')
+                    .modal-footer
+                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-primary(type='submit') Save
+        .row.mt-2
+          .col.col-12.col-sm-3
+          .col.col-12.col-sm-9
+            if error
+              p.text-danger= error
+block pagination
+
+//- block variable
+//- block style
+//- block content
+//- block pagination
+//- block footer
+//- block script
+
+//- .container.mr-5.mt-3
+//-   form(action="", method="POST")
+//-     input(type="text", name="name")
+//-     span &nbsp
+//-     button(type="submit") Search
+//-     h4 Detail User

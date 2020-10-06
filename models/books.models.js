@@ -1,13 +1,16 @@
 const mongoose = require('../mongoose.js');
 
 let bookSchema = mongoose.Schema({
-  title: String,
-  description: String,
-  userID: mongoose.Schema.Types.ObjectId,
-  avatarUrl: {
-    type: String,
-    default: ""
-  }
+    title: String,
+    description: String,
+    userId: mongoose.Schema.Types.ObjectId,
+    createAt: Date,
+    avatarUrl: {
+        type: String,
+        default: ""
+    }
+}, {
+    autoCreate: true
 })
 
 let Book = mongoose.model('Book', bookSchema, 'books');

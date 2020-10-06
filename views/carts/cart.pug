@@ -1,9 +1,14 @@
 extends ../layouts/common.pug
 
+block variable
+  - var title = 'Cart'
+block style
+  link(rel="stylesheet", href="/assets/css/cart.css")
 block content
-  .container.mr-5.mt-3
-    if !cart
-      h4 Empty Cart
+  .container.mt-3
+    if cart !== []
+      .row.justify-content-center
+        img.cart__empty(src="/sources/img/cart-empty.png", alt="")
     else
       ul
         each val in cart
@@ -14,3 +19,4 @@ block content
               span &nbsp
               a(href="/carts/transaction/" + val.id) transaction
 block footer
+block pagination

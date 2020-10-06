@@ -6,24 +6,24 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET
 });
 
-module.exports.uploadCloudinary = (file, h, w, r) => {
-  return new Promise(resolve => {
-    cloudinary.uploader
-      .upload(file, {
-        folder: "test_CodersX",
-        width: w, 
-        height: h, 
-        crop: "fill", 
-        radius: r
-      })
-      .then(result => {
-        if (result) {
-          const fs = require("fs");
-          fs.unlinkSync(file);
-          resolve({
-            url: result.secure_url
-          });
-        }
-      });
-  });
+module.exports.uploadCloudinary = (file, w, h, r) => {
+    return new Promise(resolve => {
+        cloudinary.uploader
+            .upload(file, {
+                folder: "BookStore",
+                width: w,
+                height: h,
+                crop: "scale",
+                radius: r
+            })
+            .then(result => {
+                if (result) {
+                    const fs = require("fs");
+                    fs.unlinkSync(file);
+                    resolve({
+                        url: result.secure_url
+                    });
+                }
+            });
+    });
 };

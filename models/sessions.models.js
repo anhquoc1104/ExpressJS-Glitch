@@ -1,7 +1,9 @@
 let mongoose = require('../mongoose.js');
 
 let sessionSchema = mongoose.Schema({
-  cart: {}
+    cart: {}
+}, {
+    autoCreate: true
 });
 let Session = mongoose.model('Session', sessionSchema, 'sessions');
 

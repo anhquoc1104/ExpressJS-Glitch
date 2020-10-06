@@ -1,7 +1,7 @@
 let User = require('../models/users.models.js');
 
 module.exports.authMiddlewares = async (req, res, next) => {
-  let cookieUser = req.signedCookies.userID
+  let cookieUser = req.signedCookies.userId
   if (!cookieUser) {
     res.redirect("/login");
     return;

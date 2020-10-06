@@ -1,5 +1,5 @@
 {
-  "watch": ["server.js", "./views"],
+  "watch": ["server.js", "./"],
   "ext": "js, css, pug",
   "exc": "./server.js",
   "ignore": ["db.json"]

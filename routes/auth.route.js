@@ -5,5 +5,6 @@ let controller = require("../controller/auth.controller.js");
 
 router.get("/", controller.login);
 router.post("/", controller.loginPost);
+router.post("/register", controller.registerPut);
 
 module.exports = router;

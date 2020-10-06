@@ -5,10 +5,10 @@ let controller = require("../controller/books.controller.js");
 let multerUpload = require("../controller/multer.controller.js");
 let requireAuth = require("../middlewares/auth.middleware");
 
-//BOOK /
-router.get("/create", requireAuth.authMiddlewares, controller.create);
+// //BOOK /
+// router.get("/page/:number", controller.home);
 // Add book
-router.post("/create/add", controller.createPost);
+router.post("/create", requireAuth.authMiddlewares, multerUpload, controller.createPost);
 //search
 router.get("/search", controller.search);
 //view book

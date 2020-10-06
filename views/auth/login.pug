@@ -20,21 +20,22 @@ block content
               p.m-0.pt-4.text-danger= error
             form(method='POST')
               .form-group
-                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value= value? value : 'nhatlinh123@gmail.com')
+                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value= email? email : 'nhatlinh123@gmail.com')
               .form-group
-                input#password.form-control.pl-1(type='password', name='password', value= value? value :'123123')
+                input#password.form-control.pl-1(type='password', name='password', value= password? password :'nhatlinh123')
               button.btn.btn-success.w-100(type='submit') Login
               a.d-block.text-primary.mt-3(href='#') Forgot Password
           #form__register
-            form(method='POST')
+            form(method='POST', action="/login/register")
+              .form-group
+                input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='username', value='')
               .form-group
                 input#emailRegister.form-control.pl-1(type='email', name='emailRegister', placeholder='email', value='')
               .form-group
-                input.form-control.pl-1(type='password', placeholder='password', value='')
-              .form-group
-                input#passwordRegister.form-control.pl-1(type='password', name='passwordRegister', placeholder='retype password', value='')
+                input#passwordRegiste.form-control.pl-1(type='password', name='passwordRegister', placeholder='password', value='')
               button.btn.btn-success.w-100(type='submit') Register
   block pagination
+  block footer
   script.
     let indicator = document.querySelector('#indicator');
     let formLogin = document.querySelector('#form__login');

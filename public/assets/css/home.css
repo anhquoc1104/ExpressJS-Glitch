@@ -1,0 +1,30 @@
+.row__render--book {
+    margin-top: 20px;
+}
+
+.card__text--wrap {
+    /* max-height: 100px; */
+    /* line-height: n; */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+}
+
+.img__contain {
+    text-align: center;
+}
+
+.card-img-top {
+    width: 180px;
+    height: 220px;
+    object-fit: contain;
+}
+
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
