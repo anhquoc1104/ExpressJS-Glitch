@@ -30,11 +30,12 @@ body
                 a.nav-link(href='/carts') CART
               //- li.nav-item
               //-   a.nav-link(href='/shops') SHOP
-              if !isUserLogin
-                li.nav-item
-                  a.nav-link(href='/login') LOGIN
+              //- if !isUserLogin
+              //-   li.nav-item
+              //-     a.nav-link(href='/login') LOGIN
           form.form-inline.my-auto
             a.btn.btn-danger.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none') Logout
+            a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block') Login
   main
     block content
     block pagination

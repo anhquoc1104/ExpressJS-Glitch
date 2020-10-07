@@ -1,11 +1,8 @@
 let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
+let User = require("../models/users.models.js");
 const change_alias = require("../changeAlias");
 let cloudinary = require("./avatar.controller.js");
-
-// module.exports.home = (req, res) => {
-//     res.render("./books/create.pug");
-// };
 
 //Create Book
 module.exports.createPost = async(req, res) => {
@@ -85,26 +82,34 @@ module.exports.remove = async(req, res) => {
 };
 
 module.exports.addToCart = async(req, res) => {
-    let productId = req.params.id;
+    let bookId = req.params.id;
     let sessionId = req.signedCookies.sessionId;
-    // console.log(sessionId);
-    if (!sessionId) {
-        res.redirect("/");
-        return;
-    }
-    let carts = await Session.findById(sessionId);
-    // carts.cart.abc = 123;
-    // console.log(carts.cart);
-    if (!carts.cart) {
-        // console.log(1);
-        carts.cart = {};
-        carts.cart[productId] = 1;
+    let userId = req.signedCookies.userId;
+
+    const addToCart = (isCart) => {
+        if (isCart.cart && isCart.cart.hasOwnProperty(bookId)) {
+            isCart.cart[bookId] += 1;
+        }
+        if (isCart.cart && !(isCart.cart.hasOwnProperty(bookId))) {
+            isCart.cart[bookId] = 1;
+        }
+        if (!isCart.cart) {
+            isCart.cart = {};
+            isCart.cart[bookId] = 1;
+        }
+        // console.log(isCart.cart);
+        return isCart.cart;
+    };
+
+    if (userId) {
+        let isCart = await User.findById(userId);
+        let cart = addToCart(isCart);
+        await User.findByIdAndUpdate(userId, { cart });
     } else {
-        // console.log(2);
-        carts.cart[productId] += 1;
+        let isCart = await Session.findById(sessionId);
+        let cart = addToCart(isCart);
+        await Session.findByIdAndUpdate(sessionId, { cart });
     }
 
-    await carts.save();
-    // console.log("save cart");
     res.redirect("/");
 };

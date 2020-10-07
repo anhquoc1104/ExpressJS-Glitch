@@ -7,9 +7,9 @@ block style
 block content
   .container.mt-3
     .row
-      .col.d-flex.justify-content-between
+      .col.d-flex.justify-content-between.px-0
         //- modal add book
-        if user
+        if user && user.isAdmin == "true"
           button.btn.btn-info.font-weight-bold.my-2.my-sm-0(type='button', data-toggle='modal', data-target='#newBookModal') New Book
           #newBookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
             .modal-dialog(role='document')

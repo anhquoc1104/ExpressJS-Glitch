@@ -22,8 +22,8 @@ module.exports.home = async(req, res) => {
     });
 };
 
-module.exports.create = async(req, res) => {
-    let bookId = req.params.id;
+module.exports.createTransaction = async(req, res) => {
+    // let bookId = req.params.id;
     let userId = req.signedCookies.userId;
 
     let transaction = new Transaction({
@@ -33,5 +33,15 @@ module.exports.create = async(req, res) => {
     });
     await transaction.save();
     await User.findByIdAndUpdate(userId, { cart: undefined });
+    res.redirect("/carts");
+};
+
+module.exports.deleteCart = async(req, res) => {
+    let bookId = req.params.id;
+    let userId = req.signedCookies.userId;
+    let user = await User.findById(userId);
+    delete user.cart[bookId];
+    let { cart } = user;
+    await User.findByIdAndUpdate(userId, { cart });
     res.redirect("/carts");
 };

@@ -6,17 +6,28 @@ block style
   link(rel="stylesheet", href="/assets/css/cart.css")
 block content
   .container.mt-3
-    if cart !== []
+    if cart == []
       .row.justify-content-center
         img.cart__empty(src="/sources/img/cart-empty.png", alt="")
     else
-      ul
-        each val in cart
-          li
-            img(src=val.avatarUrl)
-            span &nbsp
-            span= val.title + ': ' + val.quantity
-              span &nbsp
-              a(href="/carts/transaction/" + val.id) transaction
-block footer
+      table.table.table-hover
+        thead
+          tr
+            th(scope='col') 
+            th(scope='col') Title Book
+            th(scope='col') Quantity
+            th(scope='col') 
+        tbody
+          each elm in cart
+            tr
+              td(scope='row')
+                img.cart__image(src=elm.avatarUrl)
+              td= elm.title
+              td= elm.quantity
+              td
+                a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.id) Remove
+          tr
+            td.text-right(colspan='4')
+              a.btn.btn-primary.font-weight-bold(href="/carts/transaction") Checkout
+
 block pagination
