@@ -14,7 +14,7 @@ router.get("/search", controller.search);
 //view book
 router.get("/view/:id", controller.view);
 //edit
-router.get("/edit/:id", controller.edit);
+// router.get("/edit/:id", controller.edit);
 router.post("/edit/title/:id", multerUpload, controller.editPost);
 //remove
 router.get("/remove/:id", controller.remove);

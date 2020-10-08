@@ -2,9 +2,14 @@
     margin-top: 20px;
 }
 
+.card-title {
+    min-height: 48px;
+}
+
 .card__text--wrap {
     /* max-height: 100px; */
     /* line-height: n; */
+    min-height: 96px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;

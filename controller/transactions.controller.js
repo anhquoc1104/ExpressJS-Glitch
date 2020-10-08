@@ -6,7 +6,7 @@ module.exports.home = async(req, res) => {
     try {
         let user = await User.findById(req.signedCookies.userId);
         let page = req.params.page || 1;
-        let totalPage = Math.ceil(objTran.length / perPage);
+        // let totalPage = Math.ceil(objTran.length / perPage);
         res.render("./transactions/transactions.pug", {
 
         });

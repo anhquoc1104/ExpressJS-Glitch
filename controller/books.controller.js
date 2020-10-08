@@ -2,6 +2,7 @@ let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
 let User = require("../models/users.models.js");
 const change_alias = require("../changeAlias");
+let pagination = require('../pagination');
 let cloudinary = require("./avatar.controller.js");
 
 //Create Book
@@ -34,17 +35,20 @@ module.exports.createPost = async(req, res) => {
 
 //Search Book
 module.exports.search = async(req, res) => {
+    let page = 1;
+    let { userId } = req.signedCookies;
+    let user = userId && await User.findById(userId);
     let name = req.query.name;
     name = change_alias(name);
-    let findBook = await Book.find();
-    let matchQuery = findBook.filter(elm => {
+    let books = await Book.find();
+    let matchQuery = books.filter(elm => {
         let title = elm.title;
         title = change_alias(title);
         return title.indexOf(name) !== -1;
     });
-    res.render("home.pug", {
-        books: matchQuery
-    });
+
+    let obj = pagination.pagination(user, page, 8, 'books', matchQuery, '/page/');
+    res.render("home.pug", obj);
 };
 
 //View Book Info
@@ -55,13 +59,13 @@ module.exports.view = async(req, res) => {
     });
 };
 
-module.exports.edit = async(req, res) => {
-    let id = req.params.id;
-    let book = await Book.findById(id);
-    res.render("./books/edit.pug", {
-        book
-    });
-};
+// module.exports.edit = async(req, res) => {
+//     let id = req.params.id;
+//     let book = await Book.findById(id);
+//     res.render("./books/edit.pug", {
+//         book
+//     });
+// };
 
 //Edit Book Info
 module.exports.editPost = async(req, res) => {

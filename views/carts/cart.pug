@@ -6,7 +6,7 @@ block style
   link(rel="stylesheet", href="/assets/css/cart.css")
 block content
   .container.mt-3
-    if cart == []
+    if cart == false
       .row.justify-content-center
         img.cart__empty(src="/sources/img/cart-empty.png", alt="")
     else
@@ -25,7 +25,7 @@ block content
               td= elm.title
               td= elm.quantity
               td
-                a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.id) Remove
+                a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.id, type="submit") Remove
           tr
             td.text-right(colspan='4')
               a.btn.btn-primary.font-weight-bold(href="/carts/transaction") Checkout

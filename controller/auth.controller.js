@@ -54,9 +54,17 @@ module.exports.loginPost = async(req, res) => {
 };
 
 //register POST
-module.exports.registerPut = async(req, res) => {
+module.exports.registerPost = async(req, res) => {
     let { nameRegister, emailRegister, passwordRegister } = req.body;
     let password = bcrypt.hashSync(passwordRegister, 10);
+    let users = await User.find();
+    let isUser = users.find(elm => elm.email === emailRegister);
+    if (isUser) {
+        res.render("./auth/login.pug", {
+            error: "Email is used!",
+        });
+        return;
+    }
     let newUser = new User({
         name: nameRegister,
         email: emailRegister,

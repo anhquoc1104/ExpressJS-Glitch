@@ -16,6 +16,6 @@ router.get("/view/:id", controller.view);
 //edit user
 router.post("/edit/:id", multerUpload, controller.editPost);
 //remove user
-router.delete("/remove/:id", controller.remove);
+router.get("/remove/:id", controller.remove);
 
 module.exports = router;
