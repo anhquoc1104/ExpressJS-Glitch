@@ -1,9 +1,0 @@
-form(action='' method="POST")
-  select(name="userId")
-    each val in user
-      option(value= val.id)= val.name
-  select(name="bookId")
-    each val in book
-      option(value= val.id)= val.title
-  span &nbsp
-  button(type="submit") Add

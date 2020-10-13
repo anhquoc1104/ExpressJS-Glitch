@@ -1,31 +1,66 @@
 extends ../layouts/common.pug
 
 block variable
-  - var title = 'Cart'
+  - var title = 'Transactions'
+block style
+  link(rel="stylesheet", href="/assets/css/transactions.css")
 
 block content
   .container.mt-3
-    h4 Transactions
-    a(href="/transactions/create") NEW TRANSACTIONS
-    table
-      tr
-        th UserID
-        th BookID
-        th Status
-      each val in item
-        tr
-          td= val.userID
-          td= val.bookID
-          if val.isComplete === true
-            td Ok
-          else
-            td
-              a(href="/transactions/isComplete/" + page + "/" + val.id) Unpaid
-block pagination
+    if user.isAdmin != "true"
+      if books == false
+        .row.justify-content-center
+          img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+      else
+        table.table.table-hover
+          thead
+            tr
+              th(scope='col') 
+              th(scope='col') Title Book
+              th(scope='col') Date
+              th(scope='col') Status
+          tbody
+            each elm in books
+              tr
+                td(scope='row')
+                  img.cart__image(src=elm.avatarUrl)
+                td= elm.title
+                td= elm.time
+                td
+                  if elm.isComplete == "true"
+                    .btn.btn-success.font-weight-bold.disabled Complete
+                  else
+                    .btn.btn-danger.font-weight-bold.disabled Unpaid
+    //- isAdmin
+    else
+      .row
+        form.form-inline.my-2.my-lg-0(action="/users/search", method="POST")
+          input.form-control.mr-sm-2(type='search', name="name", placeholder='Search', aria-label='Search')
+          button.btn.btn-success.my-2.my-sm-0(type='submit') Search
+      .row.mt-4
+        if users == false
+          .row.justify-content-center
+            img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+        else
+          table.table.table-hover
+            thead
+              tr
+                th(scope='col') 
+                th(scope='col') Name
+                th(scope='col') Email
+
+            tbody
+              each elm in users
+                tr
+                  td(scope='row')
+                    img.cart__image(src=elm.avatarUrl)
+                  td
+                    a(href="/transactions/" + elm.id + '/' + 1)= elm.name
+                  td= elm.email
+//- block pagination
 //- block variable
 //- block style
 //- block title
 //- block content
-//- block pagination
 //- block footer
 //- block script

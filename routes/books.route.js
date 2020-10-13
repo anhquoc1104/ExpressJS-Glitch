@@ -7,18 +7,19 @@ let requireAuth = require("../middlewares/auth.middleware");
 
 // //BOOK /
 // router.get("/page/:number", controller.home);
+router
 // Add book
-router.post("/create", requireAuth.authMiddlewares, multerUpload, controller.createPost);
-//search
-router.get("/search", controller.search);
-//view book
-router.get("/view/:id", controller.view);
-//edit
-// router.get("/edit/:id", controller.edit);
-router.post("/edit/title/:id", multerUpload, controller.editPost);
-//remove
-router.get("/remove/:id", controller.remove);
-//
-router.get("/addToCart/:id", controller.addToCart);
+    .post("/create", requireAuth.authMiddlewares, multerUpload, controller.createPost)
+    //search
+    .get("/search", controller.search)
+    //view book
+    .get("/view/:id", controller.view)
+    //edit
+    // .get("/edit/:id", controller.edit)
+    .post("/edit/title/:id", multerUpload, controller.editPost)
+    //remove
+    .get("/remove/:id", controller.remove)
+    //
+    .get("/addToCart/:id", controller.addToCart)
 
 module.exports = router;

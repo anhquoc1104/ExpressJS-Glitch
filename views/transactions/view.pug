@@ -1,0 +1,39 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Transactions'
+block style
+  link(rel="stylesheet", href="/assets/css/transactions.css")
+
+block content
+  .container.mt-3
+      if books == false
+        .row.justify-content-center
+          img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+      else
+        table.table.table-hover
+          thead
+            tr
+              th(scope='col') 
+              th(scope='col') Title Book
+              th(scope='col') Date
+              th(scope='col') Status
+          tbody
+            each elm in books
+              tr
+                td(scope='row')
+                  img.cart__image(src=elm.avatarUrl)
+                td= elm.title
+                td= elm.time
+                td
+                  if elm.isComplete == "true"
+                    a.btn.btn-success.font-weight-bold.disabled Complete
+                  else
+                    a.btn.btn-danger.font-weight-bold(href="/transactions/isComplete/" + elm._id + "/" + page) Unpaid
+//- block pagination
+//- block variable
+//- block style
+//- block title
+//- block content
+//- block footer
+//- block script

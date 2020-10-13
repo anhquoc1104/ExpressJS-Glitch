@@ -10,12 +10,12 @@ let multerUpload = require("../controller/multer.controller.js");
 //get users
 router.get("/", controller.home);
 //search user
-router.post("/", controller.searchPost);
+router.post("/search", controller.searchPost);
 //view user
-router.get("/view/:id", controller.view);
+// router.get("/view/:id", controller.view);
 //edit user
 router.post("/edit/:id", multerUpload, controller.editPost);
 //remove user
-router.get("/remove/:id", controller.remove);
+// router.get("/remove/:id", controller.remove);
 
 module.exports = router;
