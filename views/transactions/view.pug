@@ -11,6 +11,15 @@ block content
         .row.justify-content-center
           img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
       else
+        form
+          .form-row.align-items-center
+            .col-auto.my-1
+              label.mr-sm-2(for="sort") Sort by:
+              select.custom-select.mr-sm-2#sort
+                option(value="DateUp", selected) Date Up
+                option(value="DateDown") Date Down
+                option(value="Unpaid") Unpaid
+                option(value="Complete") Complete
         table.table.table-hover
           thead
             tr

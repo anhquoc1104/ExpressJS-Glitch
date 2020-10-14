@@ -55,20 +55,43 @@ module.exports = {
     //View
     view: async(req, res) => {
         let book = await Book.findById(req.params.id);
-        res.render("./books/view.pug", {
-            book
-        });
+        res.render("./books/view.pug", { book });
     },
 
     //Edit
+    edit: async(req, res) => {
+        let bookId = req.params.id;
+        let book = await Book.findById(bookId);
+        res.render('./books/edit.pug', { book });
+    },
+
     editPost: async(req, res) => {
-        let title = req.body.title;
+        let { title, description } = req.body;
         let id = req.params.id;
-        cloudinary.uploadCloudinary(req.file.path, 200, 300, 5)
-            .then(async result => {
-                await Book.findOneAndUpdate({ _id: id }, { title: title, avatarUrl: result.url });
-                res.redirect("/");
+        if (title === "") title = "No Title";
+        if (description === "") description = "No Description";
+        if (!req.file) {
+            await Book.findOneAndUpdate({ _id: id }, {
+                title,
+                description
             });
+            res.redirect("/books/view/" + id);
+            return;
+        }
+        let avatarUrl = "";
+        await cloudinary.uploadCloudinary(req.file.path, 250, 300, 5)
+            .then(result => {
+                avatarUrl = result.url;
+                return avatarUrl;
+            }).catch(err => {
+                console.log(err + '')
+            });
+        await Book.findOneAndUpdate({ _id: id }, {
+            title,
+            description,
+            avatarUrl
+        });
+        res.redirect("/books/view/" + id);
     },
 
     //Delete

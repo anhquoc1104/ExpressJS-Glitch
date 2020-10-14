@@ -16,7 +16,10 @@ block content
         .my-3
           span Shop: 
           a(href="#") My Shop
-        a.btn.btn-success.mb-3(href="/books/addToCart/" + book._id) Add to Cart
+        if isUserLogin && isUserLogin.isAdmin == "true"
+          a.btn.btn-success.mb-3(href="/books/edit/" + book._id) Edit info book
+        else
+          a.btn.btn-success.mb-3(href="/books/addToCart/" + book._id) Add to Cart
     .row.mt-4
       .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
         h5

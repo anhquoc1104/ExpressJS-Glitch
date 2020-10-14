@@ -15,11 +15,11 @@ router
     //view book
     .get("/view/:id", controller.view)
     //edit
-    // .get("/edit/:id", controller.edit)
-    .post("/edit/title/:id", multerUpload, controller.editPost)
+    .get("/edit/:id", controller.edit)
+    .post("/edit/:id", multerUpload, controller.editPost)
     //remove
     .get("/remove/:id", controller.remove)
-    //
+    //add to cart
     .get("/addToCart/:id", controller.addToCart)
 
 module.exports = router;
