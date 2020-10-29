@@ -27,8 +27,20 @@ On the back-end,
 ## Best regards!
 
 
-
 ### NOTE:
-- Forgot Password
-- Register Client
-- routeBook(ViewBook): add href to Name Shop
+- Common
+    + Home
+    + All Catalogies
+
+    + Sign in & Sign up
+    + user Icon & Sign out
+
+- Admin:
+    + Message
+    + User (all user)
+    + Transaction (all user)
+    + Statistic (book, user, all transacion)
+
+- Customer:
+    + Transaction (active & history)
+    + Cart

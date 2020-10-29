@@ -27,8 +27,11 @@ block content
               a.d-block.text-primary.mt-3(href='#') Forgot Password
           #form__register
             form(method='POST', action="/login/register")
-              .form-group
-                input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='username', value='')
+              .form-row
+                .form-group.col
+                  input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='Fullname', value='')
+                .form-group.col
+                  input.name-register.form-control.pl-1(type='number', name='ssnRegister', placeholder='SSN', value='')
               .form-group
                 input#emailRegister.form-control.pl-1(type='email', name='emailRegister', placeholder='email', value='')
               .form-group

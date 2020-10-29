@@ -5,45 +5,64 @@ head
   link(rel='shortcut icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
   link(rel='icon', href='https://cdn.glitch.com/e793e85a-7198-413c-a09d-9b69a87cca21%2Ffavicon.ico?v=1589511665802', type='image/x-icon')
   link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/sources/css/fontawesome.all.min.css')
   link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
   link(rel='stylesheet', href='/assets/css/common.css')
   block style
   block title
     title= title
 body
+<!--Start of Tawk.to Script-->
+  script(type="text/javascript").
+    var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src ='https://embed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+<!--End of Tawk.to Script-->
   header
     .container
       .row
-        nav.navbar.navbar-expand-lg.navbar-dark.px-0
+        nav.navbar.navbar-expand-lg.navbar-light.px-0
           a.navbar-brand.nav__logo(href='/')
           button.navbar-toggler.ml-3.mr-auto(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
             span.navbar-toggler-icon
           #navbarNavDropdown.collapse.navbar-collapse.ml-5
             ul.navbar-nav
+              li.nav-item
+                a.nav-link(href='/') HOME
+              li.nav-item.dropdown
+                a.nav-link.dropdown-toggle(href='/' id="categoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") All CATEGORIES
+                .dropdown-menu(aria-labelledby="categoryDropdown")
+                  a.dropdown-item(href="#") Action
+                  .dropdown-divider
+                  a.dropdown-item(href="#") Action
               if isUserLogin && isUserLogin.isAdmin == "true"
-                li.nav-item
-                  a.nav-link(href='/') BOOKS
                 li.nav-item
                   a.nav-link(href='/transactions/page/1') USERS
                 li.nav-item
                   a.nav-link(href='/users') ACCOUNT
               else
                 li.nav-item
-                  a.nav-link(href='/') HOME
-                li.nav-item
                   a.nav-link(href='/users') ACCOUNT
                 li.nav-item
                   a.nav-link(href='/transactions/page/1') TRANSACTIONS
                 li.nav-item
                   a.nav-link(href='/carts') CART
-              //- li.nav-item
-              //-   a.nav-link(href='/shops') SHOP
-              //- if !isUserLogin
-              //-   li.nav-item
-              //-     a.nav-link(href='/login') LOGIN
           form.form-inline.my-auto
-            a.btn.btn-danger.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none') Logout
-            a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block') Login
+            a.btn.btn-warning.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none')
+              span.glyphicon.glyphicon-user
+              |Sign out
+            a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+              span.glyphicon.glyphicon-user
+              |Sign in
+            a.btn.btn-danger.font-weight-bold.ml-1(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+              span.glyphicon.glyphicon-user
+              | Sign up
   main
     block content
     block pagination
