@@ -24,100 +24,153 @@ body
     s0.parentNode.insertBefore(s1,s0);
     })();
 <!--End of Tawk.to Script-->
-  header
-    .container
-      .row
-        nav.navbar.navbar-expand-lg.navbar-light.px-0
-          a.navbar-brand.nav__logo(href='/')
-          button.navbar-toggler.ml-3.mr-auto(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
-            span.navbar-toggler-icon
-          #navbarNavDropdown.collapse.navbar-collapse.ml-5
-            ul.navbar-nav
-              li.nav-item
-                a.nav-link(href='/') HOME
-              li.nav-item.dropdown
-                a.nav-link.dropdown-toggle(href='/' id="categoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") All CATEGORIES
-                .dropdown-menu(aria-labelledby="categoryDropdown")
-                  a.dropdown-item(href="#") Action
-                  .dropdown-divider
-                  a.dropdown-item(href="#") Action
-              if isUserLogin && isUserLogin.isAdmin == "true"
-                li.nav-item
-                  a.nav-link(href='/transactions/page/1') USERS
-                li.nav-item
-                  a.nav-link(href='/users') ACCOUNT
-              else
-                li.nav-item
-                  a.nav-link(href='/users') ACCOUNT
-                li.nav-item
-                  a.nav-link(href='/transactions/page/1') TRANSACTIONS
-                li.nav-item
-                  a.nav-link(href='/carts') CART
-          form.form-inline.my-auto
-            a.btn.btn-warning.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none')
-              span.glyphicon.glyphicon-user
-              |Sign out
-            a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
-              span.glyphicon.glyphicon-user
-              |Sign in
-            a.btn.btn-danger.font-weight-bold.ml-1(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
-              span.glyphicon.glyphicon-user
-              | Sign up
+  //-header
+    //- .container
+    //-   .row
+    //-     nav.navbar.navbar-expand-lg.navbar-light.px-0
+    //-       a.navbar-brand.nav__logo(href='/')
+    //-       button.navbar-toggler.ml-3.mr-auto(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
+    //-         span.navbar-toggler-icon
+    //-       #navbarNavDropdown.collapse.navbar-collapse.ml-5
+    //-         ul.navbar-nav
+    //-           li.nav-item
+    //-             a.nav-link(href='/') Home
+    //-           li.nav-item.dropdown
+    //-             a.nav-link.dropdown-toggle(href='/' id="categoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") All Categories
+    //-             .dropdown-menu(aria-labelledby="categoryDropdown")
+    //-               a.dropdown-item(href="#") Action
+    //-               .dropdown-divider
+    //-               a.dropdown-item(href="#") Action
+    //-           if isUserLogin && isUserLogin.isAdmin == "true"
+    //-             li.nav-item
+    //-               a.nav-link(href='/transactions/page/1') Message
+    //-             li.nav-item
+    //-               a.nav-link(href='/users') Users
+    //-             li.nav-item
+    //-               a.nav-link(href='/users') Transactions
+    //-             li.nav-item
+    //-               a.nav-link(href='/users') Statistic
+    //-           else
+    //-             li.nav-item
+    //-               a.nav-link(href='/transactions/page/1') Transactions
+    //-             li.nav-item
+    //-               a.nav-link(href='/carts') Cart
+    //-       form.form-inline.my-auto
+    //-         .dropdown(class= isUserLogin ? 'd-block' : 'd-none')
+    //-           i.fas.fa-user-circle.dropdown-toggle(id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+    //-           .dropdown-menu(aria-labelledby="dropdownMenuButton")
+    //-             p.dropdown-item
+    //-               i.fas.fa-user-cog
+    //-               a(href="/") Setting
+    //-             a.dropdown-item.btn.btn-danger.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none')
+    //-               span.glyphicon.glyphicon-user
+    //-               |Sign out
+    //-         a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+    //-           span.glyphicon.glyphicon-user
+    //-           |Sign in
+    //-         a.btn.btn-warning.font-weight-bold.ml-1(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+    //-           span.glyphicon.glyphicon-user
+    //-           |Sign up
   main
-    block content
-    block pagination
-      .container
-        .row
-          nav.mt-4(aria-label='Page navigation example')
-            ul.pagination
-              //- pre
-              if page == 1
-                li.page-item.disabled
-                  a.page-link(href='#')
-                    span &laquo;
-              else
-                li.page-item
-                  a.page-link(href=route + page5Num[1])
-                    span &laquo;
-              //- 123
-              if totalPage <= 1
-                li.page-item.active.disabled
-                  a.page-link(href=route + val) 1
-              else if totalPage == 2
-                each val in [1, 2]
-                  if val == page
-                    li.page-item.active.disabled
-                      a.page-link(href=route + val)= val
+    .wrapper
+      //- Sidebar
+      nav#sidebar
+        .sidebar-header.d-flex.justify-content-between
+          a.nav__logo(href='/')
+          button#sidebarCollapse.btn.btn-info(type='button')
+            i.fas.fa-bars#nav__menu
+            //-span#nav__close &times
+        ul.list-unstyled.components
+          li.active
+            a.dropdown-toggle(href='/')
+              i.fas.fa-home
+              span Home
+          li
+            a(href='#')
+              i.fas.fa-briefcase
+              span About
+            a.dropdown-toggle(href='#pageSubmenu', data-toggle='collapse', aria-expanded='false')
+              i.fas.fa-copy
+              span Pages
+            ul#pageSubmenu.collapse.list-unstyled
+              li
+                a(href='#') Page 1
+              li
+                a(href='#') Page 2
+              li
+                a(href='#') Page 3
+        form.form-inline.my-auto
+          .dropdown(class= isUserLogin ? 'd-block' : 'd-none')
+            i.fas.fa-user-circle.dropdown-toggle(id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+            .dropdown-menu(aria-labelledby="dropdownMenuButton")
+              p.dropdown-item
+                i.fas.fa-user-cog
+                a(href="/") Setting
+              a.dropdown-item.btn.btn-danger.font-weight-bold(href="/logout", class= isUserLogin ? 'd-block' : 'd-none')
+                span.glyphicon.glyphicon-user
+                |Sign out
+          a.btn.btn-success.font-weight-bold(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+            span.glyphicon.glyphicon-user
+            |Sign in
+          a.btn.btn-warning.font-weight-bold.ml-1(href="/login", class= isUserLogin ? 'd-none' : 'd-block')
+            span.glyphicon.glyphicon-user
+            |Sign up
+      //- Page Content
+      #content
+        block content
+        block pagination
+          .container
+            .row
+              nav.mt-4(aria-label='Page navigation example')
+                ul.pagination
+                  //- pre
+                  if page == 1
+                    li.page-item.disabled
+                      a.page-link(href='#')
+                        span &laquo;
                   else
                     li.page-item
-                      a.page-link(href=route + val)= val
-              else if page == totalPage
-                each val in [page5Num[0],page5Num[1],page5Num[2]]
-                  if val == totalPage
+                      a.page-link(href=route + page5Num[1])
+                        span &laquo;
+                  //- 123
+                  if totalPage <= 1
                     li.page-item.active.disabled
-                      a.page-link(href=route + val)= val
+                      a.page-link(href=route + val) 1
+                  else if totalPage == 2
+                    each val in [1, 2]
+                      if val == page
+                        li.page-item.active.disabled
+                          a.page-link(href=route + val)= val
+                      else
+                        li.page-item
+                          a.page-link(href=route + val)= val
+                  else if page == totalPage
+                    each val in [page5Num[0],page5Num[1],page5Num[2]]
+                      if val == totalPage
+                        li.page-item.active.disabled
+                          a.page-link(href=route + val)= val
+                      else
+                        li.page-item
+                          a.page-link(href=route + val)= val
+                  else
+                    each val in [page5Num[1], page5Num[2], page5Num[3]]
+                      if val == page
+                        li.page-item.active.disabled
+                          a.page-link(href=route + val)= val
+                      else
+                        li.page-item
+                          a.page-link(href=route + val)= val
+                  //- next
+                  if page == totalPage || totalPage <= 1
+                    li.page-item.disabled
+                      a.page-link(href='#')
+                        span &raquo;
                   else
                     li.page-item
-                      a.page-link(href=route + val)= val
-              else
-                each val in [page5Num[1], page5Num[2], page5Num[3]]
-                  if val == page
-                    li.page-item.active.disabled
-                      a.page-link(href=route + val)= val
-                  else
-                    li.page-item
-                      a.page-link(href=route + val)= val
-              //- next
-              if page == totalPage || totalPage <= 1
-                li.page-item.disabled
-                  a.page-link(href='#')
-                    span &raquo;
-              else
-                li.page-item
-                  a.page-link(href=route + page5Num[3])
-                    span &raquo;
+                      a.page-link(href=route + page5Num[3])
+                        span &raquo;
   block footer
-    footer.mt-5
+    footer
       .footer__container
         a.navbar-brand.nav__logo(href='/')
         p
@@ -127,4 +180,10 @@ body
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')
   //- script(src="/reload/reload.js")
+  script(type="text/javascript").
+    $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+      });
+    });
   block script
