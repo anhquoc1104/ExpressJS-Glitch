@@ -2,7 +2,13 @@ let mongoose = require("../mongoose.js");
 
 let sessionSchema = mongoose.Schema(
   {
-    cart: {},
+    idUser: mongoose.Schema.Types.ObjectId,
+    idBook: mongoose.Schema.Types.ObjectId,
+    status: {
+      type: String,
+      default: "true",
+    },
+    createAt: Date,
   },
   {
     autoCreate: true,

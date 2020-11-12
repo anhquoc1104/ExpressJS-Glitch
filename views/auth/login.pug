@@ -5,14 +5,16 @@ block style
 block title
   title Account || BookStore
 
+block nav
+block sidebar
 block content
   .container-fluid
     .row.form__row
       .col-lg-4.form__col
         .form__title
           .form__title--text.d-flex.text-primary.justify-content-around
-            span(onclick='onLogin()') Login
-            span(onclick='onRegister()') Register
+            span(onclick='onLogin()') Sign in
+            span(onclick='onRegister()') Sign up
           p#indicator
         .form__container
           #form__login
@@ -20,10 +22,10 @@ block content
               p.m-0.pt-4.text-danger= error
             form(method='POST')
               .form-group
-                input#email.form-control.pl-1(type='email', name='email', placeholder='nhatlinh123@gmail.com', value= email? email : 'nhatlinh123@gmail.com')
+                input#email.form-control.pl-1(type='email', name='email', placeholder='email', value= email? email : 'nhatlinh123@gmail.com')
               .form-group
                 input#password.form-control.pl-1(type='password', name='password', value= password? password :'nhatlinh123')
-              button.btn.btn-success.w-100(type='submit') Login
+              button.btn.btn-success.w-100(type='submit') Sign in
               a.d-block.text-primary.mt-3(href='#') Forgot Password
           #form__register
             form(method='POST', action="/login/register")

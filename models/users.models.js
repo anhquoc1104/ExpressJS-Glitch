@@ -1,23 +1,35 @@
-const mongoose = require('../mongoose.js');
+const mongoose = require("../mongoose.js");
 
-let userSchema = mongoose.Schema({
+let userSchema = mongoose.Schema(
+  {
     name: String,
     email: String,
     ssn: Number,
     password: String,
-    isAdmin: String,
+    birthdate: Date,
+    address: String,
+    status: {
+      type: String,
+      default: "true",
+    },
+    isAdmin: {
+      type: String,
+      default: "false",
+    },
     avatarUrl: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
     createAt: Date,
     wrongLoginCount: Number,
-    shopId: mongoose.Schema.Types.ObjectId,
-    cart: {}
-}, {
-    autoCreate: true
-})
+    idTransaction: [],
+    cart: {},
+  },
+  {
+    autoCreate: true,
+  }
+);
 
-let User = mongoose.model('User', userSchema, 'users');
+let User = mongoose.model("User", userSchema, "users");
 
 module.exports = User;

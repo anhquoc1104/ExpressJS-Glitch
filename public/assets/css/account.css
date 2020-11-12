@@ -1,13 +1,16 @@
-main {
+.wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background: radial-gradient(#ccc, #ffffcf);
+  padding: 10px;
+  margin-left: 0px;
+  padding-top: 75px;
 }
 
-form{
+form {
   margin: 30px 10px;
 }
 
@@ -30,7 +33,7 @@ form{
   margin: 20px 0px;
 }
 
-.form__title span{
+.form__title span {
   cursor: pointer;
 }
 
@@ -50,7 +53,7 @@ form{
   overflow: hidden;
 }
 
-#form__login #form__register{
+#form__login #form__register {
   display: block;
   margin: 50px 0;
   transition: transform 25s !important;
@@ -61,9 +64,9 @@ form{
   margin-top: 5px;
 } */
 
-#form__register{
+#form__register {
   display: none;
-  transform: translateX(100%)
+  transform: translateX(100%);
 }
 
 /* 

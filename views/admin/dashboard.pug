@@ -1,0 +1,203 @@
+//- - var isUserLogin = isUserLogins
+block variable
+
+head(lang="en")
+  meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
+  meta(charset="UTF-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  link(rel="icon" href="/sources/img/1logo.ico" type="image/ico" sizes="16x16")
+  link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css')
+  link(href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet")
+  link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/sources/css/fontawesome.all.min.css')
+  link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
+  link(rel='stylesheet', href='/assets/css/common.css')
+  link(rel='stylesheet', href='/assets/css/dashboard.css')
+  block style
+  block title
+    title DashBoard
+body.overlay-scrollbar
+<!--Start of Tawk.to Script-->
+  script(type="text/javascript").
+    var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src ='https://-mbed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+<!--End of Tawk.to Script-->
+  block nav
+    .navbar.row
+      ul.navbar-nav.col-3.col-md-4.col-lg-3.pl-4
+        li.nav-item.my-auto.mr-4
+          a.nav-link
+            i.fas.fa-bars(onclick='collapseSidebar()')
+        li.nav-itemd.align-items-center.d-none.d-md-flex
+          a.nav-link(href='/')
+            img.logo.logo-light(src='/sources/img/1logo.png', alt='BookStore logo')
+            img.logo.logo-dark(src='/sources/img/1logo.png', alt='BookStore logo')
+          h3.m-0 BSTORE
+      form.form-inline.d-flex.justify-content-center.navbar-search.w-75.col-9.col-md-6.col-lg-7
+        input.form-control.mr-sm-2.w-50(type='search', name="name", placeholder='Search', aria-label='Search')
+        button.btn.btn-success.my-2.my-sm-0(type='submit') Search
+      ul.navbar-nav.nav-right.d-none.d-md-flex.col-md-2.col-lg-2.justify-content-end
+        //- li.nav-item.mode.mr-2
+        //-   a.nav-link(href='#', onclick='switchTheme()')
+        //-     i.fas.fa-moon.dark-icon
+        //-     i.fas.fa-sun.light-icon
+        li.nav-item.avt-wrapper
+          .avt.user-dropdown
+            i.fas.fa-user.fa-2x.user-dropdown-toggle(data-toggle='user-menu')
+            ul#user-menu.user-dropdown-menu
+              li.user-dropdown-menu-item
+                a.user-dropdown-menu-link(href='/users')
+                  div
+                    i.fas.fa-user-tie
+                  span Profile
+              li.user-dropdown-menu-item
+                a.user-dropdown-menu-link(href='/logout')
+                  div
+                    i.fas.fa-sign-out-alt
+                  span Logout
+  block sidebar
+    .sidebar
+      ul.sidebar-nav
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/')
+            div
+              i.fas.fa-tachometer-alt
+            span
+              | DashBoard
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/categories')
+            div
+              i.fab.fa-accusoft
+            span Categories
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/carts')
+            div
+              i.fas.fa-cart-arrow-down
+            span Carts
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/transactions/page/1')
+            div
+              i.fas.fa-spinner
+            span Transactions
+        li.sidebar-nav-item.d-block.d-md-none
+          a.sidebar-nav-link(href='/users')
+            div
+              i.fas.fa-user-tie
+            span Account
+        li.user-dropdown-menu-item.d-block.d-md-none
+          if isUserLogin
+            a.user-dropdown-menu-link(href='/logout')
+              div
+                i.fas.fa-sign-out-alt
+              span Sign out
+          else
+            a.user-dropdown-menu-link(href='/login')
+              div
+                i.fas.fa-sign-out-alt
+              span Sign in
+  .wrapper
+    .container-fluid
+      .row.mt-4
+        .col-12.col-sm-6.col-md-6.col-lg-3
+          .counter.bg-primary
+            p
+              i.fas.fa-tasks
+            h3 100+
+            p To do
+        .col-12.col-sm-6.col-md-6.col-lg-3
+          .counter.bg-warning
+            p
+              i.fas.fa-spinner
+            h3 100+
+            p In progress
+        .col-12.col-sm-6.col-md-6.col-lg-3
+          .counter.bg-success
+            p
+              i.fas.fa-check-circle
+            h3 100+
+            p Completed
+        .col-12.col-sm-6.col-md-6.col-lg-3
+          .counter.bg-danger
+            p
+              i.fas.fa-bug
+            h3 100+
+            p Issues
+      .row.mt-4
+        .col-12
+          .card
+            .card-header
+              h3
+                | New Activated
+              i.fas.fa-ellipsis-h
+            .card-content
+              table
+                thead
+                  tr
+                    th #
+                    th Name
+                    th Type
+                    th Due date
+                tbody
+                  tr
+                    td 1
+                    td React
+                    td Tran Anh Tuat
+                    td
+                      span.dot
+                        i.bg-success
+                        | &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Completed
+                    td 17/07/2020
+        .col-12
+          .card
+            .card-header
+              h3
+                | Progress bar
+              i.fas.fa-ellipsis-h
+            .card-content
+              .progress-wrapper
+                p
+                  | Less than 1 hour
+                  span.float-right 50%
+                .progress
+                  .bg-success(style='width: 50%')
+              .progress-wrapper
+                p
+                  | 1 - 3 hours
+                  span.float-right 60%
+                .progress
+                  .bg-primary(style='width:60%')
+              .progress-wrapper
+                p
+                  | More than 3 hours
+                  span.float-right 40%
+                .progress
+                  .bg-warning(style='width:40%')
+              .progress-wrapper
+                p
+                  | More than 6 hours
+                  span.float-right 20%
+                .progress
+                  .bg-danger(style='width:20%')
+      .row
+        .col-12
+          .card
+            .card-header
+              h3
+                | Chartjs
+            .card-content
+              canvas#myChart
+  block footer
+  script(src='https://-dnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js')
+  script(src='/sources/js/jquery-3.4.1.min.js')
+  script(src='/sources/js/popper.min.js')
+  script(src='/sources/js/bootstrap.min.js')
+  script(src='/assets/js/common.js')
+  script(src='/assets/js/dashboard.js')
+  block script

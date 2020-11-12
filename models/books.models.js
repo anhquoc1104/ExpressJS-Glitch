@@ -1,18 +1,30 @@
-const mongoose = require('../mongoose.js');
+const mongoose = require("../mongoose.js");
 
-let bookSchema = mongoose.Schema({
+let bookSchema = mongoose.Schema(
+  {
     title: String,
     description: String,
-    userId: mongoose.Schema.Types.ObjectId,
+    userId: [mongoose.Schema.Types.ObjectId],
     createAt: Date,
     avatarUrl: {
-        type: String,
-        default: ""
-    }
-}, {
-    autoCreate: true
-})
+      type: String,
+      default: "",
+    },
+    quantity: Number,
+    author: String,
+    year: Number,
+    publisher: String,
+    category: String,
+    status: {
+      type: String,
+      default: "true",
+    },
+  },
+  {
+    autoCreate: true,
+  }
+);
 
-let Book = mongoose.model('Book', bookSchema, 'books');
+let Book = mongoose.model("Book", bookSchema, "books");
 
 module.exports = Book;
