@@ -106,19 +106,39 @@ module.exports = {
   },
 
   editPost: async (req, res) => {
-    let { title, description } = req.body;
-    let id = req.params.id;
-    if (title === "") title = "No Title";
-    if (description === "") description = "No Description";
+    let {
+      url,
+      idBook,
+      title,
+      author,
+      year,
+      quantity,
+      publisher,
+      category,
+      description,
+    } = req.body;
+    // let idBook = req.params.idBook;
+    // if (title === "") title = "No Title";
+    // if (author === "") author = "---";
+    // if (year === "") year = 0;
+    // if (category === "") category = "---";
+    // if (quantity === "") quantity = 0;
+    // if (publisher === "") publisher = "---";
+    // if (description === "") description = "No Description";
     if (!req.file) {
       await Book.findOneAndUpdate(
-        { _id: id },
+        { _id: idBook },
         {
           title,
+          author,
+          year,
+          quantity,
+          publisher,
+          category,
           description,
         }
       );
-      res.redirect("/books/view/" + id);
+      res.redirect(url);
       return;
     }
     let avatarUrl = "";
@@ -132,14 +152,19 @@ module.exports = {
         console.log(err + "");
       });
     await Book.findOneAndUpdate(
-      { _id: id },
+      { _id: idBook },
       {
         title,
+        author,
+        year,
+        quantity,
+        publisher,
+        category,
         description,
         avatarUrl,
       }
     );
-    res.redirect("/books/view/" + id);
+    res.redirect(url);
   },
 
   //Delete

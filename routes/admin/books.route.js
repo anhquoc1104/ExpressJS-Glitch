@@ -22,8 +22,9 @@ router
   //view book
   .get("/view/:id", controller.view)
   //edit
-  .get("/edit/:id", controller.edit)
-  .post("/edit/:id", multerUpload, controller.editPost)
+  // .get("/edit/:id", controller.edit)
+  // .post("/edit/:id", multerUpload, controller.editPost)
+  .post("/edit", multerUpload, controller.editPost)
   //remove
   .get("/remove/:id", controller.remove);
 

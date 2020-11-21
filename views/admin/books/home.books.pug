@@ -10,14 +10,16 @@ block content
       .row.justify-content-center
         img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
     else
-      form(method='POST')
-        .form-row.align-items-center
-          .col-auto.my-1.ml-auto
-            select.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort')
-              option(value="DateUp", selected) Date Up
-              option(value="DateDown") Date Down
-              option(value="NameUp") Name A-Z
-              option(value="NameDown") Name Z-a
+      .row.justify-content-between
+        button.btn.btn-danger.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="") New Book
+        form(method='POST')
+          .form-row.align-items-center
+            .col-auto.my-1.ml-auto
+              select.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort')
+                option(value="DateUp", selected) Date Up
+                option(value="DateDown") Date Down
+                option(value="NameUp") Name A-Z
+                option(value="NameDown") Name Z-a
       table.table.table-hover
         thead
           tr
@@ -42,16 +44,18 @@ block content
               td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
               td= elm.quantity
               td
-                button.btn.btn-danger(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="") edit
-  #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEdit()") edit
+  #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
         .modal-header
-          h5#exampleModalLabel.modal-title New message
+          h5#modalLabel.modal-title New Book
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
         .modal-body
-          form
+          form(action="/admin/books/edit", method="POST" enctype="multipart/form-data")
+            input#idBook.form-control.d-none(type='text', name="idBook")
+            input#url.form-control.d-none(type='text', name="url")
             .form-group
               label.col-form-label(for='title') Title
               input#title.form-control(type='text', name="title")
@@ -60,8 +64,8 @@ block content
                 label(for='author') Author:
                 input#author.form-control(type='text', name="author")
               .form-group.col
-                label(for='author') Category:
-                input#author.form-control(type='text', name="author")
+                label(for='year') Year:
+                input#year.form-control(type='number', name="year")
               .form-group.col
                 label(for='quantity') Quantity:
                 input#quantity.form-control(type='number', name="quantity")
@@ -70,17 +74,37 @@ block content
                 label(for='publisher') Publisher:
                 input#publisher.form-control(type='text', name="publisher")
               .form-group.col
-                label(for='year') Year:
-                input#year.form-control(type='number', name="year")
+                label(for='category') Category:
+                input#category.form-control(type='text', name="category")
             .form-group
               label.col-form-label(for='description') Description:
-              textarea#description.form-control(name="description")
+              textarea#description.form-control(name="description", rows="4")
             .form-group
               label.col-form-label(for='avatar') Avatar
               input#avatar.form-control(type='file', name="avatar")
-        .modal-footer
-          button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='button') Send message
+            .modal-footer
+              button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+              button.btn.btn-primary(type='submit') Save
 
 block script
   script.
+    function handleEdit(){
+      let data = JSON.parse(document.activeElement.getAttribute('data-book'));
+      //- $('#bookModal #title').val(data.title);
+      console.log(data);
+      document.querySelector('#bookModal #modalLabel').textContent = 'Edit Book';
+      document.querySelector('#bookModal #url').value = window.location.pathname;
+      document.querySelector('#bookModal #idBook').value = data._id;
+      document.querySelector('#bookModal #title').value = data.title ? data.title: "";
+      document.querySelector('#bookModal #author').value = data.author ? data.author : "";
+      document.querySelector('#bookModal #year').value = data.year ? data.year : "";
+      document.querySelector('#bookModal #quantity').value = data.quantity ? data.quantity : "";
+      document.querySelector('#bookModal #publisher').value = data.publisher ? data.publisher :"";
+      document.querySelector('#bookModal #author').value = data.author ? data.author : "";
+      document.querySelector('#bookModal #description').value = data.description ? data.description : "";
+    }
+    //- $(document).on("click", ".open-AddBookDialog", function () {
+    //-  var data = $(this).data('book');
+    //-  console.log(data);
+    //- //-  $(".modal-body #bookId").val( myBookId );
+    //- });
