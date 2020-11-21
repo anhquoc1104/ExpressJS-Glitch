@@ -55,20 +55,28 @@ block content
             .form-group
               label.col-form-label(for='title') Title
               input#title.form-control(type='text', name="title")
-            .form-group
-              label.col-form-label(for='author') Author:
-              input#author.form-control(type='text', name="author")
-            .form-group
-              label.col-form-label(for='publisher') Publisher:
-              input#publisher.form-control(type='text', name="publisher")
-            .form-group
-              label.col-form-label(for='recipient-name') Author:
-              input#author.form-control(type='text', name="author")
+            .form-row
+              .form-group.col.col
+                label(for='author') Author:
+                input#author.form-control(type='text', name="author")
+              .form-group.col
+                label(for='author') Category:
+                input#author.form-control(type='text', name="author")
+              .form-group.col
+                label(for='quantity') Quantity:
+                input#quantity.form-control(type='number', name="quantity")
+            .form-row
+              .form-group.col
+                label(for='publisher') Publisher:
+                input#publisher.form-control(type='text', name="publisher")
+              .form-group.col
+                label(for='year') Year:
+                input#year.form-control(type='number', name="year")
             .form-group
               label.col-form-label(for='description') Description:
               textarea#description.form-control(name="description")
             .form-group
-              label.col-form-label(for='recipient-name') Avatar
+              label.col-form-label(for='avatar') Avatar
               input#avatar.form-control(type='file', name="avatar")
         .modal-footer
           button.btn.btn-secondary(type='button', data-dismiss='modal') Close
