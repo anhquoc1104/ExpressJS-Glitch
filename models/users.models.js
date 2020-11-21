@@ -20,10 +20,19 @@ let userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
-    createAt: Date,
+    createAt: {
+      type: Date,
+      default: new Date(),
+    },
     wrongLoginCount: Number,
-    idTransaction: [],
-    cart: {},
+    idTransaction: {
+      type: [mongoose.Schema.Types.ObjectId],
+      default: [],
+    },
+    idCart: {
+      type: [],
+      default: [],
+    },
   },
   {
     autoCreate: true,

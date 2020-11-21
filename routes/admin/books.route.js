@@ -9,6 +9,8 @@ let requireAuth = require("../../middlewares/auth.middleware");
 // router.get("/page/:number", controller.home);
 router
   // Add book
+  .get("/page/:page", controller.home)
+  .post("/page/:page", controller.home)
   .post(
     "/create",
     requireAuth.authMiddlewares,

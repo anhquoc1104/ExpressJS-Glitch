@@ -1,6 +1,6 @@
 let mongoose = require("../mongoose.js");
 
-let sessionSchema = mongoose.Schema(
+let cartSchema = mongoose.Schema(
   {
     idUser: mongoose.Schema.Types.ObjectId,
     idBook: mongoose.Schema.Types.ObjectId,
@@ -14,6 +14,6 @@ let sessionSchema = mongoose.Schema(
     autoCreate: true,
   }
 );
-let Session = mongoose.model("Session", sessionSchema, "sessions");
+let Cart = mongoose.model("Cart", cartSchema, "carts");
 
-module.exports = Session;
+module.exports = Cart;

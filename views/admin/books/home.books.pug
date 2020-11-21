@@ -1,0 +1,78 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Books'
+block style
+    link(rel='stylesheet', href='/assets/css/admin/base.css')
+block content 
+  .container.mt-3
+    if books == false
+      .row.justify-content-center
+        img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+    else
+      form(method='POST')
+        .form-row.align-items-center
+          .col-auto.my-1.ml-auto
+            select.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort')
+              option(value="DateUp", selected) Date Up
+              option(value="DateDown") Date Down
+              option(value="NameUp") Name A-Z
+              option(value="NameDown") Name Z-a
+      table.table.table-hover
+        thead
+          tr
+            th(scope='col') #
+            th(scope='col') 
+            th(scope='col') Title
+            th(scope='col') Author
+            th(scope='col') Date Post
+            th(scope='col') Quantity
+            th(scope='col') 
+        tbody
+          each elm, index in books
+            tr
+              td= index+1
+              td(scope='row')
+                if elm.avatarUrl
+                  img.image__table(src=elm.avatarUrl)
+                else
+                  img.image__table--empty(src='/sources/img/book-default.jpg')
+              td= elm.title
+              td= elm.author
+              td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
+              td= elm.quantity
+              td
+                button.btn.btn-danger(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="") edit
+  #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#exampleModalLabel.modal-title New message
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form
+            .form-group
+              label.col-form-label(for='title') Title
+              input#title.form-control(type='text', name="title")
+            .form-group
+              label.col-form-label(for='author') Author:
+              input#author.form-control(type='text', name="author")
+            .form-group
+              label.col-form-label(for='publisher') Publisher:
+              input#publisher.form-control(type='text', name="publisher")
+            .form-group
+              label.col-form-label(for='recipient-name') Author:
+              input#author.form-control(type='text', name="author")
+            .form-group
+              label.col-form-label(for='description') Description:
+              textarea#description.form-control(name="description")
+            .form-group
+              label.col-form-label(for='recipient-name') Avatar
+              input#avatar.form-control(type='file', name="avatar")
+        .modal-footer
+          button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary(type='button') Send message
+
+block script
+  script.

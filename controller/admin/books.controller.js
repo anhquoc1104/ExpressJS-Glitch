@@ -6,6 +6,37 @@ let pagination = require("../../pagination");
 let cloudinary = require("../avatar.controller.js");
 
 module.exports = {
+  home: async (req, res) => {
+    let { page } = req.params || 1;
+    let { sort } = req.body || "DateUp";
+    let books;
+    switch (sort) {
+      case "DateUp":
+        books = await Book.find();
+        break;
+      case "DateDown":
+        books = await Book.find();
+        break;
+      case "NameUp":
+        books = await Book.find();
+        break;
+      case "NameDown":
+        books = await Book.find();
+        break;
+      default:
+        books = await Book.find();
+        break;
+    }
+    let obj = pagination(
+      "user",
+      page,
+      24,
+      "books",
+      books,
+      "/books/admin/page/"
+    );
+    res.render("./admin/books/home.books.pug", obj);
+  },
   //Create
   createPost: async (req, res) => {
     let { title, description } = req.body;

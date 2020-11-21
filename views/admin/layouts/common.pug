@@ -1,4 +1,3 @@
-//- - var isUserLogin = isUserLogins
 block variable
 
 head(lang="en")
@@ -15,103 +14,88 @@ head(lang="en")
   block title
     title= title
 body.overlay-scrollbar
-<!--Start of Tawk.to Script-->
-  script(type="text/javascript").
-    var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-    s1.async = true;
-    s1.src ='https://-mbed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
-<!--End of Tawk.to Script-->
   block nav
     .navbar.row
-      ul.navbar-nav.col-3.col-md-2.col-lg-3.pl-4
+      ul.navbar-nav.col-3.col-md-4.col-lg-3.pl-4
         li.nav-item.my-auto.mr-4
           a.nav-link
             i.fas.fa-bars(onclick='collapseSidebar()')
         li.nav-itemd.align-items-center.d-none.d-md-flex
-          a.nav-link(href='/')
+          a.nav-link(href='/admin')
             img.logo.logo-light(src='/sources/img/1logo.png', alt='BookStore logo')
             img.logo.logo-dark(src='/sources/img/1logo.png', alt='BookStore logo')
           h3.m-0 BSTORE
-      form.form-inline.d-flex.justify-content-center.navbar-search.w-75.col-9.col-md-8.col-lg-7
+      form.form-inline.d-flex.justify-content-center.navbar-search.w-75.col-9.col-md-6.col-lg-7
         input.form-control.mr-sm-2.w-50(type='search', name="name", placeholder='Search', aria-label='Search')
         button.btn.btn-success.my-2.my-sm-0(type='submit') Search
-      ul.navbar-nav.nav-right.d-none.d-md-flex.col-md-2.col-lg-2
+      ul.navbar-nav.nav-right.d-none.d-md-flex.col-md-2.col-lg-2.justify-content-end
         //- li.nav-item.mode.mr-2
         //-   a.nav-link(href='#', onclick='switchTheme()')
         //-     i.fas.fa-moon.dark-icon
         //-     i.fas.fa-sun.light-icon
-        li.nav-item.mr-3.my-auto
-          a.nav-link(href='/carts')
-            i.fas.fa-cart-arrow-down
-            //- span.navbar-badge
-        if !isUserLogin
-          li.nav-item
-            a.btn.btn-outline-success.font-weight-bold(href="/login")
-              span Sign in
-        else
-          li.nav-item.avt-wrapper
-            .avt.user-dropdown
-              if isUserLogin && isUserLogin.avatarUrl != ""
-                img.user-dropdown-toggle(src=isUserLogin.avatarUrl alt='User',data-toggle='user-menu')
-              else
-                i.fas.fa-user.fa-2x.user-dropdown-toggle(data-toggle='user-menu')
-              ul#user-menu.user-dropdown-menu
-                li.user-dropdown-menu-item
-                  a.user-dropdown-menu-link(href='/users')
-                    div
-                      i.fas.fa-user-tie
-                    span Profile
-                li.user-dropdown-menu-item
-                  a.user-dropdown-menu-link(href='/logout')
-                    div
-                      i.fas.fa-sign-out-alt
-                    span Logout
+        li.nav-item.avt-wrapper
+          .avt.user-dropdown
+            i.fas.fa-user.fa-2x.user-dropdown-toggle(data-toggle='user-menu')
+            ul#user-menu.user-dropdown-menu
+              li.user-dropdown-menu-item
+                a.user-dropdown-menu-link(href='/users')
+                  div
+                    i.fas.fa-user-tie
+                  span Profile
+              li.user-dropdown-menu-item
+                a.user-dropdown-menu-link(href='/logout')
+                  div
+                    i.fas.fa-sign-out-alt
+                  span Logout
   block sidebar
     .sidebar
       ul.sidebar-nav
         li.sidebar-nav-item
-          a.sidebar-nav-link(href='/')
+          a.sidebar-nav-link(href='/admin')
             div
-              i.fas.fa-home
-            span Home
+              i.fas.fa-tachometer-alt
+            span
+              | DashBoard
         li.sidebar-nav-item
-          a.sidebar-nav-link(href='/categories')
+          a.sidebar-nav-link(href='/admin/books/page/1')
             div
-              i.fab.fa-accusoft
-            span Categories
+              i.fas.fa-book
+            span Books
         li.sidebar-nav-item
-          a.sidebar-nav-link(href='/carts')
+          a.sidebar-nav-link(href='/admin/users')
+            div
+              i.fas.fa-users
+            span Users
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/admin/carts')
             div
               i.fas.fa-cart-arrow-down
             span Carts
         li.sidebar-nav-item
-          a.sidebar-nav-link(href='/transactions/page/1')
+          a.sidebar-nav-link(href='/admin/transactions/page/1')
             div
               i.fas.fa-spinner
             span Transactions
         li.sidebar-nav-item
-          a.sidebar-nav-link(href='/users')
+          a.sidebar-nav-link(href='/admin/statistics')
+            div
+              i.fas.fa-poll
+            span Statistics
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/admin/messages')
+            div
+              i.fas.fa-inbox
+            span Messages
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/admin/users')
             div
               i.fas.fa-user-tie
             span Account
-        li.sidebar-nav-item.user-dropdown-menu-item
-          if isUserLogin
-            a.sidebar-nav-link.user-dropdown-menu-link(href='/logout')
-              div
-                i.fas.fa-sign-out-alt
-              span Sign out
-          else
-            a.sidebar-nav-link.user-dropdown-menu-link(href='/login')
-              div
-                i.fas.fa-sign-in-alt
-              span Sign in
-
+        li.sidebar-nav-item
+          a.sidebar-nav-link(href='/logout')
+            div
+              i.fas.fa-sign-out-alt
+            span Sign out
   .wrapper
     block content
     block pagination
@@ -176,5 +160,4 @@ body.overlay-scrollbar
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')
   script(src='/assets/js/common.js')
-  //- script(src="/reload/reload.js")
   block script

@@ -15,7 +15,7 @@ block content
           tr
             th(scope='col') 
             th(scope='col') Title Book
-            th(scope='col') Quantity
+            th(scope='col') Timeout
             th(scope='col') 
         tbody
           each elm in cart
@@ -23,11 +23,12 @@ block content
               td(scope='row')
                 img.cart__image(src=elm.avatarUrl)
               td= elm.title
-              td= elm.quantity
+              td= elm.timeout
+              td 
               td
                 a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.id, type="submit") Remove
-          tr
-            td.text-right(colspan='4')
-              a.btn.btn-primary.font-weight-bold(href="/transactions/create") Checkout
+          //- tr
+          //-   td.text-right(colspan='4')
+          //-     a.btn.btn-primary.font-weight-bold(href="/transactions/create") Checkout
 
 block pagination

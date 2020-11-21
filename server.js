@@ -22,6 +22,7 @@ let userRouteAdmin = require("./routes/admin/users.route");
 let bookRouteAdmin = require("./routes/admin/books.route");
 let transRouteAdmin = require("./routes/admin/transactions.route");
 let cartRouteAdmin = require("./routes/admin/carts.route");
+let dashboardAdmin = require("./controller/admin/dashboard.controller");
 
 let port = process.env.PORT || 8080;
 
@@ -48,6 +49,13 @@ app.use("/transactions", requireAuth.authMiddlewares, transRoute);
 app.use("/carts", requireAuth.authMiddlewares, cartRoute);
 app.use("/login", loginRoute);
 
+// admin
+app.use("/admin/books", bookRouteAdmin);
+app.use("/admin/users", requireAuth.authMiddlewares, userRouteAdmin);
+app.use("/admin/transactions", requireAuth.authMiddlewares, transRouteAdmin);
+app.use("/admin/carts", requireAuth.authMiddlewares, cartRouteAdmin);
+app.get("/admin", requireAuth.authMiddlewares, dashboardAdmin);
+
 //view engine
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -58,7 +66,7 @@ app.get("/", async (req, res) => {
   let { userId } = req.signedCookies;
   let user = userId && (await User.findById(userId));
   let books = await Book.find();
-  let obj = pagination.pagination(user, page, 8, "books", books, "/page/");
+  let obj = pagination(user, page, 12, "books", books, "/page/");
   res.render("home.pug", obj);
 });
 
@@ -71,7 +79,7 @@ app.get("/page/:number", async (req, res) => {
     return;
   }
   let books = await Book.find();
-  let obj = pagination.pagination(user, page, 8, "books", books, "/page/");
+  let obj = pagination(user, page, 12, "books", books, "/page/");
   res.render("home.pug", obj);
 });
 

@@ -5,7 +5,10 @@ let bookSchema = mongoose.Schema(
     title: String,
     description: String,
     userId: [mongoose.Schema.Types.ObjectId],
-    createAt: Date,
+    createAt: {
+      type: Date,
+      default: new Date(),
+    },
     avatarUrl: {
       type: String,
       default: "",

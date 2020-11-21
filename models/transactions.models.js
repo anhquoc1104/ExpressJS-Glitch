@@ -1,14 +1,24 @@
-const mongoose = require('../mongoose.js');
+const mongoose = require("../mongoose.js");
 
-let transactionSchema = mongoose.Schema({
-    userId: mongoose.Schema.Types.ObjectId,
-    bookId: mongoose.Schema.Types.ObjectId,
-    createAt: Date,
-    isComplete: String
-}, {
-    autoCreate: true
-})
+let transactionSchema = mongoose.Schema(
+  {
+    idUser: mongoose.Schema.Types.ObjectId,
+    idBook: mongoose.Schema.Types.ObjectId,
+    createAt: {
+      type: Date,
+      default: new Date(),
+    },
+    isComplete: String,
+  },
+  {
+    autoCreate: true,
+  }
+);
 
-let Transaction = mongoose.model('Transaction', transactionSchema, 'transactions');
+let Transaction = mongoose.model(
+  "Transaction",
+  transactionSchema,
+  "transactions"
+);
 
 module.exports = Transaction;

@@ -9,7 +9,7 @@ block content
     .row.row__render--book
       //- render list book
       each elm in books
-        .card.border-secondary.col-12.col-sm-12.col-md-6.col-lg-4.col-xl-3.mt-3(style='width: 18rem;')
+        .card.border-light.col-12.col-sm-12.col-md-6.col-lg-4.col-xl-3.mt-3.pt-3(style='width: 18rem;')
           if elm.avatarUrl
             a.img__contain(href="/books/view/" + elm._id)
               img.card-img-top(src=elm.avatarUrl, alt=elm.title)
@@ -22,3 +22,4 @@ block content
             a.btn.btn-primary(href="/books/view/" + elm._id) view
             span &nbsp
             a.btn.btn-success(href="/books/addToCart/" + elm._id) Add to Cart
+block script

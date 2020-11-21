@@ -53,7 +53,7 @@ module.exports.loginPost = async (req, res) => {
 
   if (user.isAdmin == "true") {
     // console.log(user);
-    res.render("./admin/dashboard.pug");
+    res.redirect("/admin");
   }
   res.redirect("/");
 };
