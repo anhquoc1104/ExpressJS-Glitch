@@ -10,8 +10,10 @@ block content
       .row.justify-content-center
         img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
     else
-      .row.justify-content-between
-        button.btn.btn-danger.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="") New Book
+      .row.justify-content-between.mb-2
+        button.btn.btn-primary.ml-4.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="handleAddBook()")
+          i.fas.fa-plus.mr-2 
+          span New Book
         form(method='POST')
           .form-row.align-items-center
             .col-auto.my-1.ml-auto
@@ -44,7 +46,7 @@ block content
               td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
               td= elm.quantity
               td
-                button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEdit()") edit
+                button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") edit
   #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
@@ -85,13 +87,13 @@ block content
             .modal-footer
               button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
               button.btn.btn-primary(type='submit') Save
-
 block script
   script.
-    function handleEdit(){
+    function handleEditBook(){
       let data = JSON.parse(document.activeElement.getAttribute('data-book'));
       //- $('#bookModal #title').val(data.title);
-      console.log(data);
+      //- console.log(data);
+      document.querySelector('#bookModal form').setAttribute('action', '/admin/books/edit')
       document.querySelector('#bookModal #modalLabel').textContent = 'Edit Book';
       document.querySelector('#bookModal #url').value = window.location.pathname;
       document.querySelector('#bookModal #idBook').value = data._id;
@@ -101,7 +103,15 @@ block script
       document.querySelector('#bookModal #quantity').value = data.quantity ? data.quantity : "";
       document.querySelector('#bookModal #publisher').value = data.publisher ? data.publisher :"";
       document.querySelector('#bookModal #author').value = data.author ? data.author : "";
+      document.querySelector('#bookModal #category').value = data.category ? data.category : "";
       document.querySelector('#bookModal #description').value = data.description ? data.description : "";
+    }
+
+    function handleAddBook(){
+      let form = document.querySelector('#bookModal form');
+       form.reset();
+       form.setAttribute('action', '/admin/books/create');
+       document.querySelector('#bookModal #url').value = window.location.pathname;
     }
     //- $(document).on("click", ".open-AddBookDialog", function () {
     //-  var data = $(this).data('book');

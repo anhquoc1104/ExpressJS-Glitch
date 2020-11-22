@@ -39,9 +39,18 @@ module.exports = {
   },
   //Create
   createPost: async (req, res) => {
-    let { title, description } = req.body;
-    let userId = req.signedCookies.userId;
+    let {
+      url,
+      title,
+      author,
+      year,
+      quantity,
+      publisher,
+      category,
+      description,
+    } = req.body;
     let avatarUrl = "";
+    let userId = req.signedCookies.userId;
     if (req.file) {
       await cloudinary
         .uploadCloudinary(req.file.path, 250, 300, 5)
@@ -53,18 +62,23 @@ module.exports = {
           console.log(err + "");
         });
     }
-    if (title === "") title = "No Title";
-    if (description === "") description = "No Description";
+    // if (title === "") title = "No Title";
+    // if (description === "") description = "No Description";
 
     let newBook = new Book({
       title,
-      description,
+      author,
+      year,
+      quantity,
+      publisher,
+      category,
       userId,
+      description,
       createAt: new Date(),
       avatarUrl,
     });
     newBook.save();
-    res.redirect("/");
+    res.redirect(url);
   },
 
   //Search

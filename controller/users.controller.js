@@ -44,7 +44,6 @@ module.exports = {
       );
       res.redirect("/users");
     }
-    // let password = bcrypt.hashSync(passwordRegister, 10);
     let avatarUrl = "";
     let file = req.file;
     if (name === "") name = isUser.name;

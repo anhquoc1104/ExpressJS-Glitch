@@ -29,6 +29,8 @@ module.exports.loginPost = async (req, res) => {
   }
   //check password
   if (!bcrypt.compareSync(req.body.password, user.password)) {
+    // user.password = bcrypt.hashSync("nhatlinh123", 10);
+    // await user.save();
     user.wrongLoginCount++;
     res.render("./auth/login.pug", {
       error: "Password is wrong!",
