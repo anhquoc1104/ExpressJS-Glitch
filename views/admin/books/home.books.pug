@@ -11,17 +11,18 @@ block content
         img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
     else
       .row.justify-content-between.mb-2
-        button.btn.btn-primary.ml-4.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="handleAddBook()")
+        button.btn.btn-primary.ml-4.p-2.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="handleAddBook()")
           i.fas.fa-plus.mr-2 
           span New Book
         form(method='POST')
           .form-row.align-items-center
             .col-auto.my-1.ml-auto
-              select.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort')
-                option(value="DateUp", selected) Date Up
+              select.form-control.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort') 
+                option --- Sort ---
+                option(value="DateUp") Date Up
                 option(value="DateDown") Date Down
                 option(value="NameUp") Name A-Z
-                option(value="NameDown") Name Z-a
+                option(value="NameDown") Name Z-A
       table.table.table-hover
         thead
           tr
@@ -38,11 +39,14 @@ block content
               td= index+1
               td(scope='row')
                 if elm.avatarUrl
-                  img.image__table(src=elm.avatarUrl)
+                  a(href="", alt= elm.title)
+                    img.image__table(src=elm.avatarUrl)
                 else
                   img.image__table--empty(src='/sources/img/book-default.jpg')
-              td= elm.title
-              td= elm.author
+              td
+                a(href="")= elm.title
+              td
+                a(href="")= elm.author
               td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
               td= elm.quantity
               td

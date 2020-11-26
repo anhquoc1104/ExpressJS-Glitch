@@ -11,14 +11,10 @@ router
   // Add book
   .get("/page/:page", controller.home)
   .post("/page/:page", controller.home)
-  .post(
-    "/create",
-    requireAuth.authMiddlewares,
-    multerUpload,
-    controller.createPost
-  )
+  .post("/create", multerUpload, controller.createPost)
   //search
   .get("/search", controller.search)
+  .post("/search", controller.search)
   //view book
   .get("/view/:id", controller.view)
   //edit

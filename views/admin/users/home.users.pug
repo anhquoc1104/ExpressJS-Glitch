@@ -1,0 +1,53 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Users'
+block style
+    link(rel='stylesheet', href='/assets/css/admin/base.css')
+block content 
+  .container.mt-3
+    if users == false
+      .row.justify-content-center
+        img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+    else
+      .row.justify-content-end.mb-2
+        form(method='POST')
+          .form-row.align-items-center
+            .col-auto.my-1.ml-auto
+              select.form-control.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort') 
+                option --- Sort ---
+                option(value="NameUp") Name A-Z
+                option(value="NameDown") Name Z-A
+                option(value="DateUp") Date Up
+                option(value="DateDown") Date Down
+      table.table.table-hover
+        thead
+          tr
+            th(scope='col') #
+            th(scope='col') 
+            th(scope='col') name
+            th(scope='col') email
+            th(scope='col') Date Join
+            th(scope='col') status
+        tbody
+          each elm, index in users
+            tr
+              td= index+1
+              td(scope='row')
+                if elm.avatarUrl
+                  img.image__table(src=elm.avatarUrl)
+                else
+                  img.image__table--empty(src='/sources/img/user-avatar-default.png')
+              td= elm.name
+              td= elm.email
+              td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
+              td
+                if elm.status == "true"
+                    span.dot
+                        i.bg-success
+                        | active
+                else
+                    span.dot
+                        i.bg-danger
+                        | blocked
+  

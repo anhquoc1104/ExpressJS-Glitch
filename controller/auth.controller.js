@@ -56,6 +56,7 @@ module.exports.loginPost = async (req, res) => {
   if (user.isAdmin == "true") {
     // console.log(user);
     res.redirect("/admin");
+    return;
   }
   res.redirect("/");
 };

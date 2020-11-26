@@ -1,39 +1,37 @@
 let Book = require("../../models/books.models.js");
-let Session = require("../../models/sessions.models.js");
 let User = require("../../models/users.models.js");
 const change_alias = require("../../changeAlias");
 let pagination = require("../../pagination");
 let cloudinary = require("../avatar.controller.js");
 
+let onSort = (sort) => {
+  switch (sort) {
+    case "DateUp":
+      return { createAt: 1 };
+    case "DateDown":
+      return { createAt: -1 };
+    case "NameUp":
+      return { title: 1 };
+    case "NameDown":
+      return { title: -1 };
+    default:
+      return { createAt: 1 };
+  }
+};
+
 module.exports = {
   home: async (req, res) => {
     let { page } = req.params || 1;
     let { sort } = req.body || "DateUp";
-    let books;
-    switch (sort) {
-      case "DateUp":
-        books = await Book.find();
-        break;
-      case "DateDown":
-        books = await Book.find();
-        break;
-      case "NameUp":
-        books = await Book.find();
-        break;
-      case "NameDown":
-        books = await Book.find();
-        break;
-      default:
-        books = await Book.find();
-        break;
-    }
+    let isSort = onSort(sort);
+    let books = await Book.find().sort(isSort);
     let obj = pagination(
       "user",
       page,
       24,
       "books",
       books,
-      "/books/admin/page/"
+      "/admin/books/page/"
     );
     res.render("./admin/books/home.books.pug", obj);
   },
@@ -84,26 +82,43 @@ module.exports = {
   //Search
   search: async (req, res) => {
     let page = 1;
+    let { allQuery, authorQuery, publisherQuery, yearQuery } = req.query;
     let { userId } = req.signedCookies;
     let user = userId && (await User.findById(userId));
-    let name = req.query.name;
-    name = change_alias(name);
-    let books = await Book.find();
-    let matchQuery = books.filter((elm) => {
-      let title = elm.title;
-      title = change_alias(title);
-      return title.indexOf(name) !== -1;
-    });
+    let { sort } = req.body || "DateUp";
+    let isSort = onSort(sort);
+    let matchQuery;
 
-    let obj = pagination.pagination(
+    if (allQuery) {
+      // allQuery = allQuery.trim();
+      matchQuery = await Book.find({ $text: { $search: `${allQuery}` } }).sort(
+        isSort
+      );
+    } else if (authorQuery) {
+      matchQuery = await Book.find({ author: { $regex: authorQuery } }).sort(
+        isSort
+      );
+    } else if (yearQuery) {
+      matchQuery = await Book.find({ year: { $regex: yearQuery } }).sort(
+        isSort
+      );
+    } else if (publisherQuery) {
+      matchQuery = await Book.find({
+        publisher: { $regex: publisherQuery },
+      }).sort(isSort);
+    } else {
+      matchQuery = await Book.find();
+    }
+
+    let obj = pagination(
       user,
       page,
       8,
       "books",
       matchQuery,
-      "/page/"
+      "/admin/books/page/"
     );
-    res.render("home.pug", obj);
+    res.render("./admin/books/home.books.pug", obj);
   },
 
   //View

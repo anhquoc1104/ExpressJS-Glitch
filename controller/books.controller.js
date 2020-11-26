@@ -2,25 +2,57 @@ let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
 let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
-const change_alias = require("../changeAlias");
+// const change_alias = require("../changeAlias");
 let pagination = require("../pagination");
+
+let onSort = (sort) => {
+  switch (sort) {
+    case "DateUp":
+      return { createAt: 1 };
+    case "DateDown":
+      return { createAt: -1 };
+    case "NameUp":
+      return { title: 1 };
+    case "NameDown":
+      return { title: -1 };
+    default:
+      return { createAt: 1 };
+  }
+};
 
 module.exports = {
   //Search
   search: async (req, res) => {
     let page = 1;
+    let { allQuery, authorQuery, publisherQuery, yearQuery } = req.query;
     let { userId } = req.signedCookies;
     let user = userId && (await User.findById(userId));
-    let name = req.query.name;
-    name = change_alias(name);
-    let books = await Book.find();
-    let matchQuery = books.filter((elm) => {
-      let title = elm.title;
-      title = change_alias(title);
-      return title.indexOf(name) !== -1;
-    });
+    let { sort } = req.body || "DateUp";
+    let isSort = onSort(sort);
+    let matchQuery;
 
-    let obj = pagination(user, page, 8, "books", matchQuery, "/page/");
+    if (allQuery) {
+      // allQuery = allQuery.trim();
+      matchQuery = await Book.find({ $text: { $search: `${allQuery}` } }).sort(
+        isSort
+      );
+    } else if (authorQuery) {
+      matchQuery = await Book.find({ author: { $regex: authorQuery } }).sort(
+        isSort
+      );
+    } else if (yearQuery) {
+      matchQuery = await Book.find({ year: { $regex: yearQuery } }).sort(
+        isSort
+      );
+    } else if (publisherQuery) {
+      matchQuery = await Book.find({
+        publisher: { $regex: publisherQuery },
+      }).sort(isSort);
+    } else {
+      matchQuery = await Book.find().sort(isSort);
+    }
+
+    let obj = pagination(user, page, 12, "books", matchQuery, "/page/");
     res.render("home.pug", obj);
   },
 

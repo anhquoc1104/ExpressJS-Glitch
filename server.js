@@ -17,6 +17,7 @@ let loginRoute = require("./routes/auth.route");
 let cartRoute = require("./routes/carts.route");
 let requireAuth = require("./middlewares/auth.middleware");
 let sessionMiddleware = require("./middlewares/session.middleware");
+let isAdminMiddleware = require("./middlewares/isAdmin.middleware");
 // Route Admin
 let userRouteAdmin = require("./routes/admin/users.route");
 let bookRouteAdmin = require("./routes/admin/books.route");
@@ -50,25 +51,47 @@ app.use("/carts", requireAuth.authMiddlewares, cartRoute);
 app.use("/login", loginRoute);
 
 // admin
+app.use("/admin", isAdminMiddleware);
 app.use("/admin/books", bookRouteAdmin);
-app.use("/admin/users", requireAuth.authMiddlewares, userRouteAdmin);
-app.use("/admin/transactions", requireAuth.authMiddlewares, transRouteAdmin);
-app.use("/admin/carts", requireAuth.authMiddlewares, cartRouteAdmin);
-app.get("/admin", requireAuth.authMiddlewares, dashboardAdmin);
+app.use("/admin/users", userRouteAdmin);
+app.use("/admin/transactions", transRouteAdmin);
+app.use("/admin/carts", cartRouteAdmin);
+app.get("/admin", dashboardAdmin);
 
 //view engine
 app.set("view engine", "pug");
 app.set("views", "./views");
 
 //home
-app.get("/", async (req, res) => {
+let homePage = async (req, res) => {
   let page = 1;
   let { userId } = req.signedCookies;
+
+  let onSort = (sort) => {
+    switch (sort) {
+      case "DateUp":
+        return { createAt: 1 };
+      case "DateDown":
+        return { createAt: -1 };
+      case "NameUp":
+        return { title: 1 };
+      case "NameDown":
+        return { title: -1 };
+      default:
+        return { createAt: 1 };
+    }
+  };
+  let { sort } = req.body || "DateUp";
+  let isSort = onSort(sort);
+
+  //...
   let user = userId && (await User.findById(userId));
-  let books = await Book.find();
+  let books = await Book.find().sort(isSort);
   let obj = pagination(user, page, 12, "books", books, "/page/");
   res.render("home.pug", obj);
-});
+};
+app.get("/", homePage);
+app.post("/", homePage);
 
 app.get("/page/:number", async (req, res) => {
   let page = req.params.number;
@@ -92,5 +115,3 @@ app.get("/logout", (req, res) => {
 const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
-
-// reload(app);

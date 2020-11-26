@@ -10,10 +10,19 @@ let cloudinary = require("../avatar.controller.js");
 
 module.exports = {
   home: async (req, res) => {
-    let isUser = await User.findById(req.signedCookies.userId);
-    res.render("./users/users.pug", {
-      isUser,
-    });
+    let { page } = req.params || 1;
+    let { sort } = req.body || "DateUp";
+    // let users;
+    let users = await User.find({ isAdmin: "false" });
+    let obj = pagination(
+      "user",
+      page,
+      24,
+      "users",
+      users,
+      "/admin/users/page/"
+    );
+    res.render("./admin/users/home.users.pug", obj);
   },
 
   searchPost: async (req, res) => {
@@ -98,13 +107,13 @@ module.exports = {
     res.redirect("/users");
   },
 
-  // view: (req, res) => {
-  //     let id = req.params.id;
-  //     let detailuser = User.findById(id);
-  //     res.render('./users/view.pug', {
-  //         user: detailuser
-  //     });
-  // },
+  view: (req, res) => {
+    let id = req.params.id;
+    let detailuser = User.findById(id);
+    res.render("./users/view.pug", {
+      user: detailuser,
+    });
+  },
 
   // remove: async(req, res) => {
   //     let id = req.params.id;

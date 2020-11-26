@@ -22,9 +22,9 @@ block content
               p.m-0.pt-4.text-danger= error
             form(method='POST')
               .form-group
-                input#email.form-control.pl-1(type='email', name='email', placeholder='email', value= email? email : 'nhatlinh123@gmail.com')
+                input#email.form-control.pl-1(type='email', name='email', placeholder='email', value= email? email : 'admin@admin.com')
               .form-group
-                input#password.form-control.pl-1(type='password', name='password', value= password? password :'nhatlinh123')
+                input#password.form-control.pl-1(type='password', name='password', value= password? password :'admin123')
               button.btn.btn-success.w-100(type='submit') Sign in
               a.d-block.text-primary.mt-3(href='#') Forgot Password
           #form__register
@@ -42,9 +42,9 @@ block content
     .row.mt-3
       .d-flex.flex-column.m-auto
         p.text-danger
-          |admin: admin@admin.com
+          |admin: nhatlinh123@gmail.com
         p.text-danger
-          |pass: admin123
+          |pass: nhatlinh123
   block pagination
   block footer
   script.

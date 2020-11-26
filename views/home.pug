@@ -6,6 +6,16 @@ block style
     link(rel='stylesheet', href='/assets/css/home.css')
 block content
   .container.mt-3
+    .row.justify-content-end.mb-2
+      form(method='POST')
+        .form-row.align-items-center
+          .col-auto.my-1.ml-auto
+            select.form-control.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort') 
+              option --- Sort ---
+              option(value="DateUp") Date Up
+              option(value="DateDown") Date Down
+              option(value="NameUp") Name A-Z
+              option(value="NameDown") Name Z-A
     .row.row__render--book
       //- render list book
       each elm in books
@@ -17,9 +27,19 @@ block content
             a.img__contain(href="/books/view/" + elm._id)
               img.card-img-top(src='/sources/img/book-default.jpg', alt=elm.title)
           .card-body
-            h5.card-title= elm.title
-            p.card-text.card__text--wrap= elm.description
+            h5.card-title.font-weight-bold= elm.title
+            if elm.author
+              h3.card-title.font-italic= elm.author
+            else
+              h3.card-title.font-italic ---
+            if elm.description
+              p.card-text.card__text--wrap= elm.description
+            else
+              h3.card-title.font-italic No Description
             a.btn.btn-primary(href="/books/view/" + elm._id) view
             span &nbsp
-            a.btn.btn-success(href="/books/addToCart/" + elm._id) Add to Cart
+            if elm.quantity > 0
+              a.btn.btn-success(href="/books/addToCart/" + elm._id) Add to Cart
+            else
+              a.btn.btn-success.disabled(href="/books/addToCart/" + elm._id) Add to Cart
 block script

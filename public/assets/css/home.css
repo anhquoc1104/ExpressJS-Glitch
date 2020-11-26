@@ -3,8 +3,14 @@
   font-size: 0.9rem;
 }
 
-.card-title {
-  min-height: 24px;
+h5.card-title {
+  min-height: 40px;
+  font-size: 1.1rem;
+}
+
+h3.card-title {
+  min-height: 17px;
+  font-size: 0.9rem;
 }
 
 .card__text--wrap {
@@ -15,6 +21,7 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  font-size: 0.9rem;
 }
 
 .img__contain {
@@ -32,6 +39,12 @@
 
 .card {
   transition: transform 0.3s;
+}
+
+.card h5,
+.card h3,
+.card p {
+  margin-bottom: 3px;
 }
 
 .card:hover {

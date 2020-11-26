@@ -1,3 +1,4 @@
+const { text } = require("express");
 const mongoose = require("../mongoose.js");
 
 let bookSchema = mongoose.Schema(
@@ -15,7 +16,7 @@ let bookSchema = mongoose.Schema(
     },
     quantity: Number,
     author: String,
-    year: Number,
+    year: String,
     publisher: String,
     category: String,
     status: {
@@ -25,8 +26,16 @@ let bookSchema = mongoose.Schema(
   },
   {
     autoCreate: true,
+    collation: { locale: "en_US", strength: 1 },
   }
 );
+
+bookSchema.index({
+  title: "text",
+  author: "text",
+  publisher: "text",
+  year: "text",
+});
 
 let Book = mongoose.model("Book", bookSchema, "books");
 

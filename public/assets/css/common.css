@@ -308,6 +308,15 @@ p {
   margin-left: 250px;
 }
 
+.dot i {
+  display: inline-block;
+  width: 0.385rem;
+  height: 0.385rem;
+  margin-right: 0.385rem;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
 .wrapper {
   min-height: calc(100vh - 135px);
   padding: 10px;
