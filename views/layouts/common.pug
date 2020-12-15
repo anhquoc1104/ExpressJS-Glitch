@@ -11,21 +11,22 @@ head(lang="en")
   link(rel='stylesheet', href='/sources/css/fontawesome.all.min.css')
   link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
   link(rel='stylesheet', href='/assets/css/common.css')
+  link(rel='stylesheet', href='/assets/css/liveChat.css')
   block style
   block title
     title= title
 body.overlay-scrollbar
 <!--Start of Tawk.to Script-->
-  script(type="text/javascript").
-    var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-    s1.async = true;
-    s1.src ='https://embed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
+  //- script(type="text/javascript").
+  //-   var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
+  //-   (function(){
+  //-   var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+  //-   s1.async = true;
+  //-   s1.src ='https://embed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
+  //-   s1.charset='UTF-8';
+  //-   s1.setAttribute('crossorigin','*');
+  //-   s0.parentNode.insertBefore(s1,s0);
+  //-   })();
 <!--End of Tawk.to Script-->
   block nav
     .navbar.row
@@ -36,7 +37,7 @@ body.overlay-scrollbar
         li.nav-itemd.align-items-center.d-none.d-md-flex
           a.nav-link(href='/')
             img.logo.logo-light(src='/sources/img/1logo.png', alt='BookStore logo')
-            img.logo.logo-dark(src='/sources/img/1logo.png', alt='BookStore logo')
+            img.logo.logo-dark.d-node(src='/sources/img/1logo.png', alt='BookStore logo')
           h3.m-0 BSTORE
       form.form-inline.d-flex.justify-content-center.navbar-search.w-75.col-9.col-md-8.col-lg-7(action='/books/search')
         input.form-control.mr-sm-2.w-50(type='search', name="allQuery", placeholder='Search', aria-label='Search')
@@ -165,6 +166,26 @@ body.overlay-scrollbar
                 li.page-item
                   a.page-link(href=route + page5Num[3])
                     span &raquo;
+  block liveChat
+    .msg__box
+      .msg__minimize.bg-success
+        i.msg__minimize__icon.fas.fa-comments
+      .contentArea(style='display: none')
+        .msg__head.bg-success Customer Support
+        .formArea
+          .title Please fill out this form
+          form.inputFields
+            .inputContainer.form-group
+              input.nameInput.form-control(type='text', maxlength='20', pattern='^[a-zA-Z ]{3,}', placeholder=' * Name', required='')
+            .inputContainer.form-group
+              input.emailInput.form-control(type='email', placeholder=' * Email', required='')
+            input.submitBtn.bg-success(type='submit')
+        .chatArea(style='display: none')
+          .messages
+            .msg__push--old
+            .msg__push--new
+            .typing
+          input.form-control.inputMessage(rows="1" placeholder="Type here...")
   block footer
     footer
       .footer__container
@@ -175,6 +196,8 @@ body.overlay-scrollbar
   script(src='/sources/js/jquery-3.4.1.min.js')
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')
+  script(src='/socket.io/socket.io.js')
   script(src='/assets/js/common.js')
+  script(src='/assets/js/liveChat.js')
   //- script(src="/reload/reload.js")
   block script

@@ -1,19 +1,51 @@
 const bcrypt = require("bcrypt");
 
-// let Transaction = require('../models/transactions.models.js');
-let User = require("../models/users.models.js");
-let Book = require("../models/books.models.js");
-let pagination = require("../pagination");
+// let Transaction = require('../../models/transactions.models.js');
+let User = require("../../models/users.models.js");
+let Book = require("../../models/books.models.js");
+let pagination = require("../../services/pagination");
 
-const change_alias = require("../changeAlias");
-let cloudinary = require("./avatar.controller.js");
+const change_alias = require("../../services/changeAlias");
+let cloudinary = require("../avatar.controller.js");
 
 module.exports = {
   home: async (req, res) => {
-    let isUser = await User.findById(req.signedCookies.userId);
-    res.render("./users/users.pug", {
-      isUser,
+    let { page } = req.params || 1;
+    let { sort } = req.body || "DateUp";
+    // let users;
+    let users = await User.find({ isAdmin: "false" });
+    let obj = pagination(
+      "user",
+      page,
+      24,
+      "users",
+      users,
+      "/admin/users/page/"
+    );
+    res.render("./admin/users/home.users.pug", obj);
+  },
+
+  searchPost: async (req, res) => {
+    let username = req.body.name;
+    let page = req.params.page || 1;
+    username = change_alias(username);
+    let userQuery = await User.find();
+    let userList = userQuery.filter((elm) => {
+      let name = elm.name;
+      name = change_alias(name);
+      return name.indexOf(username) !== -1;
     });
+    let user = await User.findById(req.signedCookies.userId);
+    let obj = pagination.pagination(
+      user,
+      page,
+      10,
+      "users",
+      userList,
+      "/transacions/page/"
+    );
+    res.render("./transactions/transactions.pug", obj);
+    return;
   },
 
   editPost: async (req, res) => {
@@ -44,6 +76,7 @@ module.exports = {
       );
       res.redirect("/users");
     }
+    // let password = bcrypt.hashSync(passwordRegister, 10);
     let avatarUrl = "";
     let file = req.file;
     if (name === "") name = isUser.name;
@@ -74,13 +107,13 @@ module.exports = {
     res.redirect("/users");
   },
 
-  // view: (req, res) => {
-  //     let id = req.params.id;
-  //     let detailuser = User.findById(id);
-  //     res.render('./users/view.pug', {
-  //         user: detailuser
-  //     });
-  // },
+  view: (req, res) => {
+    let id = req.params.id;
+    let detailuser = User.findById(id);
+    res.render("./users/view.pug", {
+      user: detailuser,
+    });
+  },
 
   // remove: async(req, res) => {
   //     let id = req.params.id;

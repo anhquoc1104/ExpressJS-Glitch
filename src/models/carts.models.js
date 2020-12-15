@@ -1,4 +1,4 @@
-let mongoose = require("../mongoose.js");
+let mongoose = require("../services/mongoose.js");
 
 let cartSchema = mongoose.Schema(
   {

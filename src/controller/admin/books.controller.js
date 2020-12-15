@@ -1,7 +1,7 @@
 let Book = require("../../models/books.models.js");
 let User = require("../../models/users.models.js");
-const change_alias = require("../../changeAlias");
-let pagination = require("../../pagination");
+// const change_alias = require("../../services/changeAlias");
+let pagination = require("../../services/pagination");
 let cloudinary = require("../avatar.controller.js");
 
 let onSort = (sort) => {
@@ -33,7 +33,10 @@ module.exports = {
       books,
       "/admin/books/page/"
     );
-    res.render("./admin/books/home.books.pug", obj);
+    res.render("./admin/books/home.books.pug", {
+      ...obj,
+      mess: req.flash("sucess"),
+    });
   },
   //Create
   createPost: async (req, res) => {
@@ -47,6 +50,10 @@ module.exports = {
       category,
       description,
     } = req.body;
+    if (title === "") {
+      res.redirect(url);
+      return;
+    }
     let avatarUrl = "";
     let userId = req.signedCookies.userId;
     if (req.file) {
@@ -60,6 +67,8 @@ module.exports = {
           console.log(err + "");
         });
     }
+
+    quantity === "" ? "0" : quantity;
     // if (title === "") title = "No Title";
     // if (description === "") description = "No Description";
 
@@ -76,6 +85,7 @@ module.exports = {
       avatarUrl,
     });
     newBook.save();
+    req.flash("sucess", "SUCESS!");
     res.redirect(url);
   },
 

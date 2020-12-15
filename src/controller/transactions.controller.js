@@ -1,8 +1,8 @@
-let Transaction = require("../../models/transactions.models.js");
-let User = require("../../models/users.models.js");
-let Book = require("../../models/books.models.js");
-let pagination = require("../../pagination");
-const change_alias = require("../../changeAlias");
+let Transaction = require("../models/transactions.models.js");
+let User = require("../models/users.models.js");
+let Book = require("../models/books.models.js");
+let pagination = require("../services/pagination");
+const change_alias = require("../services/changeAlias");
 
 module.exports = {
   home: async (req, res) => {
@@ -13,7 +13,7 @@ module.exports = {
       // isAdmin
       if (user && user.isAdmin === "true") {
         let userList = await User.find();
-        let obj = pagination.pagination(
+        let obj = pagination(
           user,
           page,
           10,
@@ -36,7 +36,7 @@ module.exports = {
           date.getMonth() + 1
         }/${date.getFullYear()}`;
       }
-      let obj = pagination.pagination(
+      let obj = pagination(
         user,
         page,
         10,
@@ -86,7 +86,7 @@ module.exports = {
         date.getMonth() + 1
       }/${date.getFullYear()}`;
     }
-    let obj = pagination.pagination(
+    let obj = pagination(
       user,
       page,
       10,

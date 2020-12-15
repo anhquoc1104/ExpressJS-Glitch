@@ -2,8 +2,8 @@ let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
 let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
-// const change_alias = require("../changeAlias");
-let pagination = require("../pagination");
+// const change_alias = require("../services/changeAlias");
+let pagination = require("../services/pagination");
 
 let onSort = (sort) => {
   switch (sort) {

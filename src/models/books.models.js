@@ -1,5 +1,4 @@
-const { text } = require("express");
-const mongoose = require("../mongoose.js");
+const mongoose = require("../services/mongoose.js");
 
 let bookSchema = mongoose.Schema(
   {

@@ -4,7 +4,7 @@ block variable
   - var title = 'Books'
 block style
     link(rel='stylesheet', href='/assets/css/admin/base.css')
-block content 
+block content
   .container.mt-3
     if books == false
       .row.justify-content-center
@@ -93,10 +93,21 @@ block content
               button.btn.btn-primary(type='submit') Save
 block script
   script.
+    $( document ).ready(function() {
+      //- console.log(mess);
+      let msgStr = !{JSON.stringify(mess)};
+      console.log(msgStr);
+      console.log(typeof(msgStr));
+      if(typeof(mess) != 'undefined' && mess != '' && msgStr !== []){
+        alert(msgStr);
+      }
+    });
+
+    //autofill edit book
     function handleEditBook(){
       let data = JSON.parse(document.activeElement.getAttribute('data-book'));
-      //- $('#bookModal #title').val(data.title);
-      //- console.log(data);
+      
+      //without jquery
       document.querySelector('#bookModal form').setAttribute('action', '/admin/books/edit')
       document.querySelector('#bookModal #modalLabel').textContent = 'Edit Book';
       document.querySelector('#bookModal #url').value = window.location.pathname;
@@ -111,14 +122,10 @@ block script
       document.querySelector('#bookModal #description').value = data.description ? data.description : "";
     }
 
+    //clear form
     function handleAddBook(){
       let form = document.querySelector('#bookModal form');
-       form.reset();
-       form.setAttribute('action', '/admin/books/create');
-       document.querySelector('#bookModal #url').value = window.location.pathname;
+      form.reset();
+      form.setAttribute('action', '/admin/books/create');
+      document.querySelector('#bookModal #url').value = window.location.pathname;
     }
-    //- $(document).on("click", ".open-AddBookDialog", function () {
-    //-  var data = $(this).data('book');
-    //-  console.log(data);
-    //- //-  $(".modal-body #bookId").val( myBookId );
-    //- });

@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+let nodeMailer = require("../services/config.nodemailer");
 
 let User = require("../models/users.models.js");
 let Session = require("../models/sessions.models.js");
@@ -59,6 +60,17 @@ module.exports.loginPost = async (req, res) => {
     return;
   }
   res.redirect("/");
+};
+
+//forgotPassword
+module.exports.forgotPassword = (req, res) => {
+  res.render("./auth/forgotPassword.pug");
+};
+
+module.exports.forgotPasswordPost = (req, res) => {
+  let email = req.body.email ? req.body.email : "";
+  if (email) nodeMailer(email);
+  res.render("./auth/login.pug");
 };
 
 //register POST

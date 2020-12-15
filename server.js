@@ -1,32 +1,41 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const flash = require("connect-flash");
+const session = require("express-session");
+const cors = require("cors");
 require("dotenv").config();
-//const sendMail = require("./config.sendGrid.js");
+
 const app = express();
-let pagination = require("./pagination");
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+const socketio = require("./src/services/livechat/socketio");
+let pagination = require("./src/services/pagination");
 
 // Model
-let Book = require("./models/books.models.js");
-let User = require("./models/users.models.js");
+let Book = require("./src/models/books.models.js");
+let User = require("./src/models/users.models.js");
 
 // Route
-let userRoute = require("./routes/users.route");
-let bookRoute = require("./routes/books.route");
-let transRoute = require("./routes/transactions.route");
-let loginRoute = require("./routes/auth.route");
-let cartRoute = require("./routes/carts.route");
-let requireAuth = require("./middlewares/auth.middleware");
-let sessionMiddleware = require("./middlewares/session.middleware");
-let isAdminMiddleware = require("./middlewares/isAdmin.middleware");
-// Route Admin
-let userRouteAdmin = require("./routes/admin/users.route");
-let bookRouteAdmin = require("./routes/admin/books.route");
-let transRouteAdmin = require("./routes/admin/transactions.route");
-let cartRouteAdmin = require("./routes/admin/carts.route");
-let dashboardAdmin = require("./controller/admin/dashboard.controller");
+let userRoute = require("./src/routes/users.route");
+let bookRoute = require("./src/routes/books.route");
+let transRoute = require("./src/routes/transactions.route");
+let loginRoute = require("./src/routes/auth.route");
+let cartRoute = require("./src/routes/carts.route");
+let requireAuth = require("./src/middlewares/auth.middleware");
+let sessionMiddleware = require("./src/middlewares/session.middleware");
+let isAdminMiddleware = require("./src/middlewares/isAdmin.middleware");
+
+// Route - Admin
+let userRouteAdmin = require("./src/routes/admin/users.route");
+let bookRouteAdmin = require("./src/routes/admin/books.route");
+let transRouteAdmin = require("./src/routes/admin/transactions.route");
+let cartRouteAdmin = require("./src/routes/admin/carts.route");
+let messagesRouteAdmin = require("./src/routes/admin/messages.route");
+let dashboardAdmin = require("./src/controller/admin/dashboard.controller");
 
 let port = process.env.PORT || 8080;
 
+app.use(cors());
 app.use(express.static("public"));
 
 //body-parser
@@ -35,13 +44,15 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET || "2tryd6rt45eydhf756tyg"));
+app.use(session({ cookie: { maxAge: 60000 } }));
+app.use(flash());
 
-app.use(async (req, res, next) => {
-  let userId = req.signedCookies.userId;
-  let user = userId && (await User.findById(userId));
-  res.locals.isUserLogin = user;
-  // console.log(user.isAdmin);
-  next();
+app.use(async(req, res, next) => {
+    let userId = req.signedCookies.userId;
+    let user = userId && (await User.findById(userId));
+    res.locals.isUserLogin = user;
+    // console.log(user.isAdmin);
+    next();
 });
 app.use(sessionMiddleware);
 app.use("/users", requireAuth.authMiddlewares, userRoute);
@@ -56,6 +67,7 @@ app.use("/admin/books", bookRouteAdmin);
 app.use("/admin/users", userRouteAdmin);
 app.use("/admin/transactions", transRouteAdmin);
 app.use("/admin/carts", cartRouteAdmin);
+app.use("/admin/messages", messagesRouteAdmin);
 app.get("/admin", dashboardAdmin);
 
 //view engine
@@ -63,55 +75,58 @@ app.set("view engine", "pug");
 app.set("views", "./views");
 
 //home
-let homePage = async (req, res) => {
-  let page = 1;
-  let { userId } = req.signedCookies;
+let homePage = async(req, res) => {
+    let page = 1;
+    let { userId } = req.signedCookies;
 
-  let onSort = (sort) => {
-    switch (sort) {
-      case "DateUp":
-        return { createAt: 1 };
-      case "DateDown":
-        return { createAt: -1 };
-      case "NameUp":
-        return { title: 1 };
-      case "NameDown":
-        return { title: -1 };
-      default:
-        return { createAt: 1 };
-    }
-  };
-  let { sort } = req.body || "DateUp";
-  let isSort = onSort(sort);
+    let onSort = (sort) => {
+        switch (sort) {
+            case "DateUp":
+                return { createAt: 1 };
+            case "DateDown":
+                return { createAt: -1 };
+            case "NameUp":
+                return { title: 1 };
+            case "NameDown":
+                return { title: -1 };
+            default:
+                return { createAt: 1 };
+        }
+    };
+    let { sort } = req.body || "DateUp";
+    let isSort = onSort(sort);
 
-  //...
-  let user = userId && (await User.findById(userId));
-  let books = await Book.find().sort(isSort);
-  let obj = pagination(user, page, 12, "books", books, "/page/");
-  res.render("home.pug", obj);
+    //...
+    let user = userId && (await User.findById(userId));
+    let books = await Book.find().sort(isSort);
+    let obj = pagination(user, page, 12, "books", books, "/page/");
+    res.render("home.pug", obj);
 };
 app.get("/", homePage);
 app.post("/", homePage);
 
-app.get("/page/:number", async (req, res) => {
-  let page = req.params.number;
-  let { userId } = req.signedCookies;
-  let user = userId && (await User.findById(userId));
-  if (page <= 1) {
-    res.redirect("/");
-    return;
-  }
-  let books = await Book.find();
-  let obj = pagination(user, page, 12, "books", books, "/page/");
-  res.render("home.pug", obj);
+app.get("/page/:number", async(req, res) => {
+    let page = req.params.number;
+    let { userId } = req.signedCookies;
+    let user = userId && (await User.findById(userId));
+    if (page <= 1) {
+        res.redirect("/");
+        return;
+    }
+    let books = await Book.find();
+    let obj = pagination(user, page, 12, "books", books, "/page/");
+    res.render("home.pug", obj);
 });
 
 app.get("/logout", (req, res) => {
-  res.clearCookie("userId");
-  res.redirect("/");
+    res.clearCookie("userId");
+    res.redirect("/");
 });
 
+//using liveChat
+socketio(io);
+
 // listen for requests :)
-const listener = app.listen(port, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+const listener = server.listen(port, () => {
+    console.log("Your app is listening on port " + listener.address().port);
 });

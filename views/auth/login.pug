@@ -26,7 +26,7 @@ block content
               .form-group
                 input#password.form-control.pl-1(type='password', name='password', value= password? password :'admin123')
               button.btn.btn-success.w-100(type='submit') Sign in
-              a.d-block.text-primary.mt-3(href='#') Forgot Password
+              a.d-block.text-primary.mt-3(href='/login/forgotPassword') Forgot Password
           #form__register
             form(method='POST', action="/login/register")
               .form-row
