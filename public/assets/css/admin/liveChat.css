@@ -1,20 +1,24 @@
 img {
     max-width: 100%;
 }
+/* .wrapper {
+    min-height: calc(100vh - 0);
+} */
 
 .msg__support {
     min-height: inherit;
 }
 
 .inbox__msg {
-    min-height: inherit;
+    height: calc(100% - var(--height-header-lg));
     overflow: hidden;
 }
 
 .users {
+    width: 40%;
+    height: 100%;
     background: var(--main-bg-color) none repeat scroll 0 0;
     overflow: hidden;
-    width: 40%;
     border-right: 1px solid var(--light-second-color);
 }
 
@@ -25,7 +29,9 @@ img {
 }
 
 .users__body {
+    height: calc(100% - 54px);
     cursor: pointer;
+    overflow-y: auto;
 }
 
 .msg__list {
@@ -39,6 +45,10 @@ img {
 
 .msg__user--img {
     width: 11%;
+}
+.msg__user--img img {
+    width: 20px;
+    height: 30px;
 }
 
 .msg__active {
@@ -70,13 +80,15 @@ img {
 }
 
 .message {
-    padding: 30px 15px 0 25px;
+    height: 100%;
+    padding: 10px;
     width: 60%;
 }
 
 .msg__history {
-    /* height: inherit; */
-    overflow-y: auto;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 .msg__incoming--img {
@@ -103,7 +115,7 @@ img {
 
 .msg__outgoing {
     overflow: hidden;
-    margin: 26px 0 26px;
+    margin: 5px 0 5px;
 }
 
 .msg__outgoing--send {
@@ -112,12 +124,17 @@ img {
 }
 
 .msg__outgoing--send p {
-    background: #05728f none repeat scroll 0 0;
+    background: #7bbb89 none repeat scroll 0 0;
     border-radius: 3px;
     font-size: 14px;
-    color: #fff;
+    color: #2d2d2d;
     padding: 5px 10px 5px 12px;
     width: 100%;
+}
+
+.msg__type {
+    border-top: 1px solid var(--light-second-color);
+    position: relative;
 }
 
 .type__wrap input {
@@ -129,23 +146,18 @@ img {
     outline: none;
 }
 
-.msg__type {
-    border-top: 1px solid var(--light-second-color);
-    position: relative;
-}
-
 .type--send {
-    background: #05728f none repeat scroll 0 0;
+    background: #337b45 none repeat scroll 0 0;
+    color: #fff;
     border: medium none;
     border-radius: 50%;
-    color: #fff;
-    cursor: pointer;
     font-size: 17px;
-    height: 33px;
     position: absolute;
     right: 0;
     top: 11px;
     width: 33px;
+    height: 33px;
+    outline: none;
 }
 
 .msg__history--date {
@@ -158,4 +170,24 @@ img {
 .typing {
     height: 6%;
     padding: 0 0.5em 0.2em 0.5em;
+}
+
+@media only screen and (max-width: 768px) {
+    .inbox__msg {
+        height: calc(100% - var(--height-header-md));
+    }
+    /* .msg__history {
+        height: calc(100% - var(--height-header-md));
+    } */
+}
+
+/* Extra small devices <= 600px */
+
+@media only screen and (max-width: 576px) {
+    .inbox__msg {
+        height: calc(100% - var(--height-header-sm));
+    }
+    /* .msg__history {
+        height: calc(100% - var(--height-header-sm));
+    } */
 }

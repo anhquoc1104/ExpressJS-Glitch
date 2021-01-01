@@ -156,8 +156,16 @@ body.overlay-scrollbar
           img.logo.logo-light(src='/sources/img/1logo.png', alt='BookStore logo')
         p
           |BookStore - Nodejs - Expressjs - MongoDB
+  script.
+    let userAdmin = {
+      isAdmin: !{ JSON.stringify(isUserLogin) }.isAdmin, 
+      name: !{ JSON.stringify(isUserLogin) }.name, 
+      email: !{ JSON.stringify(isUserLogin) }.email
+    };
   script(src='/sources/js/jquery-3.4.1.min.js')
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')
+  script(src='/socket.io/socket.io.js')
   script(src='/assets/js/common.js')
+  script(src='/assets/js/admin/liveChat.js')
   block script

@@ -9,39 +9,15 @@ block style
 block content 
 	.container-fluid.m-auto.msg__support
 		.row.inbox__msg
-			.col-3.col-sm-3.col-md-3.col-lg-3.users
-				h5.users__heading Support Messenger
+			.col-4.col-sm-4.col-md-4.col-lg-3.px-0.users
+				h5.users__heading Messenger
 				.users__body
-					.m-0.msg__list.msg__active
-						.msg__user.d-flex
-							.msg__user--img
-								img(src='https://ptetutorials.com/images/user-profile.png', alt='sunil')
-							.msg__user--ib
-								h5.msg__user--name.d-flex.justify-content-between
-									span Sunil Rajput
-									small.msg__user--date Dec 25
-								p.msg__user--content.m-auto
-									| Test, which is a new approach to have all solutions astrology under one roof.
-			.col-9.col-sm-9.col-md-9.col-lg-9.message.d-flex.flex-column.justify-content-end
+
+			.col-4.col-sm-4.col-md-4.col-lg-9.d-flex.flex-column.justify-content-end.message
 				.msg__history.d-flex.flex-column
-					.msg__incoming
-						.msg__incoming--img
-							img(src='https://ptetutorials.com/images/user-profile.png', alt='sunil')
-						.msg__incoming--received
-							p Test which is a new approach to have all solutions
-							span.msg__history--date  11:01 AM | June 9
-					.msg__outgoing
-						.msg__outgoing--send
-							p.m-0
-								| Test which is a new approach to have all solutions.
-							span.msg__history--date  11:01 AM | June 9
-				.msg__type
-					.type__wrap
-						input.w-100(type='text', placeholder='Type a message')
-						button.type--send(type='button')
-							i.fa.fa-paper-plane
-	audio#windowSound
-		source(src='/assets/sounds/new_chat_window.mp3', type='audio/mpeg')
+					.msg__push--old
+					.msg__push--new
+					
 	audio#chatSound
 		source(src='/assets/sounds/new_message.mp3', type='audio/mpeg')
 	audio#pokeSound

@@ -47,11 +47,15 @@ app.use(cookieParser(process.env.COOKIE_SECRET || "2tryd6rt45eydhf756tyg"));
 app.use(session({ cookie: { maxAge: 60000 } }));
 app.use(flash());
 
-app.use(async(req, res, next) => {
+app.use(async (req, res, next) => {
     let userId = req.signedCookies.userId;
-    let user = userId && (await User.findById(userId));
-    res.locals.isUserLogin = user;
-    // console.log(user.isAdmin);
+    let user = (userId && (await User.findById(userId))) || undefined;
+    if (user) {
+        res.locals.isUserLogin = user;
+    } else {
+        res.locals.isUserLogin = "";
+    }
+    // console.log(res.locals.isUserLogin);
     next();
 });
 app.use(sessionMiddleware);
@@ -75,7 +79,7 @@ app.set("view engine", "pug");
 app.set("views", "./views");
 
 //home
-let homePage = async(req, res) => {
+let homePage = async (req, res) => {
     let page = 1;
     let { userId } = req.signedCookies;
 
@@ -105,7 +109,7 @@ let homePage = async(req, res) => {
 app.get("/", homePage);
 app.post("/", homePage);
 
-app.get("/page/:number", async(req, res) => {
+app.get("/page/:number", async (req, res) => {
     let page = req.params.number;
     let { userId } = req.signedCookies;
     let user = userId && (await User.findById(userId));

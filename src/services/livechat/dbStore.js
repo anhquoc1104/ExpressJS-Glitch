@@ -1,35 +1,32 @@
-var redis = require("redis");
-var config = require("./config.liveChat");
-//var Q = require("q");
-var redisClient;
+let redis = require("redis");
+let redisClient;
+const threeDay = 3600 * 24 * 3;
 
-exports.ConnectToRedis = function(startApp) {
+exports.ConnectToRedis = function () {
     // redisClient = redis.createClient(config.redis_port, config.redis_hostname);
-    redisClient = redis.createClient(config.redis_port, config.redis_hostname);
-    //   console.log(redis);
-    redisClient.on("connect", function() {
+    redisClient = redis.createClient(process.env.REDISCLOUD_URL, {
+        no_ready_check: true,
+    });
+    redisClient.on("connect", function () {
         console.log("Connected to Redis");
-        //startApp(true);
     });
 
-    redisClient.on("error", function() {
+    redisClient.on("error", function () {
         console.log("Failed to connect to Redis");
-        //startApp(false);
     });
 };
 
-exports.getMessages = async function(roomID, startPos, endPos) {
-    if (endPos == undefined) {
+exports.getMessages = function (roomID, startPos, endPos) {
+    if (!endPos) {
         if (startPos > -10 && startPos < 0) endPos = -1;
         else endPos = startPos + 9;
     }
-
     return new Promise((resolve, reject) => {
-        redisClient.lrange(roomID, startPos, endPos, function(err, res) {
+        redisClient.lrange(roomID, startPos, endPos, function (err, res) {
             if (!err) {
-                var result = [];
+                let result = [];
                 // Loop through the list, parsing each item into an object
-                for (var msg in res) result.push(JSON.parse(res[msg]));
+                for (let msg in res) result.push(JSON.parse(res[msg]));
                 result.push(roomID);
                 resolve(result);
             } else {
@@ -39,7 +36,7 @@ exports.getMessages = async function(roomID, startPos, endPos) {
     });
 };
 
-exports.pushMessage = function(data) {
+exports.pushMessage = function (data) {
     redisClient.lpush(
         data.roomID,
         JSON.stringify({
@@ -48,20 +45,37 @@ exports.pushMessage = function(data) {
             when: data.timestamp,
         })
     );
+    redisClient.expire(data.roomID + "-details", threeDay);
+    redisClient.expire(data.roomID, threeDay);
 };
 
-exports.setDetails = function(data) {
-    redisClient.hmset(data.roomID + "-details", {
-        Name: data.Name,
-        Email: data.Email,
+exports.setDetails = function (data) {
+    let { name, email, timeStamp, asRead, roomID } = data;
+    redisClient.hmset(roomID + "-details", {
+        name,
+        email,
+        timeStamp,
+        asRead,
     });
 };
 
-exports.getDetails = async function(roomID) {
+exports.setExpire = function (data) {
+    // Set all key in data
+    // if (data) {
+    //     for (let roomID of data) {
+    //         redisClient.expire(roomID, fiveDay);
+    //     }
+    // }
+    redisClient.expire(data.roomID + "-details", fiveDay);
+    redisClient.expire(data.roomID, fiveDay);
+};
+
+exports.getDetails = function (roomID) {
     return new Promise((resolve, reject) => {
         redisClient.hmget(
-            roomID + "-details", ["Name", "Email"],
-            function(err, result) {
+            roomID + "-details",
+            ["name", "email", "timeStamp", "asRead"],
+            function (err, result) {
                 if (!err) {
                     resolve(result);
                 } else {
@@ -72,13 +86,27 @@ exports.getDetails = async function(roomID) {
     });
 };
 
-exports.getMsgLength = async function(roomID) {
+exports.getAllKey = function () {
     return new Promise((resolve, reject) => {
-        redisClient.llen(roomID, function(err, len) {
+        redisClient.keys("*", function (err, result) {
             if (!err) {
-                resolve(len);
+                resolve(result);
             } else {
                 reject(err);
+            }
+        });
+    });
+};
+
+exports.delKey = function (key) {
+    redisClient.del(key);
+};
+
+exports.getMsgLength = function (roomID) {
+    return new Promise((resolve, reject) => {
+        redisClient.llen(roomID, function (err, len) {
+            if (err) {
+                console.log(err);
             }
         });
     });

@@ -16,18 +16,6 @@ head(lang="en")
   block title
     title= title
 body.overlay-scrollbar
-<!--Start of Tawk.to Script-->
-  //- script(type="text/javascript").
-  //-   var Tawk_API = Tawk_API||{}, Tawk_LoadStart=new Date();
-  //-   (function(){
-  //-   var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-  //-   s1.async = true;
-  //-   s1.src ='https://embed.tawk.to/5f9a80587f0a8e57c2d81eef/default';
-  //-   s1.charset='UTF-8';
-  //-   s1.setAttribute('crossorigin','*');
-  //-   s0.parentNode.insertBefore(s1,s0);
-  //-   })();
-<!--End of Tawk.to Script-->
   block nav
     .navbar.row
       ul.navbar-nav.col-3.col-md-2.col-lg-3.pl-4
@@ -193,11 +181,12 @@ body.overlay-scrollbar
           img.logo.logo-light(src='/sources/img/1logo.png', alt='BookStore logo')
         p
           |BookStore - Nodejs - Expressjs - MongoDB
+  script.
+    let userClient = !{JSON.stringify(isUserLogin)}
   script(src='/sources/js/jquery-3.4.1.min.js')
   script(src='/sources/js/popper.min.js')
   script(src='/sources/js/bootstrap.min.js')
   script(src='/socket.io/socket.io.js')
   script(src='/assets/js/common.js')
   script(src='/assets/js/liveChat.js')
-  //- script(src="/reload/reload.js")
   block script

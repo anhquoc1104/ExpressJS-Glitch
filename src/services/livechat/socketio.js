@@ -1,205 +1,243 @@
-//const uuid = require("../uuid");
-const _ = require("underscore");
 const dbStore = require("./dbStore.js");
-const config = require("./config.liveChat");
 
 let admins = {};
 let users = {};
 
 dbStore.ConnectToRedis();
 
+function asRead(data) {
+    return data.asRead ? (data.asRead = false) : (data.asRead = true);
+}
+
 module.exports = (io) => {
-    io.on("connection", function(socket) {
-        socket.on("disconnect", function() {
-            if (socket.isAdmin) {
-                delete admins[socket.username];
-                _.each(admins, function(adminSocket) {
-                    adminSocket.emit("admin removed", socket.username);
-                });
-            } else {
-                if (io.sockets.adapter.rooms[socket.roomID]) {
-                    let total = io.sockets.adapter.rooms[socket.roomID]["length"];
-                    let totAdmins = Object.keys(admins).length;
-                    let clients = total - totAdmins;
-                    if (clients == 0) {
-                        //check if user reconnects in 4 seconds
-                        setTimeout(function() {
-                            if (io.sockets.adapter.rooms[socket.roomID])
-                                total = io.sockets.adapter.rooms[socket.roomID]["length"];
-                            totAdmins = Object.keys(admins).length;
-                            if (total <= totAdmins) {
-                                /*mail.sendMail({
-                                                                                                                                  roomID: socket.roomID,
-                                                                                                                                  MsgLen: socket.TotalMsgLen,
-                                                                                                                                  email: socket.userDetails
-                                                                                                                                });*/
-                                delete users[socket.roomID];
-                                socket.broadcast
-                                    .to(socket.roomID)
-                                    .emit("User Disconnected", socket.roomID);
-                                _.each(admins, function(adminSocket) {
-                                    adminSocket.leave(socket.roomID);
-                                });
-                            }
-                        }, 4000);
+    io.on("connection", function (socket) {
+        socket
+            .on("disconnect", function () {
+                if (socket.isAdmin) {
+                    delete admins[socket.username];
+                    for (let adminSocket in admins) {
+                        adminSocket.emit("admin removed", socket.username);
                     }
                 } else {
-                    if (socket.userDetails)
-                    /*mail.sendMail({
-                                                                                roomID: socket.roomID,
-                                                                                MsgLen: socket.TotalMsgLen,
-                                                                                email: socket.userDetails
-                                                                              });*/
-                        delete users[socket.roomID];
-                }
-            }
-        });
-
-        //Init admin
-        socket.on("add admin", function(data) {
-            this.isAdmin = data.isAdmin;
-            socket.username = data.admin;
-
-            _.each(admins, function(adminSocket) {
-                adminSocket.emit("admin added", socket.username);
-                socket.emit("admin added", adminSocket.username);
-            });
-
-            admins[socket.username] = socket;
-
-            //If some user is already online on chat
-            if (Object.keys(users).length > 0) {
-                _.each(users, function(userSocket) {
-                    dbStore.getMessages(userSocket.roomID, 0).then(function(history) {
-                        let len = history.length;
-                        let userSocket = users[history[len - 1]];
-                        history.splice(-1, 1);
-                        socket.join(userSocket.roomID);
-                        socket.emit("New Client", {
-                            roomID: userSocket.roomID,
-                            history: history,
-                            details: userSocket.userDetails,
-                            justJoined: true,
-                        });
-                    });
-                });
-            }
-        });
-        //Init user
-        socket.on("add user", function(data) {
-            socket.isAdmin = false;
-            if (data.isNewUser) {
-                dbStore.setDetails(data);
-                socket.emit("roomID", data.roomID); //set roomID to localStorage
-            }
-            socket.roomID = data.roomID;
-            //Fetch user details
-            dbStore
-                .getDetails(socket.roomID)
-                .then(function(details) {
-                    socket.userDetails = details;
-                })
-                .catch(function(error) {
-                    console.log("Line 95 : ", error);
-                });
-            socket.join(socket.roomID);
-            let newUser = false;
-            if (!users[socket.roomID]) {
-                // Check if different instance of same user. (ie. Multiple tabs)
-                users[socket.roomID] = socket;
-                newUser = true;
-            }
-            //Fetch message history
-            dbStore
-                .getMessages(socket.roomID, 0)
-                .then(function(history) {
-                    history.splice(-1, 1);
-                    socket.emit("chat history", {
-                        history: history,
-                        getMore: false,
-                    });
-                    if (Object.keys(admins).length == 0) {
-                        //Tell user he will be contacted asap and send admin email
-                        socket.emit(
-                            "log message",
-                            "Thank you for reaching us." +
-                            " Please leave your message here and we will get back to you shortly."
-                        );
-                        /*mail.alertMail();*/
-                    } else {
-                        if (newUser) {
-                            socket.emit(
-                                "log message",
-                                "Hello " + socket.userDetails[0] + ", How can I help you?"
-                            );
-                            //Make all available admins join this users room.
-                            _.each(admins, function(adminSocket) {
-                                adminSocket.join(socket.roomID);
-                                adminSocket.emit("New Client", {
-                                    roomID: socket.roomID,
-                                    history: history,
-                                    details: socket.userDetails,
-                                    justJoined: false,
-                                });
-                            });
+                    if (io.sockets.adapter.rooms[socket.roomID]) {
+                        let total =
+                            io.sockets.adapter.rooms[socket.roomID]["length"];
+                        let totAdmins = Object.keys(admins).length;
+                        let clients = total - totAdmins;
+                        if (clients == 0) {
+                            //check if user reconnects in 4 seconds
+                            setTimeout(function () {
+                                if (io.sockets.adapter.rooms[socket.roomID])
+                                    total =
+                                        io.sockets.adapter.rooms[socket.roomID][
+                                            "length"
+                                        ];
+                                totAdmins = Object.keys(admins).length;
+                                if (total <= totAdmins) {
+                                    delete users[socket.roomID];
+                                    socket.broadcast
+                                        .to(socket.roomID)
+                                        .emit(
+                                            "User Disconnected",
+                                            socket.roomID
+                                        );
+                                    for (let adminSocket in admins) {
+                                        adminSocket.leave(socket.roomID);
+                                    }
+                                }
+                            }, 4000);
                         }
+                    } else {
+                        if (socket.userDetails) delete users[socket.roomID];
                     }
-                })
-                .catch(function(error) {
-                    console.log("Line 132 : ", error);
-                });
-            dbStore
-                .getMsgLength(socket.roomID)
-                .then(function(len) {
-                    socket.MsgHistoryLen = len * -1 + 10;
-                    socket.TotalMsgLen = len * -1;
-                })
-                .catch(function(error) {
-                    console.log("Line 140 : ", error);
-                });
-        });
-
-        socket.on("chat message", function(data) {
-            if (data.roomID === "null") data.roomID = socket.roomID;
-            data.isAdmin = socket.isAdmin;
-            dbStore.pushMessage(data);
-
-            socket.broadcast.to(data.roomID).emit("chat message", data);
-        });
-
-        socket.on("typing", function(data) {
-            socket.broadcast.to(data.roomID).emit("typing", {
-                isTyping: data.isTyping,
-                person: data.person,
-                roomID: data.roomID,
-            });
-        });
-
-        socket.on("poke admin", function(targetAdmin) {
-            admins[targetAdmin].emit("poke admin", {});
-        });
-
-        socket.on("client ack", function() {
-            for (adminSocket in admins) {
-                if (!admins.hasOwnProperty(adminSocket)) {
-                    continue;
                 }
-                admins[adminSocket].emit("client ack", {});
-            }
-        });
+            })
+            .on("add admin", function (data) {
+                this.isAdmin = data.isAdmin;
+                socket.username = data.admin;
 
-        socket.on("more messages", function() {
-            if (socket.MsgHistoryLen < 0) {
+                admins[socket.username] = socket;
                 dbStore
-                    .getMessages(socket.roomID, socket.MsgHistoryLen)
-                    .then(function(history) {
-                        history.splice(-1, 1);
-                        socket.emit("more chat history", {
-                            history: history,
-                        });
+                    .getAllKey()
+                    // .then((data) => { //del all db
+                    //     for (let key of data) {
+                    //         console.log(key);
+                    //         dbStore.delKey(key);
+                    //     }
+                    // })
+                    .then(async (dataRoomID) => {
+                        if (dataRoomID) {
+                            let arrRoomID = dataRoomID.filter((elm) => {
+                                return elm.indexOf("details") === -1;
+                            });
+                            //Get user in db
+                            if (arrRoomID && arrRoomID.length > 0) {
+                                let userDetails = [];
+                                for (let roomID of arrRoomID) {
+                                    await dbStore
+                                        .getDetails(roomID)
+                                        .then(function (details) {
+                                            userDetails.push({
+                                                ...details,
+                                                roomID,
+                                            });
+                                        })
+                                        .catch(function (error) {
+                                            console.log(error);
+                                        });
+                                }
+                                if (userDetails) {
+                                    userDetails.sort((a, b) => {
+                                        return +b.timeStamp - +a.timeStamp;
+                                    });
+                                    for (let user of userDetails) {
+                                        let { roomID } = user;
+                                        dbStore
+                                            .getMessages(roomID, 0, 0)
+                                            .then(function (history) {
+                                                let len = history.length;
+                                                if (len > 1) {
+                                                    history.splice(1, len); //get last message
+                                                    socket.join(roomID); //admin join to client
+                                                    socket.emit("client list", {
+                                                        roomID,
+                                                        history,
+                                                        userDetails: {
+                                                            ...user,
+                                                        },
+                                                        justJoined: true,
+                                                    });
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.log(error);
+                                            });
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
                     });
-                socket.MsgHistoryLen += 10;
-            }
-        });
+            })
+            .on("add user", function (data) {
+                socket.isAdmin = false;
+                //Add new user
+                if (data.isNewUser) {
+                    data.timeStamp = new Date().getTime();
+                    data.asRead = true;
+                    dbStore.setDetails(data);
+                    socket.emit("roomID", data.roomID); //set roomID to localStorage
+                }
+                socket.roomID = data.roomID;
+                //Fetch user details
+                dbStore
+                    .getDetails(socket.roomID)
+                    .then(function (details) {
+                        socket.userDetails = details;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                socket.join(socket.roomID);
+                let newUser = false;
+                if (!users[socket.roomID]) {
+                    // Check if different instance of same user. (ie. Multiple tabs)
+                    users[socket.roomID] = socket;
+                    newUser = true;
+                }
+                //Fetch message history
+                dbStore
+                    .getMessages(socket.roomID, 0)
+                    .then(function (history) {
+                        history.splice(-1, 1);
+                        socket.emit("chat history", {
+                            history: history,
+                            getMore: false,
+                        });
+                        if (Object.keys(admins).length == 0) {
+                            //Tell user he will be contacted
+                            socket.emit(
+                                //admin off
+                                "log message",
+                                "Thank you for reaching us." +
+                                    " Please leave your message here and we will get back to you shortly."
+                            );
+                        } else {
+                            if (newUser) {
+                                socket.emit(
+                                    // admin onl
+                                    "log message",
+                                    "Hello " +
+                                        socket.userDetails[0] +
+                                        ", How can I help you?"
+                                );
+                                //Make all available admins join this users room.
+                                for (let adminSocket in admins) {
+                                    let admin = admins[adminSocket];
+                                    admin.join(socket.roomID);
+                                }
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                dbStore
+                    .getMsgLength(socket.roomID)
+                    .then(function (len) {
+                        socket.MsgHistoryLen = len * -1 + 10;
+                        socket.TotalMsgLen = len * -1;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            })
+            //admin click user in list
+            .on("chat history", function (data) {
+                dbStore
+                    .getMessages(data.roomID, 0)
+                    .then(function (history) {
+                        history.splice(-1, 1);
+                        socket.emit("chat history", {
+                            history: history,
+                            getMore: false,
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            })
+            .on("chat message", function (data) {
+                if (data.roomID === "null") data.roomID = socket.roomID;
+                // console.log(users[data.roomID]);
+                let user = users[data.roomID];
+                user.lastDate = new Date().getTime();
+                user.asRead = false;
+                data.isAdmin = socket.isAdmin;
+                data.name = user.userDetails[0];
+                data.email = user.userDetails[1];
+                data.timeStamp = new Date().getTime();
+                data.asRead = false;
+                dbStore.setDetails(data);
+                dbStore.pushMessage(data);
+                //send mess without Sender.
+                socket.broadcast.to(data.roomID).emit("chat message", data);
+            })
+            .on("as read", function (data) {})
+            .on("more messages", function () {
+                if (socket.MsgHistoryLen < 0) {
+                    dbStore
+                        .getMessages(socket.roomID, socket.MsgHistoryLen)
+                        .then(function (history) {
+                            history.splice(-1, 1);
+                            socket.emit("more chat history", {
+                                history: history,
+                            });
+                        });
+                    socket.MsgHistoryLen += 10;
+                }
+            });
     });
 };
