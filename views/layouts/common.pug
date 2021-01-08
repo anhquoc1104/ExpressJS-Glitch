@@ -164,7 +164,7 @@ body.overlay-scrollbar
           .title Please fill out this form
           form.inputFields
             .inputContainer.form-group
-              input.nameInput.form-control(type='text', maxlength='20', pattern='^[a-zA-Z ]{3,}', placeholder=' * Name', required='')
+              input.nameInput.form-control(type='text', maxlength='20', pattern='^[a-zA-Z ]{3,}', placeholder=' * Name', required='' autofocus)
             .inputContainer.form-group
               input.emailInput.form-control(type='email', placeholder=' * Email', required='')
             input.submitBtn.bg-success(type='submit')
@@ -173,7 +173,7 @@ body.overlay-scrollbar
             .msg__push--old
             .msg__push--new
             .typing
-          input.form-control.inputMessage(rows="1" placeholder="Type here...")
+          input.form-control.inputMessage(rows="1" placeholder="Type here..." autofocus)
   block footer
     footer
       .footer__container

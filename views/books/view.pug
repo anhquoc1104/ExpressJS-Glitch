@@ -2,7 +2,8 @@ extends ../layouts/common.pug
 
 block title
   title Detail || BookStore
-
+block style
+    link(rel='stylesheet', href='/assets/css/bookView.css')
 block content
   .container
     .row.mt-5
@@ -10,20 +11,34 @@ block content
         if book.avatarUrl
           img(src=book.avatarUrl, alt=book.title, width="150px", height="200px")
         else
-          img(src='/sources/img/book-default.ipg', alt=book.title, width="150px", height="200px")
-      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-8.d-flex.flex-column.align-items-start.justify-content-end
+          img(src='/sources/img/book-default.jpg', alt=book.title, width="150px", height="200px")
+      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-8.d-flex.flex-column.align-items-start.justify-content-end.book__view
         h4= book.title
         .my-3
-          span Shop: 
-          a(href="#") My Shop
-        if isUserLogin && isUserLogin.isAdmin == "true"
-          a.btn.btn-success.mb-3(href="/books/edit/" + book._id) Edit info book
-        else
-          a.btn.btn-success.mb-3(href="/books/addToCart/" + book._id) Add to Cart
+        p Author: 
+          if book.author
+            i=book.author
+          else
+            i  ---
+        p Publisher: 
+          if book.publisher
+            i=book.publisher
+          else
+            i  ---
+        p Year: 
+          if book.year
+            i=book.year
+          else
+            i  ---
+        if book.quantity > 0
+          a.btn.btn-success.mt-3(href="/books/addToCart/" + book._id) Add to Cart
     .row.mt-4
       .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
         h5
-          u.text-dark.font-weight-bold.font Decription
-        .border.border-primary.rounded.p-3
-          span= book.description
+          u.text-dark.font-weight-bold.font Description
+        .border.border-primary.rounded.p-3.mb-5
+          if book.description
+            span=book.description
+          else
+            span No Description
   block pagination

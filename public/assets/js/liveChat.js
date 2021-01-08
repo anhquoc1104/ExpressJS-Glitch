@@ -15,12 +15,20 @@ let $Typing = $(".typing"); //Typing notification
 let $inputMessage = $(".inputMessage"); //Text area to input msg
 let $contentArea = $(".contentArea"); //Widget box
 
-// let socket; //io socket
 let socket = io(); //io socket
 let typing = false; //Boolean to check if user is typing
 let timeout = undefined; //Timeout to monitor typing
 let id = localStorage.getItem("roomID"); //Room ID in localstorage
 let active = sessionStorage.getItem("active"); //Check if chat has been opened.
+
+function formatDate(date) {
+    return {
+        getMonthFormat: (date.getMonth() + 1).toString().padStart(2, "0"),
+        getDateFormat: date.getDate().toString().padStart(2, "0"),
+        getHoursFormat: date.getHours().toString().padStart(2, "0"),
+        getMinutesFormat: date.getMinutes().toString().padStart(2, "0"),
+    };
+}
 
 function timeoutFunction() {
     typing = false;
@@ -32,25 +40,27 @@ function timeoutFunction() {
 }
 
 function sendMessage() {
-    let message = $inputMessage.val();
+    let msg = $inputMessage.val().trim();
     // Prevent markup from being injected into the message
-    message = cleanInput(message);
-    // if there is a non-empty message
-    if (message) {
+    msg = cleanInput(msg);
+    // if there is a non-empty msg
+    if (msg) {
         $inputMessage.val("");
-        let time = "" + new Date();
-        // tell server to execute 'new message' and send along one parameter
+        let timeStamp = new Date().getTime();
+        // tell server to execute 'new msg' and send along one parameter
         socket.emit("chat message", {
             roomID: "null",
-            msg: message,
-            timestamp: time,
+            msg,
+            timeStamp,
+            asRead: "false",
         });
         let $messageBodyDiv = $(
-            '<div class="msg__b">' +
-                message +
-                '<span class="timestamp">' +
-                time.toLocaleString().substr(15, 6) +
-                "</span></div>"
+            `<div class="msg__b">${msg}
+                <span class="timestamp">${
+                    formatDate(new Date()).getHoursFormat
+                }:${formatDate(new Date()).getMinutesFormat}
+                </span>
+            </div>`
         ).insertBefore($newMsg);
         $messages[0].scrollTop = $messages[0].scrollHeight;
     }
@@ -58,16 +68,15 @@ function sendMessage() {
 
 function addMessages(data, getMore) {
     let sender;
+    let date = new Date(data["when"]);
     if (data["who"]) sender = "msg__a";
     else sender = "msg__b";
     let $messageBodyDiv = $(
-        '<div class="' +
-            sender +
-            '">' +
-            data["what"] +
-            '<span class="timestamp">' +
-            data["when"].toLocaleString().substr(15, 6) +
-            "</span></div>"
+        `<div class="
+            ${sender}">${data["what"]}
+            <span class="timestamp">${formatDate(date).getHoursFormat}:${
+            formatDate(date).getMinutesFormat
+        }</span></div>`
     );
     if (getMore) {
         $messageBodyDiv.insertAfter($oldMsg);
@@ -91,16 +100,18 @@ function uuid() {
 }
 
 if (active && id) {
-    $msgMinimize.hide();
+    // $msgMinimize.hide();
+    $msgMinimize.show();
     $form.hide();
     $chatArea.show();
     socket.emit("add user", {
         isNewUser: false,
         roomID: id,
     });
-    $contentArea.show();
+    // $contentArea.show();
+    $contentArea.hide();
 } else if (userClient) {
-    $msgMinimize.hide();
+    $msgMinimize.show();
     $form.hide();
     $chatArea.show();
     socket.emit("add user", {
@@ -109,7 +120,7 @@ if (active && id) {
         name: userClient.name,
         email: userClient.email,
     });
-    $contentArea.show();
+    $contentArea.hide();
 }
 
 $msgMinimize.click(function () {
@@ -178,22 +189,23 @@ socket
     })
     .on("chat message", function (data) {
         let sender;
+        let date = new Date(data.msg[0].when);
         if (data.isAdmin) sender = "msg__a";
         else sender = "msg__b";
         let $messageBodyDiv = $(
-            '<div class="' +
-                sender +
-                '">' +
-                data.msg +
-                '<span class="timestamp">' +
-                data.timestamp.toLocaleString().substr(15, 6) +
-                "</span></div>"
+            `<div class="
+                ${sender}">${data.msg[0].what}
+                <span class="timestamp">${formatDate(date).getHoursFormat}:${
+                formatDate(date).getMinutesFormat
+            } | ${formatDate(date).getDateFormat}/${
+                formatDate(date).getMonthFormat
+            }</span></div>`
         ).insertBefore($newMsg);
         $messages[0].scrollTop = $messages[0].scrollHeight;
     })
     .on("typing", function (data) {
         if (data.isTyping && data.person != "Client")
-            $Typing.append("CronJ is typing...");
+            $Typing.append("Admin is typing...");
         else $Typing.text("");
     })
     .on("chat history", function (data) {

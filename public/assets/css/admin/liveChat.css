@@ -30,22 +30,19 @@ img {
 
 .users__body {
     height: calc(100% - 54px);
-    cursor: pointer;
     overflow-y: auto;
 }
 
 .msg__list {
     border-bottom: 1px solid var(--light-second-color);
     padding: 18px 16px 10px;
+    cursor: pointer;
 }
 
 .msg__user {
     overflow: hidden;
 }
 
-.msg__user--img {
-    width: 11%;
-}
 .msg__user--img img {
     width: 20px;
     height: 30px;
@@ -71,6 +68,7 @@ img {
 }
 
 .msg__user--ib p {
+    position: relative;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
@@ -87,13 +85,17 @@ img {
 
 .msg__history {
     height: 100%;
-    overflow: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .msg__incoming--img {
     display: inline-block;
-    width: 6%;
+}
+.msg__incoming--img img {
+    border-radius: 50%;
+    width: 23px;
+    height: 25px;
 }
 
 .msg__incoming--received {
@@ -103,33 +105,31 @@ img {
     width: 57%;
 }
 
+.msg__outgoing--send p,
 .msg__incoming--received p {
-    background: #ebebeb none repeat scroll 0 0;
     border-radius: 3px;
-    color: #646464;
+    color: #2d2d2d;
     font-size: 14px;
     margin: 0;
     padding: 5px 10px 5px 12px;
     width: 100%;
 }
+.msg__incoming--received p {
+    background: #ebebeb none repeat scroll 0 0;
+}
 
+.msg__outgoing--send p {
+    background: #7bbb89 none repeat scroll 0 0;
+}
+
+.msg__incoming,
 .msg__outgoing {
-    overflow: hidden;
-    margin: 5px 0 5px;
+    margin: 10px 0 10px;
 }
 
 .msg__outgoing--send {
     max-width: 60%;
     margin-left: auto;
-}
-
-.msg__outgoing--send p {
-    background: #7bbb89 none repeat scroll 0 0;
-    border-radius: 3px;
-    font-size: 14px;
-    color: #2d2d2d;
-    padding: 5px 10px 5px 12px;
-    width: 100%;
 }
 
 .msg__type {
@@ -170,6 +170,17 @@ img {
 .typing {
     height: 6%;
     padding: 0 0.5em 0.2em 0.5em;
+}
+
+.dot {
+    position: absolute;
+    bottom: 8px;
+    right: -3px;
+}
+
+.dot i {
+    width: 0.55rem;
+    height: 0.55rem;
 }
 
 @media only screen and (max-width: 768px) {

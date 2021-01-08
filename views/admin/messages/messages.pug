@@ -13,15 +13,13 @@ block content
 				h5.users__heading Messenger
 				.users__body
 
-			.col-4.col-sm-4.col-md-4.col-lg-9.d-flex.flex-column.justify-content-end.message
-				.msg__history.d-flex.flex-column
+			.col-8.col-sm-8.col-md-8.col-lg-9.d-flex.flex-column.justify-content-end.message
+				.msg__history.d-flex.flex-column.flex-column-reverse
 					.msg__push--old
 					.msg__push--new
 					
 	audio#chatSound
 		source(src='/assets/sounds/new_message.mp3', type='audio/mpeg')
-	audio#pokeSound
-		source(src='/assets/sounds/poke.mp3', type='audio/mpeg')
 
 block pagination
 block footer

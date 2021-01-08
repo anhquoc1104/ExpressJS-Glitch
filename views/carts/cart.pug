@@ -6,7 +6,7 @@ block style
   link(rel="stylesheet", href="/assets/css/cart.css")
 block content
   .container.mt-3
-    if cart == false
+    if arrCart == false
       .row.justify-content-center
         img.cart__empty(src="/sources/img/cart-empty.png", alt="")
     else
@@ -18,15 +18,20 @@ block content
             th(scope='col') Timeout
             th(scope='col') 
         tbody
-          each elm in cart
+          each elm in arrCart
             tr
               td(scope='row')
-                img.cart__image(src=elm.avatarUrl)
-              td= elm.title
-              td= elm.timeout
-              td 
+                if elm.avatarUrl
+                  a(href="/books/view/" + elm.idBook)
+                    img.cart__image(src=elm.avatarUrl)
+                else
+                  img.cart__image(src='/sources/img/book-default.jpg', alt="")
+
               td
-                a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.id, type="submit") Remove
+                a(href="/books/view/" + elm.idBook)= elm.title
+              td= elm.timeout
+              td
+                a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.idCart, type="submit") Remove
           //- tr
           //-   td.text-right(colspan='4')
           //-     a.btn.btn-primary.font-weight-bold(href="/transactions/create") Checkout

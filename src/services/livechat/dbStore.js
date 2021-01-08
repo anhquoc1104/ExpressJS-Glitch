@@ -42,7 +42,7 @@ exports.pushMessage = function (data) {
         JSON.stringify({
             who: data.isAdmin,
             what: data.msg,
-            when: data.timestamp,
+            when: data.timeStamp,
         })
     );
     redisClient.expire(data.roomID + "-details", threeDay);

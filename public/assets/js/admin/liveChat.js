@@ -1,24 +1,32 @@
 // Initialize variables
 let $window = $(window);
-//let $newUser = $("#windowSound")[0];
+
 let $newChat = $("#chatSound")[0];
-let $userList = $(".msg__list"); // List of online users
-let $inputMessage; // Input message input box
 let $usersBody = $(".users__body");
-let $messages = $(".msg__history"); // Messages area
+let $msgHistory = $(".msg__history"); // Messages area
 let $newMsg = $(".msg__push--new"); //Dummy to push new msgs
 let $oldMsg = $(".msg__push--old"); //Dummy to push msg history
+let $inputMessage; // Input message input box
 
 let $usernameDiv;
-let username; //Store admin username
+// let username; //Store admin username
 let authenticated = false; //Boolean to check if admin is authenticated
-let connected = false;
+// let connected = false;
 let typing = false; //Boolean to check if admin is typing
 let timeout = undefined; //Timeout to monitor typing
 
 let socket = io(); //io socket
 //$newUser.loop = true;
 Notification.requestPermission();
+
+function formatDate(date) {
+    return {
+        getMonthFormat: (date.getMonth() + 1).toString().padStart(2, "0"),
+        getDateFormat: date.getDate().toString().padStart(2, "0"),
+        getHoursFormat: date.getHours().toString().padStart(2, "0"),
+        getMinutesFormat: date.getMinutes().toString().padStart(2, "0"),
+    };
+}
 
 function addAdminToSocket() {
     if (userAdmin) {
@@ -43,90 +51,106 @@ function notifyAdmin(title, body) {
     }
 }
 
-function sendMessage(id) {
-    $inputMessage = $("#" + id);
-    let $parent = $inputMessage.parent();
-    let $messages = $parent.children(".messages");
-    let message = $inputMessage.val();
+function sendMessage(roomID) {
+    let msg = $inputMessage.val().trim();
     // Prevent markup from being injected into the message
-    message = cleanInput(message);
-    // if there is a non-empty message and a socket connection
-    if (message && connected) {
+    msg = cleanInput(msg);
+
+    if (msg) {
         $inputMessage.val("");
         // tell server to execute 'new message' and send along one parameter
-        let time = "" + new Date();
+        let timeStamp = new Date().getTime();
         socket.emit("chat message", {
-            roomID: id,
-            msg: message,
-            timestamp: time,
+            roomID,
+            msg,
+            timeStamp,
+            asRead: "true",
         });
-        $usernameDiv = $('<span class="username"/>').text("Admin");
-        let $messageBodyDiv = $('<span class="messageBody">').text(message);
-        let $timestampDiv = $('<span class="timestamp">').text(
-            time.toLocaleString().substr(15, 6)
-        );
-        $messageDiv = $('<li class="message"/>').append(
-            $usernameDiv,
-            $messageBodyDiv,
-            $timestampDiv
-        );
-        $messages.append($messageDiv);
-        //$messages[0].scrollTop = $messages[0].scrollHeight;
+
+        let data = {
+            roomID,
+            msg: [
+                {
+                    who: true,
+                    what: msg,
+                    when: timeStamp,
+                },
+            ],
+        };
+        //send msg to Client
+        $msgHistory.prepend(showMessReceive(data));
+        //Render in panel users
+        let $user = $(".users__body #" + data.roomID);
+        let $userContent = $user;
+        if ($user) {
+            $user.remove();
+        }
+        if ($userContent) {
+            $userContent.find(" .msg__user--content").text(msg);
+        }
+        $usersBody.prepend($userContent);
+        //$msgHistory[0].scrollTop = $msgHistory[0].scrollHeight;
     }
 }
 
-function isTyping() {
-    let id = event.target.id;
+function isTyping(roomID) {
     if (event.which !== 13 && event.which !== undefined) {
-        if (typing === false && $("#" + id).is(":focus")) {
+        if (typing === false && $inputMessage.is(":focus")) {
             typing = true;
             socket.emit("typing", {
                 isTyping: true,
-                roomID: id,
-                person: username,
+                roomID,
+                person: "Admin",
             });
         } else {
             clearTimeout(timeout);
             timeout = setTimeout(function () {
-                timeoutFunction(id);
+                timeoutFunction(roomID);
             }, 2000);
         }
     } else {
-        sendMessage(id);
+        sendMessage(roomID);
         clearTimeout(timeout);
-        timeoutFunction(id);
+        timeoutFunction(roomID);
     }
 }
 
-function timeoutFunction(id) {
+function timeoutFunction(roomID) {
     typing = false;
     socket.emit("typing", {
         isTyping: false,
-        roomID: id,
-        person: username,
+        roomID,
+        person: "Admin",
     });
 }
 
 function getChatArea(data) {
+    let date = new Date(data.msg[0].when);
+    let asRead = "";
+    if (data.userDetails[3] === "false") {
+        asRead = `<span class="dot"><i class="bg-danger"></i></span>`;
+    }
     return `
-    <div class="m-0 msg__list msg__active" id="${data.roomID}">
+    <div class="m-0 msg__list" id="${data.roomID}">
           <div class="msg__user d-flex">
               <div class="msg__user--img"><img src="/sources/img/user-chat-default.png" alt="userAdmin" /></div>
               <div class="msg__user--ib">
                   <h5 class="msg__user--name d-flex justify-content-between"><span>${
                       data.userDetails[0]
-                  }</span><small class="msg__user--date">${new Date(
-        data.history[0].when
-    ).getDate()}/${new Date(data.history[0].when).getMonth()}</small></h5>
+                  }</span><small class="msg__user--date">${
+        formatDate(date).getDateFormat
+    }/${formatDate(date).getMonthFormat}</small></h5>
                   <p class="msg__user--content m-auto">${
-                      data.history[0].what
-                  }</p>
+                      data.msg[0].what
+                  }${asRead}</p>
               </div>
           </div>
   </div>
   `;
 }
+
 function getChatHistory(data, getMore) {
+    let date = new Date(data["when"]);
     let $messageBodyDiv;
     if (!data["who"])
         //client
@@ -136,10 +160,12 @@ function getChatHistory(data, getMore) {
                 <img src="/sources/img/user-chat-default.png" alt="userAdmin" />
             </div>
             <div class="msg__incoming--received">
-                <p>${data["what"]}s</p>
-                <span class="msg__history--date">${data["when"]
-                    .toLocaleString()
-                    .substr(15, 6)}</span>
+                <p>${data["what"]}</p>
+                <span class="msg__history--date">${
+                    formatDate(date).getHoursFormat
+                }:${formatDate(date).getMinutesFormat} | ${
+            formatDate(date).getDateFormat
+        }/${formatDate(date).getMonthFormat}</span>
             </div>
         </div>`);
     //admin
@@ -148,115 +174,170 @@ function getChatHistory(data, getMore) {
     <div class="msg__outgoing">
         <div class="msg__outgoing--send">
             <p class="m-0">${data["what"]}</p>
-            <span class="msg__history--date">${data["when"]
-                .toLocaleString()
-                .substr(15, 6)}</span>
+            <span class="msg__history--date">${
+                formatDate(date).getHoursFormat
+            }:${formatDate(date).getMinutesFormat} | ${
+            formatDate(date).getDateFormat
+        }/${formatDate(date).getMonthFormat}</span>
         </div>
     </div>`);
     if (getMore) {
-        $messageBodyDiv.insertAfter($oldMsg);
-        $messages[0].scrollTop += $messageBodyDiv.outerHeight();
-    } else {
         $messageBodyDiv.insertBefore($newMsg);
-        $messages[0].scrollTop = $messages[0].scrollHeight;
+        $msgHistory[0].scrollTop += $messageBodyDiv.outerHeight();
+    } else {
+        $messageBodyDiv.insertAfter($oldMsg);
+        $msgHistory[0].scrollTop = $msgHistory[0].scrollHeight;
     }
 }
 
+function showMessReceive(data) {
+    let date = new Date(data.msg[0].when);
+    if (data.msg[0].who) {
+        return $(`
+        <div class="msg__outgoing">
+            <div class="msg__outgoing--send">
+                <p class="m-0">${data.msg[0].what}</p>
+                <span class="msg__history--date">${
+                    formatDate(date).getHoursFormat
+                }:${formatDate(date).getMinutesFormat} | ${
+            formatDate(date).getDateFormat
+        }/${formatDate(date).getMonthFormat}
+                </span>
+            </div>
+    </div>`);
+    }
+    return $(`
+    <div class="msg__incoming">
+        <div class="msg__incoming--img">
+            <img src="/sources/img/user-chat-default.png" alt="userAdmin" />
+        </div>
+        <div class="msg__incoming--received">
+            <p>${data.msg[0].what}</p>
+            <span class="msg__history--date">${
+                formatDate(date).getHoursFormat
+            }:${formatDate(date).getMinutesFormat} | ${
+        formatDate(date).getDateFormat
+    }/${formatDate(date).getMonthFormat}</span>
+        </div>
+    </div>`);
+}
+
 // Prevents input from having injected markup
-function cleanInput(input) {
-    return $("<div/>").text(input).text();
+function cleanInput(msg) {
+    return $("<div/>").text(msg).text();
 }
 
 $(document).ready(function () {
     addAdminToSocket();
 });
 
-$usersBody.click(function (e) {
+//get chat of user
+$(document).on("click", ".msg__list", function (e) {
     e.preventDefault();
-    let user = $(this).children(".msg__list");
-    let roomID = user.attr("id");
-    user.addClass("msg__active");
-    socket.emit("chat history", { roomID });
+    //remove active class.
+    if ($(".msg__active")) {
+        $(".msg__active").removeClass("msg__active");
+    }
+    if ($(this).find(".dot")) {
+        $(this).find(".dot").remove();
+    }
+    let roomID = $(this).attr("id");
+    if (roomID) {
+        $(this).addClass("msg__active");
+        socket.emit("chat history", { roomID });
+    }
 });
 
-$messages.on("scroll", function () {
-    if ($messages.scrollTop() == 0) socket.emit("more messages", {});
+$msgHistory.on("scroll", function () {
+    if ($msgHistory.scrollTop() == 0) socket.emit("more messages", {});
 });
 
-socket;
-jq.on("client list", function (data) {
-    $usersBody.append(getChatArea(data));
-})
+socket
+    .on("client list", function (data) {
+        $usersBody.append(getChatArea(data));
+    })
     .on("chat message", function (data) {
-        $inputMessage = $("#" + data.roomID);
-        let $parent = $inputMessage.parent();
-        let $messages = $parent.children(".messages");
-        if (data.isAdmin)
-            $usernameDiv = $('<span class="username"/>').text("CronJ");
-        else $usernameDiv = $('<span class="username"/>').text("Client");
-
-        let $messageBodyDiv = $('<span class="messageBody">').text(data.msg);
-        let $timestampDiv = $('<span class="timestamp">').text(
-            data.timestamp.toLocaleString().substr(15, 6)
-        );
-        let $messageDiv = $('<li class="message"/>').append(
-            $usernameDiv,
-            $messageBodyDiv,
-            $timestampDiv
-        );
-        $messages.append($messageDiv);
-        //$messages[0].scrollTop = $messages[0].scrollHeight;
-        //$newChat.play();
+        let $user = $(".users__body #" + data.roomID);
+        if ($user) {
+            if ($user.hasClass("msg__active")) {
+                data.userDetails[3] = "true";
+                socket.emit("as read", data); //set asRead
+                $msgHistory.prepend(showMessReceive(data));
+            }
+            $user.remove();
+        }
+        $usersBody.prepend(getChatArea(data));
+        $newChat.play();
     })
     .on("chat history", function (data) {
-        let len = data.history.length;
+        let { roomID, history, getMore } = data;
+        if ($(".msg__incoming")) {
+            $(".msg__incoming").remove();
+        }
+        if ($(".msg__outgoing")) {
+            $(".msg__outgoing").remove();
+        }
+        if ($(".msg__type")) {
+            $(".msg__type").remove();
+        }
+        let len = history.length;
         for (let i = len - 1; i >= 0; i--) {
-            getChatHistory(data.history[i], false);
+            getChatHistory(history[i], getMore);
         }
         let $inputMsg = $(`
+        <div class="typing"></div>
         <div class="msg__type">
             <div class="type__wrap">
-                <input class="w-100" type="text" placeholder="Type a message" />
+                <input class="inputMessage w-100" type="text" placeholder="Type a message" autofocus/>
                 <button class="btn type--send p-0" type="button">
                     <i class="fa fa-paper-plane"></i>
                 </button>
             </div>
-        </div>`).insertAfter($messages);
+        </div>`).insertAfter($msgHistory);
+
+        $inputMessage = $(".inputMessage");
+        $inputMessage.on("keypress", function () {
+            isTyping(roomID);
+        });
     })
     .on("typing", function (data) {
-        $inputMessage = $("#" + data.roomID);
-        let $parent = $inputMessage.parent();
-        let $typing = $parent.children(".typing");
-        if (data.isTyping)
-            $typing.append("<small>" + data.person + " is typing...<small>");
-        else $typing.text("");
+        let $user = $(".users__body #" + data.roomID);
+        if ($user) {
+            if ($user.hasClass("msg__active")) {
+                let $typing = $(".typing");
+                if (data.isTyping) {
+                    $typing.append(
+                        "<small>" + data.person + " is typing...<small>"
+                    );
+                } else $typing.text("");
+            }
+        }
     })
-    .on("User Disconnected", function (roomID) {
-        // $newUser.pause();
-        $inputMessage = $("#" + roomID);
-        $inputMessage.off();
-        let $parent = $inputMessage.parent();
-        $parent.remove();
-    })
-    .on("reconnect", function () {
-        console.log("Reconnected!");
-        $userList.empty();
-        $(".container").empty();
-        $errorPage.fadeOut();
-        $userList.append("<li id=" + username + ">" + username + "</li>");
-        if (authenticated)
-            socket.emit("add admin", {
-                admin: username,
-                isAdmin: true,
-            });
-    })
+    // .on("User Disconnected", function (roomID) {
+    //     // $newUser.pause();
+    //     $inputMessage = $("#" + roomID);
+    //     $inputMessage.off();
+    //     let $parent = $inputMessage.parent();
+    //     $parent.remove();
+    // })
+    // .on("reconnect", function () {
+    //     console.log("Reconnected!");
+    //     $userList.empty();
+    //     $(".container").empty();
+    //     $errorPage.fadeOut();
+    //     $userList.append("<li id=" + username + ">" + username + "</li>");
+    //     if (authenticated)
+    //         socket.emit("add admin", {
+    //             admin: username,
+    //             isAdmin: true,
+    //         });
+    // })
+    // .on("reconnect_failed", function () {
+    //     console.log("Reconnection Failed!");
+    //     let $errorMsg = $errorPage.children(".title");
+    //     $errorMsg.text("Reconection Failed. Please refresh your page. ");
+    //     $window.alert("Disconnected from chat.");
+    // });
     .on("disconnect", function () {
         console.log("Disconnected!");
-        $errorPage.show();
-    })
-    .on("reconnect_failed", function () {
-        console.log("Reconnection Failed!");
-        let $errorMsg = $errorPage.children(".title");
-        $errorMsg.text("Reconection Failed. Please refresh your page. ");
-        $window.alert("Disconnected from chat.");
     });

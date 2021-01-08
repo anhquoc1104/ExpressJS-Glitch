@@ -1,12 +1,12 @@
 const dbStore = require("./dbStore.js");
 
 let admins = {};
-let users = {};
+let usersOnline = {};
 
 dbStore.ConnectToRedis();
 
 function asRead(data) {
-    return data.asRead ? (data.asRead = false) : (data.asRead = true);
+    return data.asRead ? (data.asRead = "false") : (data.asRead = "true");
 }
 
 module.exports = (io) => {
@@ -34,7 +34,7 @@ module.exports = (io) => {
                                         ];
                                 totAdmins = Object.keys(admins).length;
                                 if (total <= totAdmins) {
-                                    delete users[socket.roomID];
+                                    delete usersOnline[socket.roomID];
                                     socket.broadcast
                                         .to(socket.roomID)
                                         .emit(
@@ -48,14 +48,14 @@ module.exports = (io) => {
                             }, 4000);
                         }
                     } else {
-                        if (socket.userDetails) delete users[socket.roomID];
+                        if (socket.userDetails)
+                            delete usersOnline[socket.roomID];
                     }
                 }
             })
             .on("add admin", function (data) {
                 this.isAdmin = data.isAdmin;
                 socket.username = data.admin;
-
                 admins[socket.username] = socket;
                 dbStore
                     .getAllKey()
@@ -88,7 +88,7 @@ module.exports = (io) => {
                                 }
                                 if (userDetails) {
                                     userDetails.sort((a, b) => {
-                                        return +b.timeStamp - +a.timeStamp;
+                                        return +b[2] - +a[2];
                                     });
                                     for (let user of userDetails) {
                                         let { roomID } = user;
@@ -101,7 +101,7 @@ module.exports = (io) => {
                                                     socket.join(roomID); //admin join to client
                                                     socket.emit("client list", {
                                                         roomID,
-                                                        history,
+                                                        msg: history,
                                                         userDetails: {
                                                             ...user,
                                                         },
@@ -126,7 +126,7 @@ module.exports = (io) => {
                 //Add new user
                 if (data.isNewUser) {
                     data.timeStamp = new Date().getTime();
-                    data.asRead = true;
+                    data.asRead = "true";
                     dbStore.setDetails(data);
                     socket.emit("roomID", data.roomID); //set roomID to localStorage
                 }
@@ -142,9 +142,9 @@ module.exports = (io) => {
                     });
                 socket.join(socket.roomID);
                 let newUser = false;
-                if (!users[socket.roomID]) {
+                if (!usersOnline[socket.roomID]) {
                     // Check if different instance of same user. (ie. Multiple tabs)
-                    users[socket.roomID] = socket;
+                    usersOnline[socket.roomID] = socket;
                     newUser = true;
                 }
                 //Fetch message history
@@ -173,7 +173,7 @@ module.exports = (io) => {
                                         socket.userDetails[0] +
                                         ", How can I help you?"
                                 );
-                                //Make all available admins join this users room.
+                                //Make all available admins join this usersOnline room.
                                 for (let adminSocket in admins) {
                                     let admin = admins[adminSocket];
                                     admin.join(socket.roomID);
@@ -194,14 +194,36 @@ module.exports = (io) => {
                         console.log(error);
                     });
             })
-            //admin click user in list
+            //admin click in users list
             .on("chat history", function (data) {
+                let user;
+                let { roomID } = data;
                 dbStore
-                    .getMessages(data.roomID, 0)
+                    .getDetails(roomID)
+                    .then(function (details) {
+                        user = details;
+                        if (user[3] === "false") {
+                            //set asRead
+                            dbStore.setDetails({
+                                name: user[0],
+                                email: user[1],
+                                timeStamp: user[2],
+                                asRead: "true",
+                                roomID,
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                dbStore
+                    .getMessages(roomID, 0)
                     .then(function (history) {
                         history.splice(-1, 1);
                         socket.emit("chat history", {
-                            history: history,
+                            roomID,
+                            history,
                             getMore: false,
                         });
                     })
@@ -211,21 +233,59 @@ module.exports = (io) => {
             })
             .on("chat message", function (data) {
                 if (data.roomID === "null") data.roomID = socket.roomID;
-                // console.log(users[data.roomID]);
-                let user = users[data.roomID];
-                user.lastDate = new Date().getTime();
-                user.asRead = false;
+                let { roomID, asRead } = data;
+                let user;
                 data.isAdmin = socket.isAdmin;
-                data.name = user.userDetails[0];
-                data.email = user.userDetails[1];
-                data.timeStamp = new Date().getTime();
-                data.asRead = false;
-                dbStore.setDetails(data);
+
+                dbStore
+                    .getDetails(roomID)
+                    .then(function (details) {
+                        userDetails = details;
+                        dbStore.setDetails({
+                            name: userDetails[0],
+                            email: userDetails[1],
+                            timeStamp: data.timeStamp,
+                            asRead,
+                            roomID,
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 dbStore.pushMessage(data);
-                //send mess without Sender.
-                socket.broadcast.to(data.roomID).emit("chat message", data);
+
+                //Un-send mess to userDetails off.
+                if (data.isAdmin && !usersOnline[roomID]) {
+                    return;
+                }
+                //send mess without Sender
+                user = usersOnline[roomID].userDetails;
+                user[2] = data.timeStamp;
+                user[3] = asRead;
+                socket.broadcast.to(roomID).emit("chat message", {
+                    isAdmin: data.isAdmin,
+                    roomID,
+                    msg: [
+                        {
+                            who: data.isAdmin,
+                            what: data.msg,
+                            when: data.timeStamp,
+                        },
+                    ],
+                    userDetails: {
+                        ...user,
+                    },
+                });
             })
-            .on("as read", function (data) {})
+            .on("as read", function (data) {
+                dbStore.setDetails({
+                    name: data.userDetails[0],
+                    email: data.userDetails[1],
+                    timeStamp: data.userDetails[2],
+                    asRead: "true",
+                    roomID: data.roomID,
+                });
+            })
             .on("more messages", function () {
                 if (socket.MsgHistoryLen < 0) {
                     dbStore
@@ -238,6 +298,13 @@ module.exports = (io) => {
                         });
                     socket.MsgHistoryLen += 10;
                 }
+            })
+            .on("typing", function (data) {
+                socket.broadcast.to(data.roomID).emit("typing", {
+                    isTyping: data.isTyping,
+                    person: data.person,
+                    roomID: data.roomID,
+                });
             });
     });
 };
