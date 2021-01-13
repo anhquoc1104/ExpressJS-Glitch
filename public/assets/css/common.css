@@ -331,7 +331,7 @@ p {
 footer {
     height: 135px;
     flex-shrink: 0;
-    background: radial-gradient(#48a4c7, #4552ec);
+    background: radial-gradient(#70b0e0, #5282f9);
     font-weight: bold;
 }
 
@@ -344,7 +344,7 @@ footer {
 }
 
 footer p {
-    color: #e9ffc5;
+    color: #e2e2e2;
 }
 
 /* Tablet */

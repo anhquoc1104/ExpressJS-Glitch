@@ -1,8 +1,17 @@
+table tbody td {
+    max-width: 230px;
+}
+
 .image__table {
-  width: 50px;
-  height: 50px;
+    width: 50px;
+    height: 50px;
 }
 .image__table--empty {
-  width: 50px;
-  height: 50px;
+    width: 50px;
+    height: 50px;
+}
+
+.empty {
+    max-width: 300px;
+    max-height: 250px;
 }

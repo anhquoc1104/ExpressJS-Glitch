@@ -4,21 +4,7 @@ let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
 // const change_alias = require("../services/changeAlias");
 let pagination = require("../services/pagination");
-
-let onSort = (sort) => {
-    switch (sort) {
-        case "DateUp":
-            return { createAt: 1 };
-        case "DateDown":
-            return { createAt: -1 };
-        case "NameUp":
-            return { title: 1 };
-        case "NameDown":
-            return { title: -1 };
-        default:
-            return { createAt: 1 };
-    }
-};
+let onSort = require("../services/sort");
 
 module.exports = {
     //Search
@@ -52,7 +38,7 @@ module.exports = {
             matchQuery = await Book.find().sort(isSort);
         }
 
-        let obj = pagination(user, page, 12, "books", matchQuery, "/page/");
+        let obj = pagination(page, 12, "books", matchQuery, "/page/");
         res.render("home.pug", obj);
     },
 

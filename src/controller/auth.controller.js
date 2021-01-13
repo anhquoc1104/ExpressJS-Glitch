@@ -5,16 +5,20 @@ let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
 let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
+const constant = require("../services/constant");
 
 module.exports.login = (req, res) => {
-    res.render("./auth/login.pug");
+    res.render("./auth/login.pug", {
+        reRegister: req.flash("reRegister"),
+        mess: req.flash("error"),
+    });
 };
 
 //login
 module.exports.loginPost = async (req, res) => {
     let { email, password } = req.body;
     let user = await User.findOne({ email: email });
-    let sessionId = req.signedCookies.sessionId;
+    let { sessionId } = req.signedCookies;
     //check email
     if (!user) {
         res.render("./auth/login.pug", {
@@ -51,7 +55,7 @@ module.exports.loginPost = async (req, res) => {
     }
 
     //move cart to account
-    if (Session) {
+    if (sessionId) {
         let carts = await Session.findById(sessionId);
         if (carts && carts.idCart) {
             for (let idBook of carts.idCart) {
@@ -79,14 +83,25 @@ module.exports.forgotPasswordPost = (req, res) => {
 
 //register POST
 module.exports.registerPost = async (req, res) => {
-    let { nameRegister, emailRegister, passwordRegister } = req.body;
+    let regexEmail =
+        "/^([A-Z|a-z|0-9](.|_){0,1})+[A-Z|a-z|0-9]@([A-Z|a-z|0-9])+((.){0,1}([A-Z|a-z|0-9])+){1,4}.[a-z]{2,4}$/gm";
+    let {
+        nameRegister,
+        emailRegister,
+        passwordRegister,
+        passwordRegisteRetype,
+    } = req.body;
     let password = bcrypt.hashSync(passwordRegister, 10);
-    let users = await User.find();
     let isUser = await User.find({ email: emailRegister });
     if (isUser) {
-        res.render("./auth/login.pug", {
-            error: "Email is used!",
-        });
+        req.flash("error", constant.ERROR_EMAIL_USED);
+        req.flash("reRegister", true);
+        res.redirect("/login");
+        return;
+    }
+    if (regexEmail.test(emailRegister)) {
+        req.flash("error", constant.ERROR_EMAIL_FORMAT);
+        res.redirect("/login");
         return;
     }
     let newUser = new User({

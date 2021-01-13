@@ -1,0 +1,27 @@
+//- - var isUserLogin = isUserLogins
+block variable
+
+head(lang="en")
+  meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
+  meta(charset="UTF-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  link(rel="icon" href="/sources/img/1logo.ico" type="image/ico" sizes="16x16")
+  link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
+  title 404-Not Found
+body
+  .container.h-100.d-flex.justify-content-center.align-items-center
+    .row
+      .col-md-12.m-auto
+        .error-template.text-center.m-2
+          h1
+            | Oops!
+          h2
+            | 404 Not Found
+          .error-details.m-3
+            | Sorry, an error has occured, Requested page not found!
+          .error-actions
+            a.btn.btn-primary.btn-lg(href='/')
+              span.glyphicon.glyphicon-home
+              |Take Me Home
+    

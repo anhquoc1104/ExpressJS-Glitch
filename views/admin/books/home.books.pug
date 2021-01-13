@@ -8,7 +8,7 @@ block content
   .container.mt-3
     if books == false
       .row.justify-content-center
-        img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+        img.empty(src="/sources/img/empty.png", alt="")
     else
       .row.justify-content-between.mb-2
         button.btn.btn-primary.ml-4.p-2.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="handleAddBook()")
@@ -39,14 +39,14 @@ block content
               td= index+1
               td(scope='row')
                 if elm.avatarUrl
-                  a(href="", alt= elm.title)
+                  a(href="/admin/books/view/" + elm._id, alt= elm.title)
                     img.image__table(src=elm.avatarUrl)
                 else
                   img.image__table--empty(src='/sources/img/book-default.jpg')
               td
-                a(href="")= elm.title
+                a(href="/admin/books/view/" + elm._id)= elm.title
               td
-                a(href="")= elm.author
+                a(href="/admin/search/1?authorQuery=" + elm.author)= elm.author
               td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
               td= elm.quantity
               td
@@ -59,7 +59,7 @@ block content
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
         .modal-body
-          form(action="/admin/books/edit", method="POST" enctype="multipart/form-data")
+          form(action="/admin/books/create", method="POST", enctype="multipart/form-data")
             input#idBook.form-control.d-none(type='text', name="idBook")
             input#url.form-control.d-none(type='text', name="url")
             .form-group
@@ -103,25 +103,6 @@ block script
       }
     });
 
-    //autofill edit book
-    function handleEditBook(){
-      let data = JSON.parse(document.activeElement.getAttribute('data-book'));
-      
-      //without jquery
-      document.querySelector('#bookModal form').setAttribute('action', '/admin/books/edit')
-      document.querySelector('#bookModal #modalLabel').textContent = 'Edit Book';
-      document.querySelector('#bookModal #url').value = window.location.pathname;
-      document.querySelector('#bookModal #idBook').value = data._id;
-      document.querySelector('#bookModal #title').value = data.title ? data.title: "";
-      document.querySelector('#bookModal #author').value = data.author ? data.author : "";
-      document.querySelector('#bookModal #year').value = data.year ? data.year : "";
-      document.querySelector('#bookModal #quantity').value = data.quantity ? data.quantity : "";
-      document.querySelector('#bookModal #publisher').value = data.publisher ? data.publisher :"";
-      document.querySelector('#bookModal #author').value = data.author ? data.author : "";
-      document.querySelector('#bookModal #category').value = data.category ? data.category : "";
-      document.querySelector('#bookModal #description').value = data.description ? data.description : "";
-    }
-
     //clear form
     function handleAddBook(){
       let form = document.querySelector('#bookModal form');
@@ -129,3 +110,5 @@ block script
       form.setAttribute('action', '/admin/books/create');
       document.querySelector('#bookModal #url').value = window.location.pathname;
     }
+    
+  script(src='/assets/js/admin/handleEditBook.js')

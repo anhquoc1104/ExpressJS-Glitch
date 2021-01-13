@@ -1,0 +1,112 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Info'
+block style
+  link(rel="stylesheet", href="/assets/css/users.css")
+block content
+      .container
+        .row.mt-5
+          .col.col-12.col-sm-3.user__avatar
+            if user.avatarUrl
+              img(src=user.avatarUrl)
+            else
+              img(src="/sources/img/user-avatar-default.png")
+          .col.col-12.col-sm-9.d-flex.flex-column.justify-content-end
+            h5= user.name
+            h6= user.email
+            p Phone Number: 
+              if user.phone
+                i=user.phone
+              else
+                i  ---
+            p SSN: 
+              if user.ssn
+                i=user.ssn
+              else
+                i  ---
+            p Address: 
+              if user.address
+                i=user.address
+              else
+                i  ---
+            p Birthdate: 
+              if user.birthdate
+                i=user.birthdate
+              else
+                i  ---
+            a(href="#" data-toggle='modal', data-target='#editProfileModal') Edit Profile
+            a(href="#" data-toggle='modal', data-target='#changePasswordModal') Change Password
+            //- Edit Profile Modal
+            #editProfileModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+              .modal-dialog(role='document')
+                .modal-content
+                  .modal-header
+                    h5#exampleModalLabel.modal-title Edit Profile
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') &times;
+                  form(action="/users/edit/" + user._id, method="POST" enctype="multipart/form-data")
+                    .modal-body
+                      //- Name
+                      .form-group
+                        input.form-control(name="name", type='text', placeholder="Name", value= user.name)
+                      //- Email
+                      .form-group
+                        input.form-control(name="email", type='email', placeholder="Email", value= user.email)
+                      //- SSN
+                      .form-group
+                        input.form-control(name="ssn", type='number', placeholder="SSN", value= user.ssn)
+                      //- Phone
+                      .form-group
+                        input.form-control(name="phone", type='number', placeholder="Phone Number", value= user.phone)
+                      //- Address
+                      .form-group
+                        input.form-control(name="birthdate", type='text', placeholder="Birthdate", value= user.birthdate)
+                      //- Birthday
+                      .form-group
+                        input.form-control(name="address", type='text', placeholder="Address", value= user.address)
+                      //- Avatar
+                      .form-group
+                        label Select a avatar:
+                        input.form-control-file(name="avatar", type='file')
+                    .modal-footer
+                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-primary(type='submit') Save
+            //- Change Password Modal
+            #changePasswordModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+              .modal-dialog(role='document')
+                .modal-content
+                  .modal-header
+                    h5#exampleModalLabel.modal-title Change Password
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') &times;
+                  form(action="/users/edit/" + user._id, method="POST")
+                    .modal-body
+                      .form-group
+                        input.form-control(name="oldPassword", type='password', placeholder='password')
+                      .form-group
+                        input.form-control(name="newPassword", type='password', placeholder='new password')
+                      .form-group
+                        input.form-control(name="retypePassword", type='password', placeholder='retype password')
+                    .modal-footer
+                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-primary(type='submit') Save
+        .row.mt-2
+          p Carts Active
+        .row.mt-2
+          p Transactions Active
+block pagination
+
+//- block variable
+//- block style
+//- block content
+//- block pagination
+//- block footer
+//- block script
+
+//- .container.mr-5.mt-3
+//-   form(action="", method="POST")
+//-     input(type="text", name="name")
+//-     span &nbsp
+//-     button(type="submit") Search
+//-     h4 Detail User

@@ -8,13 +8,33 @@ block content
       .container
         .row.mt-5
           .col.col-12.col-sm-3.user__avatar
-            if isUser.avatarUrl
-              img(src=isUser.avatarUrl)
+            if user.avatarUrl
+              img(src=user.avatarUrl)
             else
               img(src="/sources/img/user-avatar-default.png")
           .col.col-12.col-sm-9.d-flex.flex-column.justify-content-end
-            h5= isUser.name
-            h6= isUser.email
+            h5= user.name
+            h6= user.email
+            p Phone Number: 
+              if user.phone
+                i=user.phone
+              else
+                i  ---
+            p SSN: 
+              if user.ssn
+                i=user.ssn
+              else
+                i  ---
+            p Address: 
+              if user.address
+                i=user.address
+              else
+                i  ---
+            p Birthdate: 
+              if user.birthdate
+                i=user.birthdate
+              else
+                i  ---
             a(href="#" data-toggle='modal', data-target='#editProfileModal') Edit Profile
             a(href="#" data-toggle='modal', data-target='#changePasswordModal') Change Password
             //- Edit Profile Modal
@@ -25,12 +45,27 @@ block content
                     h5#exampleModalLabel.modal-title Edit Profile
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/" + isUser._id, method="POST" enctype="multipart/form-data")
+                  form(action="/users/edit/" + user._id, method="POST", enctype="multipart/form-data")
                     .modal-body
+                      //- Name
                       .form-group
-                        input.form-control(name="name", type='text', value= isUser.name)
+                        input.form-control(name="name", type='text', value= user.name)
+                      //- Email
                       .form-group
-                        input.form-control(name="email", type='email', value= isUser.email)
+                        input.form-control(name="email", type='email', value= user.email)
+                      //- SSN
+                      .form-group
+                        input.form-control(name="ssn", type='number', value= user.ssn)
+                      //- Phone
+                      .form-group
+                        input.form-control(name="phone", type='number', value= user.phone)
+                      //- Address
+                      .form-group
+                        input.form-control(name="birthdate", type='text', value= user.birthdate)
+                      //- Birthday
+                      .form-group
+                        input.form-control(name="address", type='text', value= user.address)
+                      //- Avatar
                       .form-group
                         label Select a avatar:
                         input.form-control-file(name="avatar", type='file')
@@ -45,7 +80,7 @@ block content
                     h5#exampleModalLabel.modal-title Change Password
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/" + isUser._id, method="POST")
+                  form(action="/users/edit/" + user._id, method="POST")
                     .modal-body
                       .form-group
                         input.form-control(name="oldPassword", type='password', placeholder='password')
@@ -57,10 +92,9 @@ block content
                       button.btn.btn-secondary(type='button', data-dismiss='modal') Close
                       button.btn.btn-primary(type='submit') Save
         .row.mt-2
-          .col.col-12.col-sm-3
-          .col.col-12.col-sm-9
-            if error
-              p.text-danger= error
+          p Carts Active
+        .row.mt-2
+          p Transactions Active
 block pagination
 
 //- block variable

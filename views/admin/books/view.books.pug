@@ -1,0 +1,98 @@
+extends ../layouts/common.pug
+
+block title
+  title Detail || BookStore
+block style
+    link(rel='stylesheet', href='/assets/css/bookView.css')
+block content
+  .container
+    .row.mt-5
+      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-4
+        if book.avatarUrl
+          img(src=book.avatarUrl, alt=book.title, width="150px", height="200px")
+        else
+          img(src='/sources/img/book-default.jpg', alt=book.title, width="150px", height="200px")
+      .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-8.d-flex.flex-column.align-items-start.justify-content-end.book__view
+        h4= book.title
+        .my-3
+        p Author: 
+          if book.author
+            i=book.author
+          else
+            i  ---
+        p Publisher: 
+          if book.publisher
+            i=book.publisher
+          else
+            i  ---
+        p Year: 
+          if book.year
+            i=book.year
+          else
+            i  ---
+        if book.quantity > 0
+          button.btn.btn-danger.open-AddBookDialog(type="button", data-book= book, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") Edit
+    .row.mt-4
+      .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
+        h5
+          u.text-dark.font-weight-bold.font Description
+        .border.border-primary.rounded.p-3.mb-5
+          if book.description
+            span=book.description
+          else
+            span No Description
+  //- Modal Edit Info
+  #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#modalLabel.modal-title Edit Info
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form(action="/admin/books/edit", method="POST" enctype="multipart/form-data")
+            input#idBook.form-control.d-none(type='text', name="idBook")
+            input#url.form-control.d-none(type='text', name="url")
+            .form-group
+              label.col-form-label(for='title') Title
+              input#title.form-control(type='text', name="title")
+            .form-row
+              .form-group.col.col
+                label(for='author') Author:
+                input#author.form-control(type='text', name="author")
+              .form-group.col
+                label(for='year') Year:
+                input#year.form-control(type='number', name="year")
+              .form-group.col
+                label(for='quantity') Quantity:
+                input#quantity.form-control(type='number', name="quantity")
+            .form-row
+              .form-group.col
+                label(for='publisher') Publisher:
+                input#publisher.form-control(type='text', name="publisher")
+              .form-group.col
+                label(for='category') Category:
+                input#category.form-control(type='text', name="category")
+            .form-group
+              label.col-form-label(for='description') Description:
+              textarea#description.form-control(name="description", rows="4")
+            .form-group
+              label.col-form-label(for='avatar') Avatar
+              input#avatar.form-control(type='file', name="avatar")
+            .modal-footer
+              button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+              button.btn.btn-primary(type='submit') Save  
+  block pagination
+  block script
+    script.
+        $( document ).ready(function() {
+        //- console.log(mess);
+        let msgStr = !{JSON.stringify(mess)};
+        //- console.log(msgStr);
+        //- console.log(typeof(msgStr));
+        if(typeof(mess) != 'undefined' && mess != '' && msgStr !== []){
+            alert(msgStr);
+        }
+        });
+        
+    script(src='/assets/js/admin/handleEditBook.js')

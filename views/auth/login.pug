@@ -1,20 +1,20 @@
-extends ../layouts/common.pug
-
-block style
-  link(rel='stylesheet', href='/assets/css/account.css')
-block title
-  title Account || BookStore
-
-block nav
-block sidebar
-block content
-  .container-fluid
-    .row.form__row
-      .col-lg-4.form__col
+head(lang="en")
+  meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
+  meta(charset="UTF-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  link(rel="icon" href="/sources/img/1logo.ico" type="image/ico" sizes="16x16")
+  link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
+  link(rel='stylesheet', href='/assets/css/login.css')
+  title Login || Register
+body
+  .container-fluid.h-100.d-flex.flex-column.justify-content-center.align-items-center
+    .row.form__row.w-100
+      .col-8.col-md-6.col-xl-4.form__col
         .form__title
           .form__title--text.d-flex.text-primary.justify-content-around
-            span(onclick='onLogin()') Sign in
-            span(onclick='onRegister()') Sign up
+            span#login(onclick='onLogin()') Sign in
+            span#register(onclick='onRegister()') Sign up
           p#indicator
         .form__container
           #form__login
@@ -25,19 +25,19 @@ block content
                 input#email.form-control.pl-1(type='email', name='email', placeholder='email', value= email ? email : 'admin@admin.com')
               .form-group
                 input#password.form-control.pl-1(type='password', name='password', value= password ? password :'admin123')
+                i.fas.fa-eye#tooglePassword
               button.btn.btn-success.w-100(type='submit') Sign in
               a.d-block.text-primary.mt-3(href='/login/forgotPassword') Forgot Password
           #form__register
             form(method='POST', action="/login/register")
-              .form-row
-                .form-group.col
-                  input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='Fullname', value='')
-                .form-group.col
-                  input.name-register.form-control.pl-1(type='number', name='ssnRegister', placeholder='SSN', value='')
+              .form-group
+                input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='Fullname', value='')
               .form-group
                 input#emailRegister.form-control.pl-1(type='email', name='emailRegister', placeholder='email', value='')
               .form-group
                 input#passwordRegiste.form-control.pl-1(type='password', name='passwordRegister', placeholder='password', value='')
+              .form-group
+                input#passwordRegisteRetype.form-control.pl-1(type='password', name='passwordRegisteRetype', placeholder='password', value='')
               button.btn.btn-success.w-100(type='submit') Register
     .row.mt-3
       .d-flex.flex-column.m-auto
@@ -45,24 +45,24 @@ block content
           |admin: nhatlinh123@gmail.com
         p.text-danger
           |pass: nhatlinh123
-  block pagination
-  block liveChat
-  block footer
+
+  script(src='/sources/js/jquery-3.4.1.min.js')
+  script(src='/assets/js/login.js')
   script.
-    let indicator = document.querySelector('#indicator');
-    let formLogin = document.querySelector('#form__login');
-    let formRegister = document.querySelector('#form__register');
-    const onLogin = () => {
-    indicator.style.left = '0%'
-    formLogin.style.display = 'block';
-    formRegister.style.display = 'none';
-    formLogin.style.transform = 'translateX(0%)';
-    formRegister.style.transform = 'translateX(100%)';
-    }
-    const onRegister = () => {
-    indicator.style.left = '50%'
-    formLogin.style.display = 'none';
-    formRegister.style.display = 'block';
-    formLogin.style.transform = 'translateX(-100%)';
-    formRegister.style.transform = 'translateX(0%)';
-    }
+    $( document ).ready(function() {
+      let msgStr = !{JSON.stringify(mess)};
+      let onRegister = !{JSON.stringify(reRegister)};
+      //- console.log(mess);
+      //- console.log(msgStr);
+      //- console.log(typeof(msgStr));
+      if(msgStr && msgStr.length !== 0){
+        alert(msgStr);
+      }
+      if(onRegister && onRegister.length !== 0){
+        $('#register').trigger('click');
+      }
+
+      //- if(typeof(mess) != 'undefined' && mess != '' && msgStr !== []){
+      //-   alert(msgStr);
+      //- }
+    });

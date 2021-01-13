@@ -4,7 +4,8 @@ let userSchema = mongoose.Schema(
     {
         name: String,
         email: String,
-        ssn: Number,
+        ssn: String,
+        phone: String,
         password: String,
         birthdate: Date,
         address: String,
@@ -36,8 +37,17 @@ let userSchema = mongoose.Schema(
     },
     {
         autoCreate: true,
+        collation: { locale: "en_US", strength: 1 },
     }
 );
+
+userSchema.index({
+    email: "text",
+    name: "text",
+    phone: "text",
+    ssn: "text",
+    address: "text",
+});
 
 let User = mongoose.model("User", userSchema, "users");
 
