@@ -5,6 +5,7 @@ head(lang="en")
   link(rel="icon" href="/sources/img/1logo.ico" type="image/ico" sizes="16x16")
   link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
   link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
+  link(rel='stylesheet', href='/sources/css/fontawesome.all.min.css')
   link(rel='stylesheet', href='/assets/css/login.css')
   title Login || Register
 body
@@ -18,31 +19,29 @@ body
           p#indicator
         .form__container
           #form__login
-            if error
-              p.m-0.pt-4.text-danger= error
-            form(method='POST')
+            form(method='POST' name="formLogin")
               .form-group
                 input#email.form-control.pl-1(type='email', name='email', placeholder='email', value= email ? email : 'admin@admin.com')
               .form-group
                 input#password.form-control.pl-1(type='password', name='password', value= password ? password :'admin123')
                 i.fas.fa-eye#tooglePassword
-              button.btn.btn-success.w-100(type='submit') Sign in
+              button#loginSubmit.btn.btn-success.w-100(type='button') Sign in
               a.d-block.text-primary.mt-3(href='/login/forgotPassword') Forgot Password
           #form__register
-            form(method='POST', action="/login/register")
+            form(method='POST', action="/login/register" name="formRegister")
               .form-group
-                input.name-register.form-control.pl-1(type='text', name='nameRegister', placeholder='Fullname', value='')
+                input#nameRegister.nameRegister.form-control.pl-1(type='text', name='nameRegister', placeholder='full name', value='')
               .form-group
                 input#emailRegister.form-control.pl-1(type='email', name='emailRegister', placeholder='email', value='')
               .form-group
-                input#passwordRegiste.form-control.pl-1(type='password', name='passwordRegister', placeholder='password', value='')
+                input#passwordRegister.form-control.pl-1(type='password', name='passwordRegister', placeholder='password', value='')
               .form-group
-                input#passwordRegisteRetype.form-control.pl-1(type='password', name='passwordRegisteRetype', placeholder='password', value='')
-              button.btn.btn-success.w-100(type='submit') Register
+                input#passwordRegisterRetype.form-control.pl-1(type='password', name='passwordRegisteRetype', placeholder='password', value='')
+              button#registerSubmit.btn.btn-success.w-100(type='button') Register
     .row.mt-3
       .d-flex.flex-column.m-auto
         p.text-danger
-          |admin: nhatlinh123@gmail.com
+          |user: nhatlinh123@gmail.com
         p.text-danger
           |pass: nhatlinh123
 
@@ -51,10 +50,7 @@ body
   script.
     $( document ).ready(function() {
       let msgStr = !{JSON.stringify(mess)};
-      let onRegister = !{JSON.stringify(reRegister)};
-      //- console.log(mess);
-      //- console.log(msgStr);
-      //- console.log(typeof(msgStr));
+      let onRegister = #{JSON.stringify(reRegister)};
       if(msgStr && msgStr.length !== 0){
         alert(msgStr);
       }

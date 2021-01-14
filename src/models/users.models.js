@@ -3,19 +3,24 @@ const mongoose = require("../services/mongoose.js");
 let userSchema = mongoose.Schema(
     {
         name: String,
-        email: String,
-        ssn: String,
+        email: {
+            type: String,
+            required: true,
+        },
         phone: String,
-        password: String,
+        password: {
+            type: String,
+            required: true,
+        },
         birthdate: Date,
         address: String,
         status: {
             type: String,
-            default: "true",
+            default: "pending",
         },
         isAdmin: {
-            type: String,
-            default: "false",
+            type: Boolean,
+            default: false,
         },
         avatarUrl: {
             type: String,
@@ -25,7 +30,10 @@ let userSchema = mongoose.Schema(
             type: Date,
             default: new Date(),
         },
-        wrongLoginCount: Number,
+        wrongLoginCount: {
+            type: Number,
+            expires: "60 * 15",
+        },
         idTransaction: {
             type: {},
             default: {},

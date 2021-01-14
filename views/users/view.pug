@@ -7,22 +7,17 @@ block style
 block content
       .container
         .row.mt-5
-          .col.col-12.col-sm-3.user__avatar
+          .col.col-12.col-sm-3.col-md-4.user__avatar
             if user.avatarUrl
               img(src=user.avatarUrl)
             else
               img(src="/sources/img/user-avatar-default.png")
-          .col.col-12.col-sm-9.d-flex.flex-column.justify-content-end
+          .col.col-12.col-sm-9.col-md-8.d-flex.flex-column.justify-content-end.user__profile
             h5= user.name
             h6= user.email
             p Phone Number: 
               if user.phone
                 i=user.phone
-              else
-                i  ---
-            p SSN: 
-              if user.ssn
-                i=user.ssn
               else
                 i  ---
             p Address: 
@@ -45,32 +40,36 @@ block content
                     h5#exampleModalLabel.modal-title Edit Profile
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/" + user._id, method="POST" enctype="multipart/form-data")
+                  form(action="/users/edit/info/" + user._id, method="POST" enctype="multipart/form-data")
                     .modal-body
-                      //- Name
-                      .form-group
-                        input.form-control(name="name", type='text', placeholder="Name", value= user.name)
-                      //- Email
-                      .form-group
-                        input.form-control(name="email", type='email', placeholder="Email", value= user.email)
-                      //- SSN
-                      .form-group
-                        input.form-control(name="ssn", type='number', placeholder="SSN", value= user.ssn)
-                      //- Phone
-                      .form-group
-                        input.form-control(name="phone", type='number', placeholder="Phone Number", value= user.phone)
-                      //- Address
-                      .form-group
-                        input.form-control(name="birthdate", type='text', placeholder="Birthdate", value= user.birthdate)
+                      .form-row
+                        //- Name
+                        .form-group.col
+                          label(for="name") Name
+                          input#name.form-control(name="name", type='text', placeholder="Name", value= user.name)
+                        //- Email
+                        .form-group.col
+                          label(for="email") Email
+                          input#email.form-control(name="email", type='email', placeholder="Email", value= user.email)
+                      .form-row
+                        //- Phone
+                        .form-group.col
+                          label(for="phone") Phone Number
+                          input#phone.form-control(name="phone", type='text', placeholder="Phone Number", value= user.phone)
+                        //- Address
+                        .form-group
+                          label(for="birthdate") Birthdate
+                          input#birthdate.form-control(name="birthdate", type='date', placeholder="Birthdate", value= user.birthdate)
                       //- Birthday
                       .form-group
-                        input.form-control(name="address", type='text', placeholder="Address", value= user.address)
+                        label(for="address") Address
+                        input#address.form-control(name="address", type='text', placeholder="Address", value= user.address)
                       //- Avatar
                       .form-group
                         label Select a avatar:
                         input.form-control-file(name="avatar", type='file')
                     .modal-footer
-                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-secondary(type='reset', data-dismiss='modal') Close
                       button.btn.btn-primary(type='submit') Save
             //- Change Password Modal
             #changePasswordModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
@@ -80,7 +79,7 @@ block content
                     h5#exampleModalLabel.modal-title Change Password
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/" + user._id, method="POST")
+                  form(action="/users/edit/password/" + user._id, method="POST")
                     .modal-body
                       .form-group
                         input.form-control(name="oldPassword", type='password', placeholder='password')
@@ -89,24 +88,20 @@ block content
                       .form-group
                         input.form-control(name="retypePassword", type='password', placeholder='retype password')
                     .modal-footer
-                      button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                      button.btn.btn-secondary(type='reset', data-dismiss='modal') Close
                       button.btn.btn-primary(type='submit') Save
         .row.mt-2
           p Carts Active
         .row.mt-2
           p Transactions Active
 block pagination
-
-//- block variable
-//- block style
-//- block content
-//- block pagination
-//- block footer
-//- block script
-
-//- .container.mr-5.mt-3
-//-   form(action="", method="POST")
-//-     input(type="text", name="name")
-//-     span &nbsp
-//-     button(type="submit") Search
-//-     h4 Detail User
+block script
+  script.
+    $('#changePasswordModal').on('hidden.bs.modal', function () {
+      $(this).find('form').trigger('reset');
+    })
+  script.
+    let msgStr = !{JSON.stringify(mess)};
+    if(msgStr && msgStr.length !== 0){
+      alert(msgStr);
+    }

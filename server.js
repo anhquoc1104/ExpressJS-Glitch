@@ -71,6 +71,11 @@ app.use(async (req, res, next) => {
     next();
 });
 
+app.get("/logout", (req, res) => {
+    res.clearCookie("userId");
+    res.redirect("/");
+});
+
 // admin
 app.use("/admin", isAdminMiddleware);
 app.use("/admin/books", bookRouteAdmin);
@@ -111,11 +116,6 @@ app.get("/page/:number", async (req, res) => {
     let books = await Book.find();
     let obj = pagination(page, 12, "books", books, "/page/");
     res.render("home.pug", obj);
-});
-
-app.get("/logout", (req, res) => {
-    res.clearCookie("userId");
-    res.redirect("/");
 });
 
 app.use((req, res, next) => {

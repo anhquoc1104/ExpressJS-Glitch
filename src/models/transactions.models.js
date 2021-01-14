@@ -4,13 +4,18 @@ let transactionSchema = mongoose.Schema(
     {
         idUser: mongoose.Schema.Types.ObjectId,
         idBook: mongoose.Schema.Types.ObjectId,
-        createAt: {
+        createdAt: {
             type: Date,
             default: new Date(),
         },
+        completedAt: Date,
         isComplete: {
-            type: String,
-            default: "false",
+            type: Boolean,
+            default: false,
+        },
+        expired: {
+            type: Boolean,
+            default: false,
         },
     },
     {

@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     //redirect Admin to route admin
     if (userId) {
         let user = await User.findById(userId);
-        if (user.isAdmin === "true") {
+        if (user.isAdmin === true) {
             res.redirect("/admin");
             return;
         }
