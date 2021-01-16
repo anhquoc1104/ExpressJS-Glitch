@@ -8,26 +8,55 @@ let cloudinary = require("./avatar.controller.js");
 module.exports = {
     home: async (req, res) => {
         let user = await User.findById(req.signedCookies.userId);
-        res.render("./users/view.pug", {
-            user,
-            mess: req.flash("message"),
-        });
+        try {
+            res.render("./users/view.pug", {
+                user,
+                mess: req.flash("message"),
+            });
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     editInfoPost: async (req, res) => {
         let { name, email, phone, birthdate, address } = req.body;
-        let id = req.params.id;
+        let { id } = req.params;
+        let regexPhone = /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
+        /*
+            // Valid formats:
+            (123) 456-7890
+            (123)456-7890
+            123-456-7890
+            123.456.7890
+            1234567890
+            +31636363634
+            075-63546725
+        */
         let user = await User.findById(id);
 
         //Change Info
         let avatarUrl = user.avatarUrl;
         let file = req.file;
+
+        //name and email not Empty
         if (name === "") name = user.name;
         if (email === "") email = user.email;
-        // if (name === user.name && email === user.email && !file) {
-        //     res.redirect("/users");
-        //     return;
-        // }
+
+        //noChange
+        if (
+            name === user.name &&
+            email === user.email &&
+            phone === user.phone &&
+            birthdate === user.birthdate &&
+            address === user.address &&
+            !file
+        ) {
+            req.flash("message", Constant.SUCCESS_COMMON);
+            res.redirect("/users");
+            return;
+        }
+
+        // Change avatar
         if (file) {
             await cloudinary
                 .uploadCloudinary(file.path, 150, 150, 75)
@@ -38,10 +67,17 @@ module.exports = {
                     console.log(err + "");
                 });
         }
+
+        //Validate Phone Number
+        if (!regexPhone.test(phone)) {
+            phone = "";
+        }
+
         await User.findOneAndUpdate(
             { _id: id },
             { name, phone, birthdate, address, email, avatarUrl }
         );
+        req.flash("message", Constant.SUCCESS_COMMON);
         res.redirect("/users");
     },
 
@@ -68,7 +104,7 @@ module.exports = {
         }
         let password = bcrypt.hashSync(retypePassword, 10);
         await User.findOneAndUpdate({ _id: id }, { password });
-        req.flash("message", Constant.SUCCESS_PASSWORD_CHANGE);
+        req.flash("message", Constant.SUCCESS_COMMON);
         res.redirect("/users");
         return;
     },

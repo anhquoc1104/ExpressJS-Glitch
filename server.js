@@ -3,6 +3,8 @@ const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const cors = require("cors");
+let cron = require("node-cron");
+
 require("dotenv").config();
 
 const app = express();
@@ -127,6 +129,11 @@ app.use((req, res, next) => {
 
 //using liveChat
 socketio(io);
+
+//Crontab
+cron.schedule("0 0 * * *", () => {
+    console.log("running a task every day");
+});
 
 // listen for requests :)
 const listener = server.listen(port, () => {

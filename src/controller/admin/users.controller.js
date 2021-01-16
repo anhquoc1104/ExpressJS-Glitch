@@ -1,95 +1,144 @@
-const bcrypt = require("bcrypt");
-
-// let Transaction = require('../../models/transactions.models.js');
 let User = require("../../models/users.models.js");
 let Book = require("../../models/books.models.js");
-let pagination = require("../../services/pagination");
+let Cart = require("../../models/carts.models.js");
+let Transaction = require("../../models/transactions.models.js");
+let formatDate = require("../../services/formatDate");
 
-const change_alias = require("../../services/changeAlias");
-let cloudinary = require("../avatar.controller.js");
+let pagination = require("../../services/pagination");
+let onSort = require("../../services/sort");
+let Constant = require("../../services/constant");
+
+const twoDay = 1000 * 60 * 60 * 24 * 2;
+const fourteenDay = 1000 * 60 * 60 * 24 * 14;
 
 module.exports = {
-    home: async (req, res) => {
+    viewAdmin: async (req, res) => {
+        let user = await User.findById(req.signedCookies.userId);
+
+        res.render("./admin/users/view.users.pug", {
+            user,
+            mess: req.flash("message"),
+        });
+    },
+
+    allUsers: async (req, res) => {
         let { page } = req.params || 1;
         let { sort } = req.body || "DateUp";
-        // let users;
-        let users = await User.find({ isAdmin: false });
-        let obj = pagination(
-            "user",
-            page,
-            24,
-            "users",
-            users,
-            "/admin/users/page/"
-        );
+        let isSort = onSort(sort);
+        let users = await User.find({ isAdmin: false }).sort(isSort);
+        let obj = pagination(page, 24, "users", users, "/admin/users/page/");
         res.render("./admin/users/home.users.pug", obj);
     },
 
-    searchPost: async (req, res) => {
-        let username = req.body.name;
-        let page = req.params.page || 1;
-        username = change_alias(username);
-        let userQuery = await User.find();
-        let userList = userQuery.filter((elm) => {
-            let name = elm.name;
-            name = change_alias(name);
-            return name.indexOf(username) !== -1;
-        });
-        let user = await User.findById(req.signedCookies.userId);
-        let obj = pagination.pagination(
+    viewUser: async (req, res) => {
+        let { id } = req.params;
+        let user = await User.findById(id);
+        let arrCart = [];
+        let arrTransaction = [];
+        let { idCart, idTransaction } = user;
+        try {
+            if (idCart) {
+                for (let id in idCart) {
+                    let book = await Book.findById(idCart[id].idBook);
+                    let cart = await Cart.findById(id);
+                    if (cart.isCompleted === true) break; //Cart Expired/Complete
+
+                    let timeExpired = new Date(
+                        new Date(cart.createdAt).getTime() + twoDay
+                    );
+
+                    let timeout = `${formatDate(timeExpired).getHoursFormat}:${
+                        formatDate(timeExpired).getMinutesFormat
+                    } | ${formatDate(timeExpired).getDateFormat}/${
+                        formatDate(timeExpired).getMonthFormat
+                    }`;
+
+                    arrCart.push({
+                        idBook: book._id,
+                        idCart: id,
+                        title: book.title,
+                        timeout,
+                        avatarUrl: book.avatarUrl,
+                    });
+                }
+            }
+            if (idTransaction) {
+                for (let id in idTransaction) {
+                    let book = await Book.findById(idTransaction[id].idBook);
+                    let transaction = await Transaction.findById(id);
+                    if (transaction.isCompleted === true) break; //Transaction Expired/Complete
+
+                    let timeExpired = new Date(
+                        new Date(transaction.createdAt).getTime() + fourteenDay
+                    );
+
+                    let timeout = `${formatDate(timeExpired).getHoursFormat}:${
+                        formatDate(timeExpired).getMinutesFormat
+                    } | ${formatDate(timeExpired).getDateFormat}/${
+                        formatDate(timeExpired).getMonthFormat
+                    }`;
+
+                    arrTransaction.push({
+                        idBook: book._id,
+                        idTransaction: id,
+                        title: book.title,
+                        timeout,
+                        avatarUrl: book.avatarUrl,
+                    });
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            res.render("./statusCode/status500.pug");
+            return;
+        }
+        res.render("./admin/users/view.users.pug", {
             user,
-            page,
-            10,
-            "users",
-            userList,
-            "/transacions/page/"
-        );
-        res.render("./transactions/transactions.pug", obj);
-        return;
+            arrCart,
+            arrTransaction,
+            mess: req.flash("message"),
+        });
     },
 
-    editPost: async (req, res) => {
-        let {
-            name,
-            email,
-            oldPassword,
-            newPassword,
-            retypePassword,
-        } = req.body;
-        let id = req.params.id;
-        let isUser = await User.findById(id);
-        if (oldPassword || newPassword || retypePassword) {
-            if (!bcrypt.compareSync(oldPassword, isUser.password)) {
-                res.render("./users/users.pug", {
-                    isUser,
-                    error: "Password Wrong!!!",
-                });
-            }
-            if (newPassword !== retypePassword) {
-                res.render("./users/users.pug", {
-                    isUser,
-                    error: "Retype New Password!!!",
-                });
-            }
-            let password = bcrypt.hashSync(retypePassword, 10);
-            await User.findOneAndUpdate(
-                {
-                    _id: id,
-                },
-                {
-                    password,
-                }
-            );
-            res.redirect("/users");
-        }
-        // let password = bcrypt.hashSync(passwordRegister, 10);
-        let avatarUrl = "";
+    editInfoPost: async (req, res) => {
+        let { name, email, phone, birthdate, address } = req.body;
+        let { id } = req.params;
+        let user = await User.findById(id);
+        let regexPhone = /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
+        /*
+            // Valid formats:
+            (123) 456-7890
+            (123)456-7890
+            123-456-7890
+            123.456.7890
+            1234567890
+            +31636363634
+            075-63546725
+        */
+
+        //Change Info
+        let avatarUrl = user.avatarUrl;
         let file = req.file;
-        if (name === "") name = isUser.name;
-        if (email === "") email = isUser.email;
-        if (name === isUser.name && email === isUser.email && !file) {
-            res.redirect("/users");
+
+        //name and email not Empty
+        if (name === "") name = user.name;
+        if (email === "") email = user.email;
+
+        //noChange
+        if (
+            name === user.name &&
+            email === user.email &&
+            phone === user.phone &&
+            birthdate === user.birthdate &&
+            address === user.address &&
+            !file
+        ) {
+            req.flash("message", Constant.SUCCESS_COMMON);
+            res.redirect("/admin/users");
+            return;
         }
+
+        // Change avatar
         if (file) {
             await cloudinary
                 .uploadCloudinary(file.path, 150, 150, 75)
@@ -100,30 +149,45 @@ module.exports = {
                     console.log(err + "");
                 });
         }
+
+        //Validate Phone Number
+        if (!regexPhone.test(phone)) {
+            phone = "";
+        }
+
         await User.findOneAndUpdate(
-            {
-                _id: id,
-            },
-            {
-                name,
-                email,
-                avatarUrl,
-            }
+            { _id: id },
+            { name, phone, birthdate, address, email, avatarUrl }
         );
-        res.redirect("/users");
+        req.flash("message", Constant.SUCCESS_COMMON);
+        res.redirect("/admin/users");
     },
 
-    view: (req, res) => {
-        let id = req.params.id;
-        let detailuser = User.findById(id);
-        res.render("./users/view.pug", {
-            user: detailuser,
-        });
-    },
+    editPasswordPost: async (req, res) => {
+        let { oldPassword, newPassword, retypePassword } = req.body;
+        let { id } = req.params;
+        let user = await User.findById(id);
 
-    // remove: async(req, res) => {
-    //     let id = req.params.id;
-    //     await User.findOneAndDelete({ _id: id });
-    //     res.redirect('/users');
-    // }
+        //Change Password
+        if (!oldPassword || !newPassword || !retypePassword) {
+            req.flash("message", Constant.ERROR_FIELD_EMPTY);
+            res.redirect("/admin/users");
+            return;
+        }
+        if (!bcrypt.compareSync(oldPassword, user.password)) {
+            req.flash("message", Constant.ERROR_PASSWORD_WRONG);
+            res.redirect("/admin/users");
+            return;
+        }
+        if (newPassword !== retypePassword) {
+            req.flash("message", Constant.ERROR_PASSWORD_NOT_MATCH);
+            res.redirect("/admin/users");
+            return;
+        }
+        let password = bcrypt.hashSync(retypePassword, 10);
+        await User.findOneAndUpdate({ _id: id }, { password });
+        req.flash("message", Constant.SUCCESS_COMMON);
+        res.redirect("/admin/users");
+        return;
+    },
 };

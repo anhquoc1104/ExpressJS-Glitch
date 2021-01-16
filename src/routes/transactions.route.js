@@ -4,12 +4,8 @@ const router = express.Router();
 let controller = require("../controller/transactions.controller.js");
 
 //transactions
-//home
 router
-    .get("/page/:page", controller.home)
-    //.post("/search", controller.searchPost)
-    .get("/create", controller.create)
-    .get("/isComplete/:id/:page", controller.isComplete)
-    .get("/:id/:page", controller.userTransaction)
+    //home
+    .get("/", controller.home);
 
 module.exports = router;

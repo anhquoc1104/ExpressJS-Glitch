@@ -1,9 +1,10 @@
 let Book = require("../../models/books.models.js");
-let User = require("../../models/users.models.js");
-// const change_alias = require("../../services/changeAlias");
+
+let cloudinary = require("../avatar.controller.js");
+
 let pagination = require("../../services/pagination");
 let onSort = require("../../services/sort");
-let cloudinary = require("../avatar.controller.js");
+let Constant = require("../../services/constant");
 
 module.exports = {
     home: async (req, res) => {

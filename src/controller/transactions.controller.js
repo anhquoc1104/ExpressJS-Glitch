@@ -1,110 +1,50 @@
 let Transaction = require("../models/transactions.models.js");
 let User = require("../models/users.models.js");
 let Book = require("../models/books.models.js");
-let pagination = require("../services/pagination");
-const change_alias = require("../services/changeAlias");
+
+let formatDate = require("../services/formatDate");
+
+const fourteenDay = 1000 * 60 * 60 * 24 * 14;
 
 module.exports = {
     home: async (req, res) => {
-        try {
-            let { page } = req.params || 1;
-            let userId = req.signedCookies.userId;
-            let user = await User.findById(userId);
-            // isAdmin
-            if (user && user.isAdmin === true) {
-                let userList = await User.find();
-                let obj = pagination(
-                    user,
-                    page,
-                    10,
-                    "users",
-                    userList,
-                    "/transacions/page/"
-                );
-                res.render("./transactions/transactions.pug", obj);
+        let user = await User.findById(req.signedCookies.userId);
+        let arrTransaction = [];
+        let { idTransaction } = user;
+        if (idTransaction) {
+            try {
+                for (let id in idTransaction) {
+                    let book = await Book.findById(idTransaction[id].idBook);
+                    let transaction = await Transaction.findById(id);
+                    if (transaction.isCompleted === true) break; //Transaction Expired/Complete
+
+                    let timeExpired = new Date(
+                        new Date(transaction.createdAt).getTime() + fourteenDay
+                    );
+
+                    let timeout = `${formatDate(timeExpired).getHoursFormat}:${
+                        formatDate(timeExpired).getMinutesFormat
+                    } | ${formatDate(timeExpired).getDateFormat}/${
+                        formatDate(timeExpired).getMonthFormat
+                    }`;
+
+                    arrTransaction.push({
+                        idBook: book._id,
+                        idTransaction: id,
+                        title: book.title,
+                        timeout,
+                        avatarUrl: book.avatarUrl,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                res.render("./statusCode/status500.pug");
                 return;
             }
-            // isUser
-            // if (!page) page = 1;
-            let arrTrans = await Transaction.find({ userId: userId });
-            for (let elm of arrTrans) {
-                let book = await Book.findById(elm.bookId);
-                elm.title = book.title;
-                elm.avatarUrl = book.avatarUrl;
-                let date = elm.createAt;
-                elm.time = `${date.getDate()}/${
-                    date.getMonth() + 1
-                }/${date.getFullYear()}`;
-            }
-            let obj = pagination(
-                user,
-                page,
-                10,
-                "books",
-                arrTrans,
-                "/transacions/page/"
-            );
-            res.render("./transactions/transactions.pug", obj);
-        } catch (err) {
-            console.log(err);
-            res.render("./statusCode/status500.pug");
         }
-    },
 
-    create: async (req, res) => {
-        let userId = req.signedCookies.userId;
-        let user = await User.findById(userId);
-        let arrBookId = [];
-        for (let elm in user.cart) {
-            arrBookId.push(elm);
-        }
-        for (let elm of arrBookId) {
-            let transaction = new Transaction({
-                userId,
-                bookId: elm,
-                createAt: new Date(),
-                isComplete: false,
-            });
-            await transaction.save();
-        }
-        await User.findByIdAndUpdate(userId, { cart: undefined });
-        res.redirect("/carts");
-    },
-
-    userTransaction: async (req, res) => {
-        let userId = req.params.id;
-        let { page } = req.params || 1;
-        let user = await User.findById(userId);
-        let arrTrans = await Transaction.find({ userId: userId });
-        for (let elm of arrTrans) {
-            let book = await Book.findById(elm.bookId);
-            elm.title = book.title;
-            elm.avatarUrl = book.avatarUrl;
-            let date = elm.createAt;
-            elm.time = `${date.getDate()}/${
-                date.getMonth() + 1
-            }/${date.getFullYear()}`;
-        }
-        let obj = pagination(
-            user,
-            page,
-            10,
-            "books",
-            arrTrans,
-            `/transacions/${user._id}`
-        );
-        res.render("./transactions/view.pug", obj);
-    },
-
-    isComplete: async (req, res) => {
-        let { id, page } = req.params;
-        if (!page) page = 1;
-        let trans = await Transaction.findOneAndUpdate(
-            id,
-            { isComplete: "true" },
-            { new: true }
-        );
-        // console.log(trans);
-        res.redirect("/transactions/" + trans.userId + "/" + page);
+        res.render("./transactions/transaction.pug", {
+            arrTransaction,
+        });
     },
 };

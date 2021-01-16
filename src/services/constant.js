@@ -1,4 +1,5 @@
 module.exports = {
+    ERROR_COMMON: "Error, Try agin!",
     ERROR_BOOK_ADD: "Add new book fail, try again!",
     ERROR_BOOK_EDIT: "Edit book fail, try again!",
 
@@ -10,6 +11,6 @@ module.exports = {
     ERROR_PASSWORD_NOT_MATCH: "Failed! Retype password not match",
     ERROR_ACCOUNT_BLOCKED: "Account Blocked! Try Later!",
 
+    SUCCESS_COMMON: "Success!",
     SUCCESS_PASSWORD_FORGOT: "Success, please check your email!",
-    SUCCESS_PASSWORD_CHANGE: "Success!",
 };

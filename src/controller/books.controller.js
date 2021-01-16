@@ -67,9 +67,7 @@ module.exports = {
             if (!user.idCart) {
                 user.idCart = {};
             }
-            let idCart = user.idCart;
-            let idTransaction = user.idTransaction;
-            //Check had cart
+            let { idCart, idTransaction } = user;
             for (let cart in idCart) {
                 if (idCart[cart].idBook.toString() === idBook) {
                     return;
@@ -83,16 +81,15 @@ module.exports = {
             }
             // Cart max : 5
             // Create cart
-            const lenTransaction = Object.keys(user.idTransaction).length;
+            const lenTransaction = Object.keys(idTransaction).length;
             const lenCart = Object.keys(idCart).length;
             if (5 - lenTransaction > 0 && lenTransaction + lenCart < 5) {
                 let cart = new Cart({
                     idUser,
                     idBook,
-                    createAt: new Date(),
                 });
-                let isCarts = cart.save();
-                let id = (await isCarts)._id;
+                let isCart = cart.save();
+                let id = (await isCart)._id;
                 user.idCart[id] = {
                     idCart: id,
                     idBook,

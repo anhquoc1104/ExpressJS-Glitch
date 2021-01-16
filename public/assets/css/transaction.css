@@ -1,9 +1,9 @@
-.cart__empty {
+.transaction__empty {
     width: 35%;
     height: auto;
 }
 
-.cart__image {
+.transaction__image {
     width: 50px;
     height: 50px;
 }

@@ -1,0 +1,33 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Transaction'
+block style
+  link(rel="stylesheet", href="/assets/css/transaction.css")
+block content
+  .container.mt-3
+    if arrTransaction == false
+      .row.justify-content-center
+        img.transaction__empty(src="/sources/img/transaction-empty.png", alt="")
+    else
+      table.table.table-hover
+        thead
+          tr
+            th(scope='col') 
+            th(scope='col') Title Book
+            th(scope='col') Timeout
+        tbody
+          each elm in arrTransaction
+            tr
+              td(scope='row')
+                if elm.avatarUrl
+                  a(href="/books/view/" + elm.idBook)
+                    img.transaction__image(src=elm.avatarUrl)
+                else
+                  img.transaction__image(src='/sources/img/book-default.jpg', alt="")
+
+              td
+                a(href="/books/view/" + elm.idBook)= elm.title
+              td= elm.timeout
+
+block pagination

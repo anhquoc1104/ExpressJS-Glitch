@@ -4,20 +4,17 @@ let cartSchema = mongoose.Schema(
     {
         idUser: mongoose.Schema.Types.ObjectId,
         idBook: mongoose.Schema.Types.ObjectId,
-        createdAt: {
-            type: Date,
-            default: new Date(),
-        },
-        isComplete: {
+        isCompleted: {
             type: Boolean,
             default: false,
         },
-        expired: {
+        isExpired: {
             type: Boolean,
             default: false,
         },
     },
     {
+        timestamps: true,
         autoCreate: true,
     }
 );

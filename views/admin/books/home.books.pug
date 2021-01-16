@@ -21,8 +21,8 @@ block content
                 option --- Sort ---
                 option(value="DateUp") Date Up
                 option(value="DateDown") Date Down
-                option(value="NameUp") Name A-Z
-                option(value="NameDown") Name Z-A
+                option(value="TitleUp") Name A-Z
+                option(value="TitleDown") Name Z-A
       table.table.table-hover
         thead
           tr
@@ -39,8 +39,8 @@ block content
               td= index+1
               td(scope='row')
                 if elm.avatarUrl
-                  a(href="/admin/books/view/" + elm._id, alt= elm.title)
-                    img.image__table(src=elm.avatarUrl)
+                  a(href="/admin/books/view/" + elm._id)
+                    img.image__table(src=elm.avatarUrl, alt= elm.title)
                 else
                   img.image__table--empty(src='/sources/img/book-default.jpg')
               td
@@ -92,6 +92,15 @@ block content
               button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
               button.btn.btn-primary(type='submit') Save
 block script
+  script(src='/assets/js/admin/handleEditBook.js')
+  script.
+    //clear form
+    function handleAddBook(){
+      let form = $('#bookModal form');
+      form.reset();
+      form.setAttribute('action', '/admin/books/create');
+      $('#bookModal #url').value = window.location.pathname;
+    }
   script.
     $( document ).ready(function() {
       //- console.log(mess);
@@ -102,13 +111,3 @@ block script
         alert(msgStr);
       }
     });
-
-    //clear form
-    function handleAddBook(){
-      let form = document.querySelector('#bookModal form');
-      form.reset();
-      form.setAttribute('action', '/admin/books/create');
-      document.querySelector('#bookModal #url').value = window.location.pathname;
-    }
-    
-  script(src='/assets/js/admin/handleEditBook.js')

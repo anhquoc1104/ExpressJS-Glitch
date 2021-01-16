@@ -4,10 +4,14 @@ module.exports = (sort) => {
             return { createAt: 1 };
         case "DateDown":
             return { createAt: -1 };
-        case "NameUp":
+        case "TitleUp":
             return { title: 1 };
-        case "NameDown":
+        case "TitleDown":
             return { title: -1 };
+        case "NameUp":
+            return { name: 1 };
+        case "NameDown":
+            return { name: -1 };
         default:
             return { createAt: 1 };
     }

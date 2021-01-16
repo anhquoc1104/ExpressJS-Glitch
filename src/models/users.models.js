@@ -2,18 +2,29 @@ const mongoose = require("../services/mongoose.js");
 
 let userSchema = mongoose.Schema(
     {
-        name: String,
+        name: {
+            type: String,
+            required: [true, "Name must be required"],
+            trim: true,
+        },
         email: {
             type: String,
-            required: true,
+            required: [true, "Email must be required"],
+            unique: true,
+            trim: true,
         },
         phone: String,
         password: {
             type: String,
-            required: true,
+            required: [true, "Password must be required"],
+            trim: true,
+            minlength: [6, "Password must be at least 6 characters"],
         },
         birthdate: Date,
-        address: String,
+        address: {
+            type: String,
+            trim: true,
+        },
         status: {
             type: String,
             default: "pending",
@@ -25,10 +36,6 @@ let userSchema = mongoose.Schema(
         avatarUrl: {
             type: String,
             default: "",
-        },
-        createAt: {
-            type: Date,
-            default: new Date(),
         },
         wrongLoginCount: {
             type: Number,
@@ -44,6 +51,7 @@ let userSchema = mongoose.Schema(
         },
     },
     {
+        timestamps: true,
         autoCreate: true,
         collation: { locale: "en_US", strength: 1 },
     }

@@ -4,7 +4,9 @@
 }
 
 .user__profile p {
+    display: inline-block;
     font-size: 15px;
     color: #333;
     margin-bottom: 7px;
+    border-bottom: 1px solid #ddd;
 }

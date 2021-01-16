@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 let controller = require("../../controller/admin/carts.controller.js");
 
-router.get("/", controller.home).get("/delete/:id", controller.deleteCart);
+router
+    .get("/page/:page", controller.home)
+    .post("/checkout", controller.checkoutPost);
 
 module.exports = router;

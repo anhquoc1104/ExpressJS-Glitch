@@ -153,7 +153,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
 
 //register POST
 module.exports.registerPost = async (req, res) => {
-    let regexEmail = /^([A-Z|a-z|0-9](.|_){0,1})+[A-Z|a-z|0-9]@([A-Z|a-z|0-9])+((\.){0,1}([A-Z|a-z|0-9])+){1,4}\.[a-z]{2,4}$/;
+    let regexEmail = /^([A-Z|a-z|0-9](.|_){0,1})+[A-Z|a-z|0-9]@([A-Z|a-z|0-9])+((\.){0,1}([A-Z|a-z|0-9])+){1,4}\.[a-z]{2,4}$/g;
     let {
         nameRegister,
         emailRegister,
