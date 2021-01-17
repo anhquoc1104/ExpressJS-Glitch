@@ -48,7 +48,7 @@ block content
                   a(href="/admin/books/view/" + elm._id)= elm.title
                 td
                   a(href="/admin/search/1?authorQuery=" + elm.author)= elm.author
-                td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
+                td= elm.createdAt.getDate() + '-'+ elm.createdAt.getMonth() + '-' + elm.createdAt.getFullYear()
                 td= elm.quantity
                 td
                   button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") edit
@@ -70,14 +70,14 @@ block content
                 td= index+1
                 td(scope='row')
                   if elm.avatarUrl
-                    a(href="", alt= elm.title)
+                    a(href="/admin/users/view/" + elm._id, alt= elm.title)
                       img.image__table(src=elm.avatarUrl)
                   else
                     img.image__table--empty(src='/sources/img/user-avatar-default.png')
                 td
-                  a(href="")= elm.name
+                  a(href="/admin/users/view/" + elm._id)= elm.name
                 td
-                  a(href="")= elm.email
+                  a(href="/admin/users/view/" + elm._id)= elm.email
                 td= elm.phone
                 td
                   if elm.status == "true"

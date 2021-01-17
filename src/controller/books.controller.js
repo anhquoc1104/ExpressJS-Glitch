@@ -2,7 +2,7 @@ let Book = require("../models/books.models.js");
 let Session = require("../models/sessions.models.js");
 let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
-// const change_alias = require("../services/changeAlias");
+
 let pagination = require("../services/pagination");
 let onSort = require("../services/sort");
 
@@ -11,8 +11,6 @@ module.exports = {
     search: async (req, res) => {
         let page = 1;
         let { allQuery, authorQuery, publisherQuery, yearQuery } = req.query;
-        let { userId } = req.signedCookies;
-        let user = userId && (await User.findById(userId));
         let { sort } = req.body || "DateUp";
         let isSort = onSort(sort);
         let matchQuery;
@@ -120,7 +118,9 @@ module.exports = {
 
         if (idUser) {
             let user = await User.findById(idUser);
-            isLogin(user);
+            if (user.status === "active") {
+                isLogin(user);
+            }
         } else {
             let session = await Session.findById(sessionId);
             isSession(session);

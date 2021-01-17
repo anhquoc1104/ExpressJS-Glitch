@@ -8,9 +8,6 @@ let pagination = require("../../services/pagination");
 let onSort = require("../../services/sort");
 let Constant = require("../../services/constant");
 
-const twoDay = 1000 * 60 * 60 * 24 * 2;
-const fourteenDay = 1000 * 60 * 60 * 24 * 14;
-
 module.exports = {
     viewAdmin: async (req, res) => {
         let user = await User.findById(req.signedCookies.userId);
@@ -25,9 +22,19 @@ module.exports = {
         let { page } = req.params || 1;
         let { sort } = req.body || "DateUp";
         let isSort = onSort(sort);
-        let users = await User.find({ isAdmin: false }).sort(isSort);
-        let obj = pagination(page, 24, "users", users, "/admin/users/page/");
-        res.render("./admin/users/home.users.pug", obj);
+        try {
+            let users = await User.find({ isAdmin: false }).sort(isSort);
+            let obj = pagination(
+                page,
+                24,
+                "users",
+                users,
+                "/admin/users/page/"
+            );
+            res.render("./admin/users/home.users.pug", obj);
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     viewUser: async (req, res) => {
@@ -44,7 +51,8 @@ module.exports = {
                     if (cart.isCompleted === true) break; //Cart Expired/Complete
 
                     let timeExpired = new Date(
-                        new Date(cart.createdAt).getTime() + twoDay
+                        new Date(cart.createdAt).getTime() +
+                            Constant.TWO_DAYS_MILI
                     );
 
                     let timeout = `${formatDate(timeExpired).getHoursFormat}:${
@@ -69,7 +77,8 @@ module.exports = {
                     if (transaction.isCompleted === true) break; //Transaction Expired/Complete
 
                     let timeExpired = new Date(
-                        new Date(transaction.createdAt).getTime() + fourteenDay
+                        new Date(transaction.createdAt).getTime() +
+                            Constant.FOURTEEN_DAYS_MILI
                     );
 
                     let timeout = `${formatDate(timeExpired).getHoursFormat}:${

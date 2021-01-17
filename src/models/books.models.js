@@ -2,28 +2,43 @@ const mongoose = require("../services/mongoose.js");
 
 let bookSchema = mongoose.Schema(
     {
-        title: String,
-        description: String,
-        idUser: [mongoose.Schema.Types.ObjectId],
-        createAt: {
-            type: Date,
-            default: new Date(),
+        title: {
+            type: String,
+            trim: true,
         },
+        description: {
+            type: String,
+            trim: true,
+        },
+        idUser: [mongoose.Schema.Types.ObjectId],
         avatarUrl: {
             type: String,
             default: "",
         },
         quantity: Number,
-        author: String,
-        year: String,
-        publisher: String,
-        category: String,
+        author: {
+            type: String,
+            trim: true,
+        },
+        year: {
+            type: String,
+            trim: true,
+        },
+        publisher: {
+            type: String,
+            trim: true,
+        },
+        category: {
+            type: String,
+            trim: true,
+        },
         status: {
             type: String,
             default: "true",
         },
     },
     {
+        timestamps: true,
         autoCreate: true,
         collation: { locale: "en_US", strength: 1 },
     }

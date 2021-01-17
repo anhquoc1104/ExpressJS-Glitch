@@ -51,10 +51,10 @@ module.exports = {
     deleteCart: async (req, res) => {
         let { idCart } = req.params;
         let idUser = req.signedCookies.userId;
-        let user = await User.findById(idUser);
-        let idCartFromUser = Object.assign({}, user.idCart);
-        let { idBook } = idCartFromUser[idCart];
         try {
+            let user = await User.findById(idUser);
+            let idCartFromUser = Object.assign({}, user.idCart);
+            let { idBook } = idCartFromUser[idCart];
             //decrease quantity book
             await Book.findById(idBook, function (err, book) {
                 book.quantity++;

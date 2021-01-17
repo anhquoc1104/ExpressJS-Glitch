@@ -4,51 +4,40 @@ let Transaction = require("../../models/transactions.models.js");
 
 let pagination = require("../../services/pagination");
 let Constant = require("../../services/constant");
+let onSort = require("../../services/sort");
 
 module.exports = {
     home: async (req, res) => {
+        let { page } = req.params || 1;
+        let { sort } = req.body || "DateDown";
+        let isSort = onSort(sort);
         try {
-            let { page } = req.params || 1;
-            let userId = req.signedCookies.userId;
-            let user = await User.findById(userId);
-            // isAdmin
-            if (user && user.isAdmin === "true") {
-                let userList = await User.find();
-                let obj = pagination.pagination(
-                    user,
-                    page,
-                    10,
-                    "users",
-                    userList,
-                    "/transacions/page/"
-                );
-                res.render("./transactions/transactions.pug", obj);
-                return;
+            let transactions = await Transaction.find().sort(isSort);
+            for (let transaction of transactions) {
+                await Book.findById(transaction.idBook, function (err, book) {
+                    if (!err) {
+                        // console.log(book);
+                        transaction.title = book.title;
+                        transaction.avatarUrl = book.avatarUrl;
+                    }
+                });
+                await User.findById(transaction.idUser, function (err, user) {
+                    if (!err) {
+                        transaction.name = user.name;
+                        transaction.email = user.email;
+                    }
+                });
             }
-            // isUser
-            // if (!page) page = 1;
-            let arrTrans = await Transaction.find({ userId: userId });
-            for (let elm of arrTrans) {
-                let book = await Book.findById(elm.bookId);
-                elm.title = book.title;
-                elm.avatarUrl = book.avatarUrl;
-                let date = elm.createAt;
-                elm.time = `${date.getDate()}/${
-                    date.getMonth() + 1
-                }/${date.getFullYear()}`;
-            }
-            let obj = pagination.pagination(
-                user,
+            let obj = pagination(
                 page,
-                10,
-                "books",
-                arrTrans,
-                "/transacions/page/"
+                24,
+                "transactions",
+                transactions,
+                "/admin/transactions/page/"
             );
-            res.render("./transactions/transactions.pug", obj);
-        } catch (err) {
-            console.log(err);
-            res.render("./statusCode/status500.pug");
+            res.render("./admin/transactions/transactions.pug", obj);
+        } catch (error) {
+            console.log(error);
         }
     },
 

@@ -1,14 +1,14 @@
 extends ../layouts/common.pug
 
 block variable
-  - var title = 'Users'
+  - var title = 'Carts'
 block style
     link(rel='stylesheet', href='/assets/css/admin/base.css')
 block content 
   .container.mt-3
-    if users == false
+    if carts == false
       .row.justify-content-center
-        img.cart__empty(src="/sources/img/transactions-empty.png", alt="")
+        img.cart__empty(src="/sources/img/carts-empty.png", alt="")
     else
       .row.justify-content-end.mb-2
         form(method='POST')
@@ -16,8 +16,6 @@ block content
             .col-auto.my-1.ml-auto
               select.form-control.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort') 
                 option --- Sort ---
-                option(value="NameUp") Name A-Z
-                option(value="NameDown") Name Z-A
                 option(value="DateUp") Date Up
                 option(value="DateDown") Date Down
       table.table.table-hover
@@ -25,30 +23,32 @@ block content
           tr
             th(scope='col') #
             th(scope='col') 
+            th(scope='col') Title
             th(scope='col') Name
             th(scope='col') Email
-            th(scope='col') Date Join
             th(scope='col') Status
         tbody
-          each elm, index in users
+          each elm, index in carts
             tr
               td= index+1
               td(scope='row')
                 if elm.avatarUrl
                   img.image__table(src=elm.avatarUrl)
                 else
-                  a(href="/admin/users/view/" + elm._id)
-                    img.image__table--empty(src='/sources/img/user-avatar-default.png' alt=elm.name)
+                  a(href="/admin/books/view/" + elm.idBook)
+                    img.image__table--empty(src='/sources/img/book-default.jpg' alt=elm.title)
               td
-                a(href="/admin/users/view/" + elm._id)= elm.name
-              td= elm.email
-              td= elm.createdAt.getDate() + '-'+ elm.createdAt.getMonth() + '-' + elm.createdAt.getFullYear()
+                a(href="/admin/books/view/" + elm.idBook)= elm.title
               td
-                if elm.status == "true"
+                a(href="/admin/users/view/" + elm.idUser)= elm.name
+              td
+                a(href="/admin/users/view/" + elm.idUser)= elm.email
+              td
+                if elm.isCompleted == true
                     span.dot
                         i.bg-success
-                        | active
+                        | Done
                 else
                     span.dot
                         i.bg-danger
-                        | blocked
+                        | Pending

@@ -47,7 +47,7 @@ block content
                 a(href="/admin/books/view/" + elm._id)= elm.title
               td
                 a(href="/admin/search/1?authorQuery=" + elm.author)= elm.author
-              td= elm.createAt.getDate() + '-'+ elm.createAt.getMonth() + '-' + elm.createAt.getFullYear()
+              td= elm.createdAt.getDate() + '-'+ (elm.createdAt.getMonth() + 1) + '-' + elm.createdAt.getFullYear()
               td= elm.quantity
               td
                 button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") edit

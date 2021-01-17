@@ -1,19 +1,45 @@
 let User = require("../../models/users.models.js");
 let Book = require("../../models/books.models.js");
 let Transaction = require("../../models/transactions.models.js");
-const Cart = require("../../models/carts.models.js");
+let Cart = require("../../models/carts.models.js");
 
 let pagination = require("../../services/pagination");
 let Constant = require("../../services/constant");
+let onSort = require("../../services/sort");
 
 module.exports = {
     home: async (req, res) => {
         let { page } = req.params || 1;
-        let { sort } = req.body || "DateUp";
+        let { sort } = req.body || "DateDown";
         let isSort = onSort(sort);
-        let carts = await User.find({ isCompleted: false }).sort(isSort);
-        let obj = pagination(page, 24, "users", carts, "/admin/users/page/");
-        res.render("./admin/carts/carts.pug", obj);
+        try {
+            let carts = await Cart.find().sort(isSort);
+            for (let cart of carts) {
+                await Book.findById(cart.idBook, function (err, book) {
+                    if (!err) {
+                        // console.log(book);
+                        cart.title = book.title;
+                        cart.avatarUrl = book.avatarUrl;
+                    }
+                });
+                await User.findById(cart.idUser, function (err, user) {
+                    if (!err) {
+                        cart.name = user.name;
+                        cart.email = user.email;
+                    }
+                });
+            }
+            let obj = pagination(
+                page,
+                24,
+                "carts",
+                carts,
+                "/admin/carts/page/"
+            );
+            res.render("./admin/carts/carts.pug", obj);
+        } catch (error) {
+            console.log(error);
+        }
     },
 
     checkoutPost: async (req, res) => {

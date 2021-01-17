@@ -13,6 +13,7 @@ const io = require("socket.io")(server);
 const socketio = require("./src/services/livechat/socketio");
 let pagination = require("./src/services/pagination");
 let onSort = require("./src/services/sort");
+let crontab = require("./src/services/crontab/crontab");
 
 let port = process.env.PORT || 8080;
 
@@ -58,6 +59,7 @@ let bookRoute = require("./src/routes/books.route");
 let transRoute = require("./src/routes/transactions.route");
 let loginRoute = require("./src/routes/auth.route");
 let cartRoute = require("./src/routes/carts.route");
+let hictoryRoute = require("./src/routes/hictories.route");
 let requireAuth = require("./src/middlewares/auth.middleware");
 let sessionMiddleware = require("./src/middlewares/session.middleware");
 let isAdminMiddleware = require("./src/middlewares/isAdmin.middleware");
@@ -93,6 +95,7 @@ app.use("/users", requireAuth.authMiddlewares, userRoute);
 app.use("/books", bookRoute);
 app.use("/transactions", requireAuth.authMiddlewares, transRoute);
 app.use("/carts", requireAuth.authMiddlewares, cartRoute);
+app.use("/hictories", requireAuth.authMiddlewares, hictoryRoute);
 app.use("/login", loginRoute);
 
 //home
@@ -133,6 +136,9 @@ socketio(io);
 //Crontab
 cron.schedule("0 0 * * *", () => {
     console.log("running a task every day");
+    crontab.checkCartExpired();
+    // crontab.checkTransactionExpired();
+    // crontab.checkUserUnlock();
 });
 
 // listen for requests :)

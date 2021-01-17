@@ -1,0 +1,85 @@
+extends ../layouts/common.pug
+
+block variable
+  - var title = 'Cart'
+block style
+  link(rel="stylesheet", href="/assets/css/cart.css")
+block content
+  .container.mt-3
+    .row.justify-content-center
+        h4 Carts
+        if carts == false
+            hr.mt-0
+            p No Cart Active
+        else
+            table.table.table-hover
+                thead
+                    tr
+                        th(scope='col') 
+                        th(scope='col') Title Book
+                        th(scope='col') Date
+                        th(scope='col') Status
+                        th(scope='col') 
+                tbody
+                    each elm in carts
+                        tr
+                            td(scope='row')
+                                if elm.avatarUrl
+                                    a(href="/books/view/" + elm.idBook)
+                                        img.cart__image(src=elm.avatarUrl)
+                                else
+                                    img.cart__image(src='/sources/img/book-default.jpg', alt="")
+
+                            td
+                                a(href="/books/view/" + elm.idBook)= elm.title
+                            td= elm.time
+                            if elm.isCompleted == true
+                                td
+                                    span.dot
+                                        i.bg-success
+                                        | Done
+                                td
+                            else
+                                td
+                                    span.dot
+                                        i.bg-danger
+                                        | Pending
+                                td
+                                    a.btn.btn-danger.font-weight-bold(href="/carts/delete/" + elm.idCart, type="submit") Remove
+    //- Render Transaction
+    .row.justify-content-center
+        h4 Transactions
+        if transactions == false
+            hr.mt-0
+            p No Cart Active
+        else
+            table.table.table-hover
+                thead
+                    tr
+                        th(scope='col') 
+                        th(scope='col') Title Book
+                        th(scope='col') Date
+                        th(scope='col') Status
+                tbody
+                    each elm in transactions
+                        tr
+                            td(scope='row')
+                                if elm.avatarUrl
+                                    a(href="/books/view/" + elm.idBook)
+                                        img.cart__image(src=elm.avatarUrl)
+                                else
+                                    img.cart__image(src='/sources/img/book-default.jpg', alt="")
+
+                            td
+                                a(href="/books/view/" + elm.idBook)= elm.title
+                            td= elm.time
+                            if elm.isCompleted == true
+                                td
+                                    span.dot
+                                        i.bg-success
+                                        | Done
+                            else
+                                td
+                                    span.dot
+                                        i.bg-danger
+                                        | Pending

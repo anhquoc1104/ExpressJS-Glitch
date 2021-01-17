@@ -1,4 +1,7 @@
 module.exports = {
+    TWO_DAYS_MILI: 1000 * 60 * 60 * 24 * 2,
+    FOURTEEN_DAYS_MILI: 1000 * 60 * 60 * 24 * 14,
+
     ERROR_COMMON: "Error, Try agin!",
     ERROR_BOOK_ADD: "Add new book fail, try again!",
     ERROR_BOOK_EDIT: "Edit book fail, try again!",
