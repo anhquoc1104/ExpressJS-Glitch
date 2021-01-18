@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 let User = require("../models/users.models.js");
-const Constant = require("../services/Constant");
+const Constant = require("../services/constant");
 
 let cloudinary = require("./avatar.controller.js");
 
