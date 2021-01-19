@@ -33,8 +33,8 @@ let bookSchema = mongoose.Schema(
             trim: true,
         },
         status: {
-            type: String,
-            default: "true",
+            type: Boolean,
+            default: true,
         },
     },
     {

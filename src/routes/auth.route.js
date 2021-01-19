@@ -3,10 +3,8 @@ const express = require("express");
 const router = express.Router();
 let controller = require("../controller/auth.controller.js");
 
-router.get("/", controller.login);
-router.post("/", controller.loginPost);
-router.get("/forgotPassword", controller.forgotPassword);
-router.post("/forgotPassword", controller.forgotPasswordPost);
-router.post("/register", controller.registerPost);
+router.get("/register/:jwtIdUser", controller.login);
+router.get("/forgotPassword/:jwtIdUser", controller.forgotPassword);
+router.post("/forgotPassword/:jwtIdUser", controller.forgotPasswordPost);
 
 module.exports = router;

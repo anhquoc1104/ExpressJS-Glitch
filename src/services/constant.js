@@ -4,6 +4,7 @@ module.exports = {
 
     ERROR_COMMON: "Error, Try agin!",
     ERROR_BOOK_ADD: "Add new book fail, try again!",
+    ERROR_BOOK_EXIST: "Error! Book Exist",
     ERROR_BOOK_EDIT: "Edit book fail, try again!",
 
     ERROR_FIELD_EMPTY: "Please fill in all fields!",

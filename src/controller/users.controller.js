@@ -20,7 +20,7 @@ module.exports = {
 
     editInfoPost: async (req, res) => {
         let { name, email, phone, birthdate, address } = req.body;
-        let { id } = req.params;
+        let idUser = req.signedCookies.userId;
         let regexPhone = /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
         /*
             // Valid formats:
@@ -32,7 +32,7 @@ module.exports = {
             +31636363634
             075-63546725
         */
-        let user = await User.findById(id);
+        let user = await User.findById(idUser);
 
         //Change Info
         let avatarUrl = user.avatarUrl;
@@ -74,7 +74,7 @@ module.exports = {
         }
 
         await User.findOneAndUpdate(
-            { _id: id },
+            { _id: idUser },
             { name, phone, birthdate, address, email, avatarUrl }
         );
         req.flash("message", Constant.SUCCESS_COMMON);
@@ -83,8 +83,8 @@ module.exports = {
 
     editPasswordPost: async (req, res) => {
         let { oldPassword, newPassword, retypePassword } = req.body;
-        let { id } = req.params;
-        let user = await User.findById(id);
+        let idUser = req.signedCookies.userId;
+        let user = await User.findById(idUser);
 
         //Change Password
         if (!oldPassword || !newPassword || !retypePassword) {
@@ -103,7 +103,7 @@ module.exports = {
             return;
         }
         let password = bcrypt.hashSync(retypePassword, 10);
-        await User.findOneAndUpdate({ _id: id }, { password });
+        await User.findOneAndUpdate({ _id: idUser }, { password });
         req.flash("message", Constant.SUCCESS_COMMON);
         res.redirect("/users");
         return;

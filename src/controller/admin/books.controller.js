@@ -12,11 +12,11 @@ module.exports = {
         let { page } = req.params || 1;
         let { sort } = req.body || "DateUp";
         let isSort = onSort(sort);
-        let books = await Book.find().sort(isSort);
+        let books = await Book.find({ status: true }).sort(isSort);
         let obj = pagination(page, 24, "books", books, "/admin/books/page/");
         res.render("./admin/books/home.books.pug", {
             ...obj,
-            mess: req.flash("sucess"),
+            mess: req.flash("message"),
         });
     },
     //Create
@@ -32,42 +32,54 @@ module.exports = {
             description,
         } = req.body;
         if (title === "") {
+            req.flash("message", Constant.ERROR_BOOK_ADD);
             res.redirect(url);
             return;
         }
         let avatarUrl = "";
         let { userId } = req.signedCookies;
-        if (req.file) {
-            await cloudinary
-                .uploadCloudinary(req.file.path, 250, 300, 5)
-                .then((result) => {
-                    avatarUrl = result.url;
-                    return avatarUrl;
-                })
-                .catch((err) => {
-                    console.log(err + "");
-                });
+        try {
+            let book = await Book.findOne({ title: { $regex: title } });
+            if (book) {
+                req.flash("message", Constant.ERROR_BOOK_EXIST);
+                res.redirect(url);
+                return;
+            }
+            if (req.file) {
+                await cloudinary
+                    .uploadCloudinary(req.file.path, 250, 300, 5)
+                    .then((result) => {
+                        avatarUrl = result.url;
+                        return avatarUrl;
+                    })
+                    .catch((err) => {
+                        console.log(err + "");
+                    });
+            }
+
+            quantity = quantity ? quantity : 0;
+            // if (title === "") title = "No Title";
+            // if (description === "") description = "No Description";
+
+            let newBook = new Book({
+                title,
+                author,
+                year,
+                quantity,
+                publisher,
+                category,
+                idUser: userId,
+                description,
+                createAt: new Date(),
+                avatarUrl,
+            });
+            newBook.save();
+            req.flash("message", Constant.SUCCESS_COMMON);
+            res.redirect(url);
+        } catch (error) {
+            console.log(error);
+            res.render("./statusCode/status500.pug");
         }
-
-        quantity === "" ? "0" : quantity;
-        // if (title === "") title = "No Title";
-        // if (description === "") description = "No Description";
-
-        let newBook = new Book({
-            title,
-            author,
-            year,
-            quantity,
-            publisher,
-            category,
-            idUser: userId,
-            description,
-            createAt: new Date(),
-            avatarUrl,
-        });
-        newBook.save();
-        req.flash("sucess", "SUCESS!");
-        res.redirect(url);
     },
 
     //View

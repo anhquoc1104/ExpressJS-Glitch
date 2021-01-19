@@ -97,17 +97,13 @@ block script
     //clear form
     function handleAddBook(){
       let form = $('#bookModal form');
-      form.reset();
-      form.setAttribute('action', '/admin/books/create');
-      $('#bookModal #url').value = window.location.pathname;
+      form.trigger("reset");
+      form.attr('action', '/admin/books/create');
+      $('#bookModal #url').val(window.location.pathname);
+      return;
     }
   script.
-    $( document ).ready(function() {
-      //- console.log(mess);
-      let msgStr = !{JSON.stringify(mess)};
-      //- console.log(msgStr);
-      //- console.log(typeof(msgStr));
-      if(typeof(mess) != 'undefined' && mess != '' && msgStr !== []){
-        alert(msgStr);
-      }
-    });
+    let msgStr = !{JSON.stringify(mess)};
+    if(msgStr && msgStr.length !== 0){
+      alert(msgStr);
+    }

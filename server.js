@@ -2,7 +2,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
-const cors = require("cors");
 let cron = require("node-cron");
 
 require("dotenv").config();
@@ -21,7 +20,6 @@ let port = process.env.PORT || 8080;
 let Book = require("./src/models/books.models.js");
 let User = require("./src/models/users.models.js");
 
-app.use(cors());
 app.use(express.static("public"));
 
 //body-parser
@@ -57,7 +55,8 @@ let dashboardAdmin = require("./src/controller/admin/dashboard.controller");
 let userRoute = require("./src/routes/users.route");
 let bookRoute = require("./src/routes/books.route");
 let transRoute = require("./src/routes/transactions.route");
-let loginRoute = require("./src/routes/auth.route");
+let loginRoute = require("./src/routes/login.route");
+let authRoute = require("./src/routes/auth.route");
 let cartRoute = require("./src/routes/carts.route");
 let hictoryRoute = require("./src/routes/hictories.route");
 let requireAuth = require("./src/middlewares/auth.middleware");
@@ -97,6 +96,7 @@ app.use("/transactions", requireAuth.authMiddlewares, transRoute);
 app.use("/carts", requireAuth.authMiddlewares, cartRoute);
 app.use("/hictories", requireAuth.authMiddlewares, hictoryRoute);
 app.use("/login", loginRoute);
+app.use("/auth", authRoute);
 
 //home
 let homePage = async (req, res) => {

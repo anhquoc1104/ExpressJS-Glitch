@@ -10,7 +10,7 @@ router
     //get users
     .get("/", controller.home)
     //edit user
-    .post("/edit/info/:id", multerUpload, controller.editInfoPost)
-    .post("/edit/password/:id", controller.editPasswordPost);
+    .post("/edit/info", multerUpload, controller.editInfoPost)
+    .post("/edit/password", controller.editPasswordPost);
 
 module.exports = router;

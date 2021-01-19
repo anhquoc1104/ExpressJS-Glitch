@@ -12,7 +12,7 @@ router
     .post("/page/:page", controller.allUsers)
     //view user
     .get("/view/:id", controller.viewUser)
-    .post("/edit/info/:id", multerUpload, controller.editInfoPost)
-    .post("/edit/password/:id", controller.editPasswordPost);
+    .post("/edit/info", multerUpload, controller.editInfoPost)
+    .post("/edit/password", controller.editPasswordPost);
 
 module.exports = router;
