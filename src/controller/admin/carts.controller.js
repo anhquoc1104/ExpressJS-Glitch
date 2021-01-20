@@ -69,7 +69,6 @@ module.exports = {
             // Create cart
             let idCartFromUser = Object.assign({}, user.idCart);
             const lenTransaction = Object.keys(idTransaction).length;
-            const lenCart = Object.keys(idCartFromUser).length;
             if (5 - lenTransaction > 0) {
                 // New Transaction
                 let newTransaction = new Transaction({

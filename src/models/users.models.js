@@ -11,6 +11,7 @@ let userSchema = mongoose.Schema(
             type: String,
             required: [true, "Email must be required"],
             unique: true,
+            lowercase: true,
             trim: true,
         },
         phone: String,

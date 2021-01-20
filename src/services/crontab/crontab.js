@@ -29,6 +29,15 @@ module.exports = {
                             cart.isCompleted = true;
                             cart.isExpired = true;
                             await cart.save();
+
+                            //remove idCart From User
+                            let { idUser } = cart;
+                            let user = await User.findById(idUser);
+                            let idCartFromUser = Object.assign({}, user.idCart);
+                            delete idCartFromUser[cart._id];
+                            await User.findByIdAndUpdate(idUser, {
+                                idCart: idCartFromUser,
+                            });
                         }
                         return;
                     }

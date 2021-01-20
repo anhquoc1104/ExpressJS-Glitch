@@ -137,7 +137,7 @@ socketio(io);
 cron.schedule("0 0 * * *", () => {
     console.log("running a task every day");
     crontab.checkCartExpired();
-    // crontab.checkTransactionExpired();
+    crontab.checkTransactionExpired();
     // crontab.checkUserUnlock();
 });
 

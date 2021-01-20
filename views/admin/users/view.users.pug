@@ -96,7 +96,7 @@ block content
           .row.mt-4.cart-active
             .div
               span Carts Activity
-              a(href="/") view all
+              a(href="/admin/carts/" + user._id) view all
             if arrCart == false
               hr.mt-0
               p No Cart Active
@@ -126,7 +126,7 @@ block content
           .row.mt-4.transaction-active
             .div
               span Transactions Activity
-              a(href="/") view all
+              a(href="/admin/transactions/" + user._id) view all
             if arrTransaction == false
               hr.mt-0
               p No Transaction Active
