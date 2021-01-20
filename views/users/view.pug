@@ -40,7 +40,7 @@ block content
                     h5#exampleModalLabel.modal-title Edit Profile
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/info/" + user._id, method="POST" enctype="multipart/form-data")
+                  form(action="/users/edit/info/", method="POST" enctype="multipart/form-data")
                     .modal-body
                       .form-row
                         //- Name
@@ -79,7 +79,7 @@ block content
                     h5#exampleModalLabel.modal-title Change Password
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') &times;
-                  form(action="/users/edit/password/" + user._id, method="POST")
+                  form(action="/users/edit/password/", method="POST")
                     .modal-body
                       .form-group
                         input.form-control(name="oldPassword", type='password', placeholder='password')
