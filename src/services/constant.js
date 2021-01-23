@@ -11,6 +11,7 @@ module.exports = {
     ERROR_FIELD_EMPTY: "Please fill in all fields!",
     ERROR_EMAIL_USED: "Failed! Email is used!",
     ERROR_EMAIL_FORMAT: "Failed! Email is not format, ex: example@mail.com",
+    ERROR_PASSWORD_FORMAT: "Failed! Password least 6 Character",
     ERROR_EMAIL_NOTFOUND: "Email Not Found!",
     ERROR_PASSWORD_WRONG: "Password is wrong!",
     ERROR_PASSWORD_NOT_MATCH: "Failed! Retype password not match",

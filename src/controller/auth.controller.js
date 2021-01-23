@@ -1,60 +1,8 @@
 const bcrypt = require("bcrypt");
-let nodeMailer = require("../services/config.nodemailer");
+let nodeMailer = require("../services/nodeMailer/config.nodemailer");
 
 let User = require("../models/users.models.js");
-let Cart = require("../models/carts.models.js");
-let Book = require("../models/books.models.js");
-let Session = require("../models/sessions.models.js");
 const Constant = require("../services/constant");
-
-const moveCartToUser = async (idBook, user) => {
-    let book = await Book.findById(idBook);
-    //check qtt book
-    if (!book.quantity || book.quantity <= 0) {
-        return;
-    }
-    //create transaction and cart in user
-    if (!user.idTransaction) {
-        user.idTransaction = {};
-    }
-    if (!user.idCart) {
-        user.idCart = {};
-    }
-
-    let idCart = user.idCart;
-    //Check had cart
-    for (let cart in idCart) {
-        if (idCart[cart].idBook.toString() === idBook) {
-            return;
-        }
-    }
-    // Cart max : 5
-    // Create cart
-    const lenTransaction = Object.keys(user.idTransaction).length;
-    const lenCart = Object.keys(idCart).length;
-    if (5 - lenTransaction > 0 && lenTransaction + lenCart < 5) {
-        let cart = new Cart({
-            idUser: user._id,
-            idBook,
-            createAt: new Date(),
-        });
-        let isCarts = cart.save();
-        let id = (await isCarts)._id;
-        user.idCart[id] = {
-            idCart: id,
-            idBook,
-        };
-
-        //decrease quantity book
-        await Book.findById(idBook, function (err, book) {
-            book.quantity--;
-            book.save();
-        });
-        user.markModified("idCart");
-        await user.save();
-    }
-    return;
-};
 
 module.exports.login = (req, res) => {
     res.render("./auth/login.pug", {

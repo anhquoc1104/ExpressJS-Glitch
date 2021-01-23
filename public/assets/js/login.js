@@ -42,6 +42,7 @@ registerSubmit.addEventListener("click", () => {
         "#passwordRegisterRetype"
     ).value;
     let regexEmail = /^([A-Z|a-z|0-9](.|_){0,1})+[A-Z|a-z|0-9]@([A-Z|a-z|0-9])+((\.){0,1}([A-Z|a-z|0-9])+){1,4}\.[a-z]{2,4}$/;
+    let regexPassword = /^[A-Za-z\d@$!%*#?&]{6,30}$/g;
 
     //Check Field Empty
     if (
@@ -56,6 +57,12 @@ registerSubmit.addEventListener("click", () => {
     //Check Email Format
     if (!regexEmail.test(emailRegister)) {
         alert("Failed! Email is not format, ex: example@mail.com");
+        return;
+    }
+
+    // Check Password Format
+    if (!regexPassword.test(passwordRegister)) {
+        alert("Failed! Password least 6 Character");
         return;
     }
 

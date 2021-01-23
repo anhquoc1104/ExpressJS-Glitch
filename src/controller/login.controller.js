@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
-let nodeMailer = require("../services/config.nodemailer");
+let nodeMailer = require("../services/nodeMailer/config.nodemailer");
+let token = require("../services/jwt/jsonWebToken");
 
 let User = require("../models/users.models.js");
 let Cart = require("../models/carts.models.js");
@@ -79,6 +80,16 @@ module.exports.loginPost = async (req, res) => {
         return;
     }
 
+    //Check Acount hadn't Verify
+    if (user.status === "pending") {
+        res.render("./auth/login.pug", {
+            // error: "Account Blocked!",
+            reRegister: false,
+            mess: Constant.ERROR_ACCOUNT_BLOCKED,
+        });
+        return;
+    }
+
     //Check Acount Block
     if (user.wrongLoginCount && user.wrongLoginCount > 4) {
         res.render("./auth/login.pug", {
@@ -154,45 +165,69 @@ module.exports.forgotPasswordPost = async (req, res) => {
 //register POST
 module.exports.registerPost = async (req, res) => {
     let regexEmail = /^([A-Z|a-z|0-9](.|_){0,1})+[A-Z|a-z|0-9]@([A-Z|a-z|0-9])+((\.){0,1}([A-Z|a-z|0-9])+){1,4}\.[a-z]{2,4}$/g;
+    let regexPassword = /^[A-Za-z\d@$!%*#?&]{6,30}$/g;
     let {
         nameRegister,
         emailRegister,
         passwordRegister,
         passwordRegisteRetype,
     } = req.body;
-    let password = bcrypt.hashSync(passwordRegister, 10);
-    let isUser = await User.find({ email: emailRegister });
-    //Check Email Used
-    if (isUser.length !== 0) {
-        req.flash("message", Constant.ERROR_EMAIL_USED);
-        req.flash("reRegister", true);
-        res.redirect("/login");
-        return;
-    }
-    // Check Email Format
-    if (!regexEmail.test(emailRegister)) {
-        req.flash("message", Constant.ERROR_EMAIL_FORMAT);
-        req.flash("reRegister", true);
-        res.redirect("/login");
-        return;
-    }
+    try {
+        let password = bcrypt.hashSync(passwordRegister, 10);
+        let isUser = await User.find({ email: emailRegister });
+        //Check Email Used
+        if (isUser.length !== 0) {
+            req.flash("message", Constant.ERROR_EMAIL_USED);
+            req.flash("reRegister", true);
+            res.redirect("/login");
+            return;
+        }
+        // Check Email Format
+        if (!regexEmail.test(emailRegister)) {
+            req.flash("message", Constant.ERROR_EMAIL_FORMAT);
+            req.flash("reRegister", true);
+            res.redirect("/login");
+            return;
+        }
+        // Check Password Format
+        if (!regexPassword.test(passwordRegister)) {
+            req.flash("message", Constant.ERROR_PASSWORD_FORMAT);
+            req.flash("reRegister", true);
+            res.redirect("/login");
+            return;
+        }
 
-    //Check Password as same
-    if (passwordRegister !== passwordRegisteRetype) {
-        req.flash("message", Constant.ERROR_PASSWORD_NOT_MATCH);
-        req.flash("reRegister", true);
-        res.redirect("/login");
-        return;
-    }
+        //Check Password as same
+        if (passwordRegister !== passwordRegisteRetype) {
+            req.flash("message", Constant.ERROR_PASSWORD_NOT_MATCH);
+            req.flash("reRegister", true);
+            res.redirect("/login");
+            return;
+        }
 
-    // Save DB
-    let newUser = new User({
-        name: nameRegister,
-        email: emailRegister,
-        password,
-        isAdmin: false,
-        createAt: new Date(),
-    });
-    await newUser.save();
-    res.redirect("/login");
+        // Save DB
+        let newUser = new User({
+            name: nameRegister,
+            email: emailRegister,
+            password,
+            isAdmin: false,
+            createAt: new Date(),
+        });
+        await newUser.save();
+
+        //Create JWT and Send Mail Verify
+        let tokenVerify = token.tokenVerify(newUser._id);
+        const baseUrl =
+            req.protocol +
+            "://" +
+            req.get("host") +
+            "/auth/register/" +
+            tokenVerify;
+        // Send Mail
+        nodeMailer(newUser.email, baseUrl);
+        req.flash("message", "Check Your Email and Verify!");
+        res.redirect("/login");
+    } catch (error) {
+        console.log(error);
+    }
 };
