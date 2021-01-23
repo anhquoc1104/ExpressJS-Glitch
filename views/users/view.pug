@@ -27,7 +27,7 @@ block content
                 i  ---
             p Birthdate: 
               if user.birthdate
-                i=user.birthdate
+                i=user.birthdate.getDate() + '-'+ (user.birthdate.getMonth() + 1) + '-' + user.birthdate.getFullYear()
               else
                 i  ---
             a(href="#" data-toggle='modal', data-target='#editProfileModal') Edit Profile

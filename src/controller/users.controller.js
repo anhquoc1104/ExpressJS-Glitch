@@ -41,6 +41,7 @@ module.exports = {
         //name and email not Empty
         if (name === "") name = user.name;
         if (email === "") email = user.email;
+        if (birthdate === "") birthdate = user.birthdate;
 
         //noChange
         if (
