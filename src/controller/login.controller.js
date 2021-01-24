@@ -71,73 +71,77 @@ module.exports.loginPost = async (req, res) => {
     let { sessionId } = req.signedCookies;
 
     //Check Email
-    if (!user) {
-        res.render("./auth/login.pug", {
-            reRegister: false,
-            mess: Constant.ERROR_EMAIL_NOTFOUND,
-            email,
-        });
-        return;
-    }
-
-    //Check Acount hadn't Verify
-    if (user.status === "pending") {
-        res.render("./auth/login.pug", {
-            // error: "Account Blocked!",
-            reRegister: false,
-            mess: Constant.ERROR_ACCOUNT_BLOCKED,
-        });
-        return;
-    }
-
-    //Check Acount Block
-    if (user.wrongLoginCount && user.wrongLoginCount > 4) {
-        res.render("./auth/login.pug", {
-            // error: "Account Blocked!",
-            reRegister: false,
-            mess: Constant.ERROR_ACCOUNT_BLOCKED,
-        });
-        return;
-    }
-    //Check wrong password
-    if (!bcrypt.compareSync(req.body.password, user.password)) {
-        user.wrongLoginCount
-            ? user.wrongLoginCount++
-            : (user.wrongLoginCount = 1);
-        await user.save();
-        res.render("./auth/login.pug", {
-            // error: "Password is wrong!",
-            reRegister: false,
-            mess: Constant.ERROR_PASSWORD_WRONG,
-            email,
-            password,
-        });
-        return;
-    }
-
-    //set cookie userId
-    res.cookie("userId", user._id, { signed: true });
-    res.clearCookie("sessionId");
-
-    if (user.isAdmin === true) {
-        res.redirect("/admin");
-        return;
-    }
-
-    //move cart to account
-    if (sessionId && user.isAdmin === false) {
-        let carts = await Session.findById(sessionId);
-        if (carts && carts.idCart) {
-            for (let idBook of carts.idCart) {
-                await moveCartToUser(idBook, user);
-            }
-            //edit here
-            // await User.findByIdAndUpdate(user._id, { idCart: carts.idCart });
+    try {
+        if (!user) {
+            res.render("./auth/login.pug", {
+                reRegister: false,
+                mess: Constant.ERROR_EMAIL_NOTFOUND,
+                email,
+            });
+            return;
         }
-        await Session.findByIdAndDelete(sessionId);
-    }
 
-    res.redirect("/");
+        //Check Acount hadn't Verify
+        if (user.status === "pending") {
+            res.render("./auth/login.pug", {
+                // error: "Account Blocked!",
+                reRegister: false,
+                mess: Constant.ERROR_ACCOUNT_BLOCKED,
+            });
+            return;
+        }
+
+        //Check Acount Block
+        if (user.wrongLoginCount && user.wrongLoginCount > 4) {
+            res.render("./auth/login.pug", {
+                // error: "Account Blocked!",
+                reRegister: false,
+                mess: Constant.ERROR_ACCOUNT_BLOCKED,
+            });
+            return;
+        }
+        //Check wrong password
+        if (!bcrypt.compareSync(req.body.password, user.password)) {
+            user.wrongLoginCount
+                ? user.wrongLoginCount++
+                : (user.wrongLoginCount = 1);
+            await user.save();
+            res.render("./auth/login.pug", {
+                // error: "Password is wrong!",
+                reRegister: false,
+                mess: Constant.ERROR_PASSWORD_WRONG,
+                email,
+                password,
+            });
+            return;
+        }
+
+        //set cookie userId
+        res.cookie("userId", user._id, { signed: true });
+        res.clearCookie("sessionId");
+
+        if (user.isAdmin === true) {
+            res.redirect("/admin");
+            return;
+        }
+
+        //move cart to account
+        if (sessionId && user.isAdmin === false) {
+            let carts = await Session.findById(sessionId);
+            if (carts && carts.idCart) {
+                for (let idBook of carts.idCart) {
+                    await moveCartToUser(idBook, user);
+                }
+                //edit here
+                // await User.findByIdAndUpdate(user._id, { idCart: carts.idCart });
+            }
+            await Session.findByIdAndDelete(sessionId);
+        }
+
+        res.redirect("/");
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 //forgotPassword
@@ -157,7 +161,14 @@ module.exports.forgotPasswordPost = async (req, res) => {
         return;
     }
 
-    nodeMailer(email);
+    const baseUrl =
+        req.protocol +
+        "://" +
+        req.get("host") +
+        "/auth/register/" +
+        tokenVerify;
+
+    nodeMailer(email, baseUrl);
     req.flash("message", Constant.SUCCESS_PASSWORD_FORGOT);
     res.redirect("/login/forgotPassword");
 };

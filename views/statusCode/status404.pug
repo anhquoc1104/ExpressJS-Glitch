@@ -1,15 +1,7 @@
-//- - var isUserLogin = isUserLogins
+extend ../layouts/statusLayout.pug
 block variable
-
-head(lang="en")
-  meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
-  meta(charset="UTF-8")
-  meta(name="viewport", content="width=device-width, initial-scale=1.0")
-  link(rel="icon" href="/sources/img/1logo.ico" type="image/ico" sizes="16x16")
-  link(rel='stylesheet', href='/sources/css/bootstrap.min.css')
-  link(rel='stylesheet', href='/sources/css/bootstrap-grid.min.css')
-  title 404-Not Found
-body
+  - var title = 'Success'
+block content
   .container.h-100.d-flex.justify-content-center.align-items-center
     .row
       .col-md-12.m-auto
@@ -24,4 +16,3 @@ body
             a.btn.btn-primary.btn-lg(href='/')
               span.glyphicon.glyphicon-home
               |Take Me Home
-    

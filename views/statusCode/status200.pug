@@ -1,0 +1,15 @@
+extend ../layouts/statusLayout.pug
+block style
+  link(rel="stylesheet", href="/assets/css/status200.css")
+block variable
+  - var title = 'Success'
+block content
+  .card
+    div(style='border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;')
+      i.checkmark &check;
+    h1 Success
+    p
+      | We received your purchase request;
+      br
+      |  we&apos;ll be in touch shortly!
+      
