@@ -67,11 +67,11 @@ module.exports.login = (req, res) => {
 //login
 module.exports.loginPost = async (req, res) => {
     let { email, password } = req.body;
-    let user = await User.findOne({ email });
     let { sessionId } = req.signedCookies;
 
     //Check Email
     try {
+        let user = await User.findOne({ email });
         if (!user) {
             res.render("./auth/login.pug", {
                 reRegister: false,
@@ -153,7 +153,6 @@ module.exports.forgotPassword = (req, res) => {
 
 module.exports.forgotPasswordPost = async (req, res) => {
     let { email } = req.body;
-    console.log(email);
     let user = await User.findOne({ email });
     if (!user) {
         req.flash("message", Constant.ERROR_EMAIL_NOTFOUND);
@@ -236,8 +235,7 @@ module.exports.registerPost = async (req, res) => {
             tokenVerify;
         // Send Mail
         nodeMailer(newUser.email, baseUrl);
-        req.flash("message", "Check Your Email and Verify!");
-        res.redirect("/login");
+        res.render("statusCode/statusSendEmailSuccess.pug");
     } catch (error) {
         console.log(error);
     }

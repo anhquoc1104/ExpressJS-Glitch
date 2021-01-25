@@ -19,7 +19,7 @@ module.exports = {
     },
 
     editInfoPost: async (req, res) => {
-        let { name, email, phone, birthdate, address } = req.body;
+        let { name, phone, birthdate, address } = req.body;
         let idUser = req.signedCookies.userId;
         let regexPhone = /^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$/im;
         /*
@@ -38,15 +38,13 @@ module.exports = {
         let avatarUrl = user.avatarUrl;
         let file = req.file;
 
-        //name and email not Empty
+        //name not Empty
         if (name === "") name = user.name;
-        if (email === "") email = user.email;
         if (birthdate === "") birthdate = user.birthdate;
 
         //noChange
         if (
             name === user.name &&
-            email === user.email &&
             phone === user.phone &&
             birthdate === user.birthdate &&
             address === user.address &&

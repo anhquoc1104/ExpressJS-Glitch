@@ -1,7 +1,7 @@
 module.exports = {
     TWO_DAYS_MILI: 1000 * 60 * 60 * 24 * 2,
     FOURTEEN_DAYS_MILI: 1000 * 60 * 60 * 24 * 14,
-    ONE_DAY_SECONDS: 60 * 60 * 24,
+    ONE_DAY_SECONDS: 60 * 1 * 1,
 
     ERROR_COMMON: "Error, Try agin!",
     ERROR_BOOK_ADD: "Add new book fail, try again!",

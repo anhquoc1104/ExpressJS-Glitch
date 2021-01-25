@@ -1,0 +1,19 @@
+extend ../layouts/statusLayout.pug
+
+block style
+  style.
+    .success-page i{
+      color: #0f0;
+      font-size: 20px;
+    }
+block variable
+  - var title = 'Success'
+block content
+  .container.success-page
+    .row.mt-5
+      .col.d-flex.justify-content-center.align-item-center.border.border-success.rounded.p-5
+        i.far.fa-check-circle.mr-2
+        h4 Check Your Email and Verify!
+
+
+

@@ -3,7 +3,7 @@ extend ../layouts/statusLayout.pug
 block style
     link(rel="stylesheet", href="/assets/css/account.css")
 block variable
-    - var title = 'Success'
+    - var title = 'Resend Email'
 block content
     .container
         .row.justify-content-center.mt-5
@@ -13,15 +13,17 @@ block content
                         .text-center
                             h3
                             i.fa.fa-lock.fa-4x
-                            h2.text-center Can I Help You?
-                            p Your Email Into Here
+                            h2.text-center Your Link Expired
+                            p Your Can Check Again
                             .card-body
-                                form#register-form.form(role='form', autocomplete='off', method='post', action="/auth/resendemail/" + routePath)
-                                    .form-group
+                                form#register-form.form(role='form', autocomplete='off', method='post', action="/auth/resendemail/" + pathRoute)
+                                    .form-group.d-none
                                         .input-group
                                             span.input-group-addon
                                             i.glyphicon.glyphicon-envelope.color-blue
-                                            input#email.form-control(name='email', placeholder='email address', type='email')
+                                            input#email.form-control(name='idUser', type='text', value=idUser)
+                                            i.glyphicon.glyphicon-envelope.color-blue
+                                            input#email.form-control(name='email', type='email', value=email)
                                     .form-group
-                                        button.btn.btn-lg.btn-primary.btn-block(type='submit') Send
+                                        button.btn.btn-lg.btn-primary.btn-block(type='submit') Resend Email
                             a.mt-2(href="/") Go Home
