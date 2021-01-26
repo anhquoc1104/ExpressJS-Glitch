@@ -74,7 +74,7 @@ module.exports = {
 
         await User.findOneAndUpdate(
             { _id: idUser },
-            { name, phone, birthdate, address, email, avatarUrl }
+            { name, phone, birthdate, address, avatarUrl }
         );
         req.flash("message", Constant.SUCCESS_COMMON);
         res.redirect("/users");

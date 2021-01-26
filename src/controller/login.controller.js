@@ -153,23 +153,30 @@ module.exports.forgotPassword = (req, res) => {
 
 module.exports.forgotPasswordPost = async (req, res) => {
     let { email } = req.body;
-    let user = await User.findOne({ email });
-    if (!user) {
-        req.flash("message", Constant.ERROR_EMAIL_NOTFOUND);
+    try {
+        let user = await User.findOne({ email });
+        if (!user) {
+            req.flash("message", Constant.ERROR_EMAIL_NOTFOUND);
+            res.redirect("/login/forgotPassword");
+            return;
+        }
+
+        //Create JWT and Send Mail Verify
+        let tokenVerify = token.tokenVerify(user._id);
+        const baseUrl =
+            req.protocol +
+            "://" +
+            req.get("host") +
+            "/auth/forgotpassword/" +
+            tokenVerify;
+        //Send Mail
+        nodeMailer(email, baseUrl);
+        req.flash("message", Constant.SUCCESS_PASSWORD_FORGOT);
         res.redirect("/login/forgotPassword");
-        return;
+    } catch (error) {
+        console.log(error);
+        res.render("./statusCode/status404.pug");
     }
-
-    const baseUrl =
-        req.protocol +
-        "://" +
-        req.get("host") +
-        "/auth/register/" +
-        tokenVerify;
-
-    nodeMailer(email, baseUrl);
-    req.flash("message", Constant.SUCCESS_PASSWORD_FORGOT);
-    res.redirect("/login/forgotPassword");
 };
 
 //register POST

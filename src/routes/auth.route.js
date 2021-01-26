@@ -6,10 +6,15 @@ let controller = require("../controller/auth.controller.js");
 
 router.get(
     "/register/:jwtIdUser",
-    authMiddlewares.verifyAccountMiddlewares,
+    authMiddlewares.verifyRegistertMiddlewares,
     controller.verifyRegister
 );
-router.get("/forgotPassword/:jwtIdUser", controller.verifyForgotPassword);
+router.get(
+    "/forgotpassword/:jwtIdUser",
+    authMiddlewares.verifyForgotPasswordMiddlewares,
+    controller.verifyForgotPassword
+);
+router.post("/changepassword", controller.changePassword);
 router.post("/resendemail/register", controller.resendMailRegister);
 router.post("/resendemail/forgotPassword", controller.resendMailForgotPassword);
 
