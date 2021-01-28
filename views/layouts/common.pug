@@ -38,7 +38,10 @@ body.overlay-scrollbar
         li.nav-item.mr-3.my-auto
           a.nav-link(href='/carts')
             i.fas.fa-cart-arrow-down
-            //- span.navbar-badge
+            if isUserLogin && Object.keys(isUserLogin.idCart).length != 0
+              span.navbar-badge=Object.keys(isUserLogin.idCart).length
+            if isSession && isSession.idCart.length != 0
+              span.navbar-badge=isSession.idCart.length
         if !isUserLogin
           li.nav-item
             a.btn.btn-outline-success.font-weight-bold(href="/login")

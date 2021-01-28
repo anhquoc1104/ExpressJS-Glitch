@@ -35,7 +35,7 @@ block content
             if elm.description
               p.card-text.card__text--wrap= elm.description
             else
-              h3.card-title.font-italic No Description
+              p.card-title.card__text--wrap.font-italic No Description
             a.btn.btn-primary(href="/books/view/" + elm._id) view
             span &nbsp
             if elm.quantity > 0
@@ -43,3 +43,8 @@ block content
             else
               a.btn.btn-success.disabled(href="/books/addToCart/" + elm._id) Add to Cart
 block script
+  script.
+    let msgStr = !{JSON.stringify(mess)};
+    if(msgStr && msgStr.length !== 0){
+      alert(msgStr);
+    }

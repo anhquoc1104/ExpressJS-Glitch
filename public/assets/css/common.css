@@ -150,8 +150,8 @@ p {
     padding: 2px 4px;
     font-weight: 300;
     position: absolute;
-    right: 5px;
-    top: 9px;
+    right: -5px;
+    top: 0px;
     color: #fff;
     background: var(--danger-color);
     border-radius: 5px;
@@ -340,6 +340,7 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-left: 82px;
     padding: 10px;
 }
 

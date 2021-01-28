@@ -76,7 +76,7 @@ module.exports = {
                     idBook,
                 });
                 let isTransaction = await newTransaction.save();
-                let id = (await isTransaction)._id;
+                let id = isTransaction._id;
 
                 idTransaction[id] = {
                     idTransaction: id,

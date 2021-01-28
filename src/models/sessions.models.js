@@ -8,6 +8,7 @@ let sessionSchema = mongoose.Schema(
         },
     },
     {
+        timestamps: true,
         autoCreate: true,
     }
 );

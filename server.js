@@ -107,7 +107,7 @@ let homePage = async (req, res) => {
     //...
     let books = await Book.find().sort(isSort);
     let obj = pagination(page, 12, "books", books, "/page/");
-    res.render("home.pug", obj);
+    res.render("home.pug", { ...obj, mess: req.flash("messages") });
 };
 app.get("/", homePage);
 app.post("/", homePage);

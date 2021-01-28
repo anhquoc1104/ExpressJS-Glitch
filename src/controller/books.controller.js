@@ -5,6 +5,7 @@ let Cart = require("../models/carts.models.js");
 
 let pagination = require("../services/pagination");
 let onSort = require("../services/sort");
+const Constant = require("../services/constant");
 
 module.exports = {
     //Search
@@ -48,40 +49,54 @@ module.exports = {
 
     //Add to Cart
     addToCart: async (req, res) => {
-        let idBook = req.params.id;
+        let idBookParams = req.params.id;
         let idUser = req.signedCookies.userId;
-        let sessionId = req.signedCookies.sessionId;
+        let { sessionId } = req.signedCookies;
+        let messageForFlash = "";
 
-        // Check book qtt
-        let book = await Book.findById(idBook);
-        if (!book.quantity || book.quantity <= 0) {
-            return;
-        }
-
-        const isLogin = async (user) => {
-            if (!user.idTransaction) {
-                user.idTransaction = {};
+        try {
+            // Check book qtt
+            let book = await Book.findById(idBookParams);
+            if (!book.quantity || book.quantity <= 0) {
+                messageForFlash = Constant.ERROR_BOOK_HADNOT;
+                return;
             }
-            if (!user.idCart) {
-                user.idCart = {};
-            }
-            let { idCart, idTransaction } = user;
-            for (let cart in idCart) {
-                if (idCart[cart].idBook.toString() === idBook) {
+            let idBook = book.id;
+            const isLogin = async (user) => {
+                if (!user.idTransaction) {
+                    user.idTransaction = {};
+                }
+                if (!user.idCart) {
+                    user.idCart = {};
+                }
+                let { idCart, idTransaction } = user;
+                //Check Book had in Cart
+                for (let cart in idCart) {
+                    if (idCart[cart].idBook.toString() === idBook.toString()) {
+                        messageForFlash = Constant.ERROR_BOOK_EXIST;
+                        return;
+                    }
+                }
+                //Check Book had in transaction
+                for (let transaction in idTransaction) {
+                    if (
+                        idTransaction[transaction].idBook.toString() ===
+                        idBook.toString()
+                    ) {
+                        messageForFlash = Constant.ERROR_BOOK_EXIST;
+                        return;
+                    }
+                }
+                // Cart + Transaction max : 5
+                // Create cart
+                const lenTransaction = Object.keys(idTransaction).length;
+                const lenCart = Object.keys(idCart).length;
+                if (5 - lenTransaction <= 0 || lenTransaction + lenCart >= 5) {
+                    messageForFlash = Constant.ERROR_BOOK_MAXCART;
                     return;
                 }
-            }
-            //Check had transaction
-            for (let transaction in idTransaction) {
-                if (idTransaction[transaction].idBook.toString() === idBook) {
-                    return;
-                }
-            }
-            // Cart max : 5
-            // Create cart
-            const lenTransaction = Object.keys(idTransaction).length;
-            const lenCart = Object.keys(idCart).length;
-            if (5 - lenTransaction > 0 && lenTransaction + lenCart < 5) {
+
+                //Add to Cart
                 let cart = new Cart({
                     idUser,
                     idBook,
@@ -90,10 +105,10 @@ module.exports = {
                 let id = (await isCart)._id;
                 user.idCart[id] = {
                     idCart: id,
-                    idBook,
+                    idBook: book._id,
                 };
 
-                //decrease quantity book
+                //Decrease Quantity Book
                 await Book.findById(idBook, function (err, book) {
                     book.quantity--;
                     book.save();
@@ -101,31 +116,38 @@ module.exports = {
 
                 user.markModified("idCart");
                 await user.save();
-            }
-            return;
-        };
+                messageForFlash = Constant.SUCCESS_COMMON;
+                return;
+            };
 
-        const isSession = async (session) => {
-            if (!session.idCart) {
-                session.idCart = [];
-            }
-            if (!session.idCart.hasOwnProperty(idBook)) {
-                session.idCart.push(idBook);
-                await session.save();
-            }
-            return session.idCart;
-        };
+            const isSession = async (session) => {
+                if (!session.idCart) {
+                    session.idCart = [];
+                }
+                if (!session.idCart.hasOwnProperty(idBook)) {
+                    session.idCart.push(idBook);
+                    await session.save();
+                }
+                return session.idCart;
+            };
 
-        if (idUser) {
-            let user = await User.findById(idUser);
-            if (user.status === "active") {
-                isLogin(user);
+            //addtocart with userlogin
+            if (idUser) {
+                let user = await User.findById(idUser);
+                if (user.status === "active") {
+                    isLogin(user);
+                }
+            } else {
+                //addtocart without login
+                let session = await Session.findById(sessionId);
+                isSession(session);
             }
-        } else {
-            let session = await Session.findById(sessionId);
-            isSession(session);
+        } catch (error) {
+            messageForFlash = Constant.ERROR_COMMON;
+            res.redirect("/");
         }
 
+        req.flash("messages", messageForFlash);
         res.redirect("/");
     },
 };

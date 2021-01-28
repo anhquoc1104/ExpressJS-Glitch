@@ -2,13 +2,14 @@ let User = require("../models/users.models.js");
 let Session = require("../models/sessions.models.js");
 
 module.exports = async (req, res, next) => {
-    let { userId } = req.signedCookies;
-    if (!userId && !req.signedCookies.sessionId) {
-        let session = new Session({
-            cart: [],
-        });
+    let { userId, sessionId } = req.signedCookies;
+    if (!userId && !sessionId) {
+        let session = new Session();
         await session.save();
         res.cookie("sessionId", session._id, { signed: true });
+    }
+    if (sessionId) {
+        res.locals.isSession = await Session.findById(sessionId);
     }
 
     //redirect Admin to route admin
