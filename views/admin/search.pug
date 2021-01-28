@@ -88,58 +88,58 @@ block content
                     span.dot
                       i.bg-danger
                       |Block
-        //- Modal Edit Book
-        #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
-          .modal-dialog(role='document')
-            .modal-content
-              .modal-header
-                h5#modalLabel.modal-title Edit Info
-                button.close(type='button', data-dismiss='modal', aria-label='Close')
-                  span(aria-hidden='true') &times;
-              .modal-body
-                form(action="/admin/books/edit", method="POST" enctype="multipart/form-data")
-                  input#idBook.form-control.d-none(type='text', name="idBook")
-                  input#url.form-control.d-none(type='text', name="url")
-                  .form-group
-                    label.col-form-label(for='title') Title
-                    input#title.form-control(type='text', name="title")
-                  .form-row
-                    .form-group.col.col
-                      label(for='author') Author:
-                      input#author.form-control(type='text', name="author")
-                    .form-group.col
-                      label(for='year') Year:
-                      input#year.form-control(type='number', name="year")
-                    .form-group.col
-                      label(for='quantity') Quantity:
-                      input#quantity.form-control(type='number', name="quantity")
-                  .form-row
-                    .form-group.col
-                      label(for='publisher') Publisher:
-                      input#publisher.form-control(type='text', name="publisher")
-                    .form-group.col
-                      label(for='category') Category:
-                      input#category.form-control(type='text', name="category")
-                  .form-group
-                    label.col-form-label(for='description') Description:
-                    textarea#description.form-control(name="description", rows="4")
-                  .form-group
-                    label.col-form-label(for='avatar') Avatar
-                    input#avatar.form-control(type='file', name="avatar")
-                  .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                    button.btn.btn-primary(type='submit') Save  
+      //- Modal Edit Book
+      #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              h5#modalLabel.modal-title Edit Info
+              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') &times;
+            .modal-body
+              form(action="/admin/books/edit", method="POST" enctype="multipart/form-data")
+                input#idBook.form-control.d-none(type='text', name="idBook")
+                input#url.form-control.d-none(type='text', name="url")
+                .form-group
+                  label.col-form-label(for='title') Title
+                  input#title.form-control(type='text', name="title")
+                .form-row
+                  .form-group.col.col
+                    label(for='author') Author:
+                    input#author.form-control(type='text', name="author")
+                  .form-group.col
+                    label(for='year') Year:
+                    input#year.form-control(type='number', name="year")
+                  .form-group.col
+                    label(for='quantity') Quantity:
+                    input#quantity.form-control(type='number', name="quantity")
+                .form-row
+                  .form-group.col
+                    label(for='publisher') Publisher:
+                    input#publisher.form-control(type='text', name="publisher")
+                  .form-group.col
+                    label(for='category') Category:
+                    input#category.form-control(type='text', name="category")
+                .form-group
+                  label.col-form-label(for='description') Description:
+                  textarea#description.form-control(name="description", rows="4")
+                .form-group
+                  label.col-form-label(for='avatar') Avatar
+                  input#avatar.form-control(type='file', name="avatar")
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                  button.btn.btn-primary(type='submit') Save  
 
 block script
+  script(src='/assets/js/admin/handleEditBook.js')
   script.
       $( document ).ready(function() {
       //- console.log(mess);
       let msgStr = !{JSON.stringify(mess)};
       //- console.log(msgStr);
       //- console.log(typeof(msgStr));
-      if(typeof(mess) != 'undefined' && mess != '' && msgStr !== []){
+      if(msgStr && msgStr.length !== 0){
           alert(msgStr);
       }
       });
       
-  script(src='/assets/js/admin/handleEditBook.js')

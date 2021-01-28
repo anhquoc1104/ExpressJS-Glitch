@@ -128,7 +128,7 @@ module.exports = {
                     session.idCart.push(idBook);
                     await session.save();
                 }
-                return session.idCart;
+                return;
             };
 
             //addtocart with userlogin
@@ -145,6 +145,7 @@ module.exports = {
         } catch (error) {
             messageForFlash = Constant.ERROR_COMMON;
             res.redirect("/");
+            return;
         }
 
         req.flash("messages", messageForFlash);

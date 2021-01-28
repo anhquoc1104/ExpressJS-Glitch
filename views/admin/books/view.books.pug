@@ -20,6 +20,11 @@ block content
             i=book.author
           else
             i  ---
+        p Category: 
+          if book.category
+            i=book.category
+          else
+            i  ---
         p Publisher: 
           if book.publisher
             i=book.publisher
@@ -30,8 +35,7 @@ block content
             i=book.year
           else
             i  ---
-        if book.quantity > 0
-          button.btn.btn-danger.open-AddBookDialog(type="button", data-book= book, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") Edit
+        button.btn.btn-danger.open-AddBookDialog(type="button", data-book= book, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") Edit
     .row.mt-4
       .col-12.col-sm-12.col-md-12.col-lg-12.col-xl-12
         h5

@@ -1,23 +1,23 @@
-extends ../layouts/common.pug
+//- extends ../layouts/common.pug
 
-block variable
-  - var title = 'Edit book'
-block content
-  .container.mt-3
-    .row.mt-5
-        .col.col-12.col-md-4.col-lg-4
-            img(src=book.avatarUrl, alt=book.title)
-        .col.col-12.col-md-8.col-lg-8.d-flex.justify-content-between.px-0
-            form(action="/books/edit/" + book._id method="POST" enctype="multipart/form-data")
-                .form-group
-                    label.font-weight-bold(for="title") Title
-                    input.form-control#title(name="title", type='text', placeholder='Title Book' value=book.title)
-                .form-group
-                    label.font-weight-bold(for="description") Description
-                    textarea.form-control#desription(name="description", cols="70", rows="4", type='text', placeholder='Description')= book.description
-                .form-group
-                    input.form-control-file(name="avatar", type='file')
-                .modal-footer
-                a.btn.btn-secondary.mr-2(href="/" type='button') Cancel
-                button.btn.btn-primary(type='submit') Save
-block pagination
+//- block variable
+//-   - var title = 'Edit book'
+//- block content
+//-   .container.mt-3
+//-     .row.mt-5
+//-         .col.col-12.col-md-4.col-lg-4
+//-             img(src=book.avatarUrl, alt=book.title)
+//-         .col.col-12.col-md-8.col-lg-8.d-flex.justify-content-between.px-0
+//-             form(action="/books/edit/" + book._id method="POST" enctype="multipart/form-data")
+//-                 .form-group
+//-                     label.font-weight-bold(for="title") Title
+//-                     input.form-control#title(name="title", type='text', placeholder='Title Book' value=book.title)
+//-                 .form-group
+//-                     label.font-weight-bold(for="description") Description
+//-                     textarea.form-control#desription(name="description", cols="70", rows="4", type='text', placeholder='Description')= book.description
+//-                 .form-group
+//-                     input.form-control-file(name="avatar", type='file')
+//-                 .modal-footer
+//-                 a.btn.btn-secondary.mr-2(href="/" type='button') Cancel
+//-                 button.btn.btn-primary(type='submit') Save
+//- block pagination

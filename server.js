@@ -45,6 +45,7 @@ app.set("views", "./views");
 // Route - Admin
 let userRouteAdmin = require("./src/routes/admin/users.route");
 let bookRouteAdmin = require("./src/routes/admin/books.route");
+let categoryRouteAdmin = require("./src/routes/admin/categories.route");
 let transRouteAdmin = require("./src/routes/admin/transactions.route");
 let cartRouteAdmin = require("./src/routes/admin/carts.route");
 let searchRouteAdmin = require("./src/routes/admin/searchs.route");
@@ -83,8 +84,9 @@ app.get("/logout", (req, res) => {
 app.use("/admin", isAdminMiddleware);
 app.use("/admin/books", bookRouteAdmin);
 app.use("/admin/users", userRouteAdmin);
-app.use("/admin/transactions", transRouteAdmin);
+app.use("/admin/categories", categoryRouteAdmin);
 app.use("/admin/carts", cartRouteAdmin);
+app.use("/admin/transactions", transRouteAdmin);
 app.use("/admin/search", searchRouteAdmin);
 app.use("/admin/messages", messagesRouteAdmin);
 app.get("/admin", dashboardAdmin);

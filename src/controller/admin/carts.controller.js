@@ -9,8 +9,8 @@ let onSort = require("../../services/sort");
 
 module.exports = {
     home: async (req, res) => {
-        let { page } = req.params || 1;
-        let { sort } = req.body || "DateDown";
+        let page = req.params.page || 1;
+        let sort = req.body.sort || "DateDown";
         let isSort = onSort(sort);
         try {
             let carts = await Cart.find().sort(isSort);

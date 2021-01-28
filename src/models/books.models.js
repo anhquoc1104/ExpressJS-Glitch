@@ -49,6 +49,7 @@ bookSchema.index({
     author: "text",
     publisher: "text",
     year: "text",
+    category: "text",
 });
 
 let Book = mongoose.model("Book", bookSchema, "books");

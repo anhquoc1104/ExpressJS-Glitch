@@ -1,62 +1,51 @@
 extends ../layouts/common.pug
 
 block variable
-  - var title = 'Books'
+  - var title = 'Categories'
 block style
     link(rel='stylesheet', href='/assets/css/admin/base.css')
     link(rel='stylesheet', href='/assets/css/admin/bookHome.css')
 block content
   .container.mt-3
-    if books == false
+    if matchQuery == false
       .row.justify-content-center
         img.empty(src="/sources/img/empty.png", alt="")
     else
-      .row.justify-content-between.mb-2
-        button.btn.btn-primary.ml-4.p-2.open-AddBookDialog(type="button", data-toggle="modal", data-target="#bookModal" onclick="handleAddBook()")
-          i.fas.fa-plus.mr-2 
-          span New Book
-        form(method='POST')
-          .form-row.align-items-center
-            .col-auto.my-1.ml-auto
-              select.form-control.custom-select.mr-sm-2#sort(onChange='this.form.submit()', name='sort') 
-                option --- Sort ---
-                option(value="DateUp") Date Up
-                option(value="DateDown") Date Down
-                option(value="TitleUp") Name A-Z
-                option(value="TitleDown") Name Z-A
-      table.table.table-hover
-        thead
-          tr
-            th.table-index(scope='col') #
-            th.table-avatar(scope='col') 
-            th(scope='col') Title
-            th(scope='col') Author
-            th(scope='col') Date Post
-            th(scope='col') Quantity
-            th(scope='col') 
-        tbody
-          each elm, index in books
+      each category in matchQuery
+        .row.justify-content-start.align-items-center.pt-5.mb-2.border-top.border-info.category-name
+          h3=category.categoryName
+          a.ml-3(href="/admin/categories/1?categoryQuery=" + category.categoryName) see all
+        table.table.table-hover
+          thead
             tr
-              td.table-index= index+1
-              td.table-avatar(scope='row')
-                if elm.avatarUrl
-                  a(href="/admin/books/view/" + elm._id)
-                    img.image__table(src=elm.avatarUrl, alt= elm.title)
-                else
-                  img.image__table--empty(src='/sources/img/book-default.jpg')
-              td
-                a(href="/admin/books/view/" + elm._id)= elm.title
-              td
-                a(href="/admin/search/1?authorQuery=" + elm.author)= elm.author
-              td= elm.createdAt.getDate() + '-'+ (elm.createdAt.getMonth() + 1) + '-' + elm.createdAt.getFullYear()
-              td= elm.quantity
-              td
-                button.btn.btn-danger.open-AddBookDialog(type="button", data-book= elm, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") edit
+              th.table-avatar(scope='col') 
+              th.table-title(scope='col') Title
+              th.table-author(scope='col') Author
+              th(scope='col') Date Post
+              th(scope='col') Quantity
+              th(scope='col') 
+          tbody
+            each book in category.books
+              tr
+                td.table-avatar(scope='row')
+                  if book.avatarUrl
+                    a(href="/admin/books/view/" + book._id)
+                      img.image__table(src=book.avatarUrl, alt= book.title)
+                  else
+                    img.image__table--empty(src='/sources/img/book-default.jpg')
+                td.table-title
+                  a(href="/admin/books/view/" + book._id)= book.title
+                td.table-author
+                  a(href="/admin/search/1?authorQuery=" + book.author)= book.author
+                td= book.createdAt.getDate() + '-'+ (book.createdAt.getMonth() + 1) + '-' + book.createdAt.getFullYear()
+                td= book.quantity
+                td
+                  button.btn.btn-danger.open-AddBookDialog(type="button", data-book= book, data-toggle="modal", data-target="#bookModal" onclick="handleEditBook()") edit
   #bookModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modalLabel', aria-hidden='true')
     .modal-dialog(role='document')
       .modal-content
         .modal-header
-          h5#modalLabel.modal-title New Book
+          h5#modalLabel.modal-title Edit
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
         .modal-body
@@ -93,6 +82,7 @@ block content
             .modal-footer
               button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
               button.btn.btn-primary(type='submit') Save
+block pagination
 block script
   script.
     let categories = !{JSON.stringify(categories)};

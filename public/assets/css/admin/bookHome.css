@@ -1,0 +1,37 @@
+#category {
+    width: 300px;
+    padding: 7px;
+    text-align: left;
+}
+.category-suggestions {
+    text-align: left;
+    border: 1px solid #999;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background: #fff;
+    overflow: auto;
+}
+.category-suggestion {
+    padding: 5px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+}
+.category-selected {
+    background: #f0f0f0;
+}
+.category-suggestions strong {
+    font-weight: normal;
+    color: #3399ff;
+}
+.category-group {
+    padding: 2px 5px;
+}
+.category-group strong {
+    display: block;
+    border-bottom: 1px solid #000;
+}
+
+.category-name:first-child {
+    border-top: none !important;
+}

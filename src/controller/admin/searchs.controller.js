@@ -6,11 +6,11 @@ let onSort = require("../../services/sort");
 module.exports = {
     //Search
     search: async (req, res) => {
-        let { page } = req.params || 1;
+        let page = req.params.page || 1;
         let { allQuery, authorQuery, publisherQuery, yearQuery } = req.query;
         // let { userId } = req.signedCookies;
         // let user = userId && (await User.findById(userId));
-        let { sort } = req.body || "DateUp";
+        let sort = req.body.sort || "DateUp";
         let isSort = onSort(sort);
         let matchQuery;
         let objUsers;

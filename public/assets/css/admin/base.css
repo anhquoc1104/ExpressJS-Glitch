@@ -1,5 +1,20 @@
-table tbody td {
+table tbody td,
+table thead th {
     max-width: 230px;
+}
+
+table tbody td.table-title,
+table thead th.table-author {
+    min-width: 200px;
+}
+table tbody td.table-avatar,
+table thead th.table-avatar {
+    max-width: 80px;
+}
+
+table tbody td.table-index,
+table thead th.table-index {
+    max-width: 30px;
 }
 
 .image__table {
