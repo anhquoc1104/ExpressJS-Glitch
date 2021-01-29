@@ -204,8 +204,7 @@ socket
         $messages[0].scrollTop = $messages[0].scrollHeight;
     })
     .on("typing", function (data) {
-        if (data.isTyping && data.person != "Client")
-            $Typing.append("Admin is typing...");
+        if (data.isTyping) $Typing.append("Admin is typing...");
         else $Typing.text("");
     })
     .on("chat history", function (data) {
