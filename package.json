@@ -24,7 +24,7 @@
         "node-cron": "^2.0.3",
         "nodemailer": "^6.4.16",
         "pug": "^2.0.4",
-        "redis": "^3.0.2",
+        "redis": "^3.1.1",
         "socket.io": "^3.0.3"
     },
     "engines": {
